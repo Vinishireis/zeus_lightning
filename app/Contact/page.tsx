@@ -4,6 +4,7 @@ import { AuroraBackground } from "@/components/aurora-background";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiMail, FiMapPin, FiPhone, FiSend, FiCheckCircle } from "react-icons/fi";
+import { FiLinkedin, FiTwitter, FiFacebook, FiInstagram } from "react-icons/fi";
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -115,21 +116,30 @@ export default function ContactPage() {
               </div>
             ))}
 
-            {/* Social Media */}
-            <div className="pt-6 border-t border-zinc-800">
-              <h3 className="text-lg font-medium text-white mb-4">Redes Sociais</h3>
-              <div className="flex space-x-4">
-                {["LinkedIn", "Twitter", "Facebook", "Instagram"].map((social, index) => (
-                  <a
-                    key={index}
-                    href="#"
-                    className="w-10 h-10 rounded-full bg-zinc-800 hover:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:text-white transition-colors"
-                  >
-                    {social.charAt(0)}
-                  </a>
-                ))}
-              </div>
-            </div>
+<div className="pt-6 border-t border-zinc-800">
+  <h3 className="text-lg font-medium text-white mb-4">Redes Sociais</h3>
+  <div className="flex space-x-4">
+    {[
+      { name: "LinkedIn", icon: <FiLinkedin className="w-5 h-5" />, color: "hover:bg-blue-600" },
+      { name: "Twitter", icon: <FiTwitter className="w-5 h-5" />, color: "hover:bg-blue-400" },
+      { name: "Facebook", icon: <FiFacebook className="w-5 h-5" />, color: "hover:bg-blue-700" },
+      { name: "Instagram", icon: <FiInstagram className="w-5 h-5" />, color: "hover:bg-gradient-to-r hover:from-purple-600 hover:via-pink-600 hover:to-yellow-500" }
+    ].map((social, index) => (
+      <div key={index} className="relative group">
+        <a
+          href="#"
+          className={`w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 hover:text-white transition-colors ${social.color}`}
+          aria-label={social.name}
+        >
+          {social.icon}
+        </a>
+        <span className="absolute bottom-full mb-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-zinc-700 rounded whitespace-nowrap">
+          {social.name}
+        </span>
+      </div>
+    ))}
+  </div>
+</div>
 
             {/* Map Placeholder */}
             <div className="mt-8 bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden h-48">
