@@ -5,6 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { motion } from "framer-motion";
 import { FiUpload, FiX, FiFile, FiImage, FiVideo, FiMusic, FiFileText, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
 import { AuroraBackground } from "@/components/aurora-background";
+import Image from "next/image";
 
 type FileWithPreview = File & {
   preview: string;
@@ -22,15 +23,49 @@ export default function UploadPage() {
     setUploadComplete(false);
     setError("");
 
-    const newFiles = acceptedFiles.map(file => ({
-      ...file,
-      preview: URL.createObjectURL(file),
-      uploadProgress: 0,
-      status: "pending" as const
-    }));
+    const newFiles = acceptedFiles.map(file => {
+      // Verificação para garantir que o arquivo tem type
+      const fileType = file.type || getFileTypeFromExtension(file.name);
+      
+      return {
+        ...file,
+        type: fileType,
+        preview: URL.createObjectURL(file),
+        uploadProgress: 0,
+        status: "pending" as const
+      };
+    });
 
     setFiles(prevFiles => [...prevFiles, ...newFiles]);
   }, []);
+
+  // Função auxiliar para inferir o tipo do arquivo baseado na extensão
+  const getFileTypeFromExtension = (filename: string) => {
+    const extension = filename.split('.').pop()?.toLowerCase();
+    switch(extension) {
+      case 'jpg':
+      case 'jpeg':
+      case 'png':
+      case 'gif':
+      case 'webp':
+        return 'image/' + extension;
+      case 'mp4':
+      case 'mov':
+      case 'avi':
+        return 'video/' + extension;
+      case 'mp3':
+      case 'wav':
+        return 'audio/' + extension;
+      case 'pdf':
+        return 'application/pdf';
+      case 'txt':
+        return 'text/plain';
+      case 'json':
+        return 'application/json';
+      default:
+        return 'application/octet-stream';
+    }
+  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -60,25 +95,22 @@ export default function UploadPage() {
       setError("Selecione pelo menos um arquivo para upload");
       return;
     }
-
+  
     setIsUploading(true);
     setError("");
-
+  
     try {
-      // Simulando upload progressivo para cada arquivo
+      // Simulação de upload com progresso
       for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        
         setFiles(prevFiles => {
           const updatedFiles = [...prevFiles];
           updatedFiles[i].status = "uploading";
           return updatedFiles;
         });
 
-        // Simulando progresso do upload
+        // Simulação de progresso
         for (let progress = 0; progress <= 100; progress += 10) {
           await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
-          
           setFiles(prevFiles => {
             const updatedFiles = [...prevFiles];
             updatedFiles[i].uploadProgress = progress;
@@ -118,7 +150,8 @@ export default function UploadPage() {
     };
   }, [files]);
 
-  const getFileIcon = (type: string) => {
+  const getFileIcon = (type?: string) => {
+    if (!type) return <FiFile className="text-zinc-400" />;
     if (type.startsWith("image/")) return <FiImage className="text-blue-400" />;
     if (type.startsWith("video/")) return <FiVideo className="text-purple-400" />;
     if (type.startsWith("audio/")) return <FiMusic className="text-emerald-400" />;
@@ -240,12 +273,14 @@ export default function UploadPage() {
                           className="flex items-center p-3 bg-zinc-800/50 rounded-lg border border-zinc-700"
                         >
                           <div className="flex-shrink-0 mr-3">
-                            {file.type.startsWith("image/") ? (
+                            {file.type?.startsWith("image/") ? (
                               <div className="w-10 h-10 rounded bg-zinc-700 flex items-center justify-center overflow-hidden">
-                                <img
+                                <Image
                                   src={file.preview}
-                                  alt="Preview"
-                                  className="object-cover w-full h-full"
+                                  alt={file.name}
+                                  width={40}
+                                  height={40}
+                                  className="object-cover"
                                 />
                               </div>
                             ) : (
