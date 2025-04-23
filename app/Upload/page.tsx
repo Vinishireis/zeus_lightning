@@ -23,49 +23,23 @@ export default function UploadPage() {
     setUploadComplete(false);
     setError("");
 
-    const newFiles = acceptedFiles.map(file => {
-      // Verificação para garantir que o arquivo tem type
-      const fileType = file.type || getFileTypeFromExtension(file.name);
-      
-      return {
-        ...file,
-        type: fileType,
-        preview: URL.createObjectURL(file),
-        uploadProgress: 0,
-        status: "pending" as const
-      };
+    const validFiles = acceptedFiles.filter(file => {
+      if (!file.type) {
+        console.warn(`Arquivo ${file.name} não tem tipo definido`);
+        return false;
+      }
+      return true;
     });
+
+    const newFiles = validFiles.map(file => ({
+      ...file,
+      preview: URL.createObjectURL(file),
+      uploadProgress: 0,
+      status: "pending" as const
+    }));
 
     setFiles(prevFiles => [...prevFiles, ...newFiles]);
   }, []);
-
-  // Função auxiliar para inferir o tipo do arquivo baseado na extensão
-  const getFileTypeFromExtension = (filename: string) => {
-    const extension = filename.split('.').pop()?.toLowerCase();
-    switch(extension) {
-      case 'jpg':
-      case 'jpeg':
-      case 'png':
-      case 'gif':
-      case 'webp':
-        return 'image/' + extension;
-      case 'mp4':
-      case 'mov':
-      case 'avi':
-        return 'video/' + extension;
-      case 'mp3':
-      case 'wav':
-        return 'audio/' + extension;
-      case 'pdf':
-        return 'application/pdf';
-      case 'txt':
-        return 'text/plain';
-      case 'json':
-        return 'application/json';
-      default:
-        return 'application/octet-stream';
-    }
-  };
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
@@ -81,68 +55,58 @@ export default function UploadPage() {
     multiple: true
   });
 
-  const removeFile = (index: number) => {
+  const removeFile = useCallback((index: number) => {
     setFiles(prevFiles => {
       const newFiles = [...prevFiles];
       const removedFile = newFiles.splice(index, 1)[0];
       URL.revokeObjectURL(removedFile.preview);
       return newFiles;
     });
-  };
+  }, []);
 
   const handleUpload = async () => {
     if (files.length === 0) {
       setError("Selecione pelo menos um arquivo para upload");
       return;
     }
-  
+
     setIsUploading(true);
     setError("");
-  
-    try {
-      // Simulação de upload com progresso
-      for (let i = 0; i < files.length; i++) {
-        setFiles(prevFiles => {
-          const updatedFiles = [...prevFiles];
-          updatedFiles[i].status = "uploading";
-          return updatedFiles;
-        });
 
-        // Simulação de progresso
+    try {
+      await Promise.all(files.map(async (_, index) => {
+        setFiles(prev => prev.map((f, i) => 
+          i === index ? {...f, status: "uploading"} : f
+        ));
+
         for (let progress = 0; progress <= 100; progress += 10) {
           await new Promise(resolve => setTimeout(resolve, 100 + Math.random() * 200));
-          setFiles(prevFiles => {
-            const updatedFiles = [...prevFiles];
-            updatedFiles[i].uploadProgress = progress;
-            return updatedFiles;
-          });
+          setFiles(prev => prev.map((f, i) => 
+            i === index ? {...f, uploadProgress: progress} : f
+          ));
         }
 
-        setFiles(prevFiles => {
-          const updatedFiles = [...prevFiles];
-          updatedFiles[i].status = "completed";
-          return updatedFiles;
-        });
-      }
+        setFiles(prev => prev.map((f, i) => 
+          i === index ? {...f, status: "completed"} : f
+        ));
+      }));
 
       setUploadComplete(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Falha no upload");
-      setFiles(prevFiles => 
-        prevFiles.map(file => 
-          file.status === "uploading" ? { ...file, status: "error" } : file
-        )
-      );
+      setFiles(prev => prev.map(f => 
+        f.status === "uploading" ? {...f, status: "error"} : f
+      ));
     } finally {
       setIsUploading(false);
     }
   };
 
-  const resetUpload = () => {
+  const resetUpload = useCallback(() => {
     files.forEach(file => URL.revokeObjectURL(file.preview));
     setFiles([]);
     setUploadComplete(false);
-  };
+  }, [files]);
 
   useEffect(() => {
     return () => {
@@ -150,8 +114,7 @@ export default function UploadPage() {
     };
   }, [files]);
 
-  const getFileIcon = (type?: string) => {
-    if (!type) return <FiFile className="text-zinc-400" />;
+  const getFileIcon = (type: string) => {
     if (type.startsWith("image/")) return <FiImage className="text-blue-400" />;
     if (type.startsWith("video/")) return <FiVideo className="text-purple-400" />;
     if (type.startsWith("audio/")) return <FiMusic className="text-emerald-400" />;
@@ -179,7 +142,7 @@ export default function UploadPage() {
           {/* Header */}
           <div className="px-6 py-5 border-b border-zinc-800">
             <div className="flex items-center justify-between">
-              <h1 className="text-2xl font-bold text-white bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 text-transparent">
+              <h1 className="text-2xl font-bold bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 text-transparent">
                 Upload de Arquivos
               </h1>
               {files.length > 0 && !uploadComplete && (
@@ -266,21 +229,22 @@ export default function UploadPage() {
                     <div className="space-y-3">
                       {files.map((file, index) => (
                         <motion.div
-                          key={file.name + index}
+                          key={`${file.name}-${index}`}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
                           transition={{ delay: index * 0.05 }}
                           className="flex items-center p-3 bg-zinc-800/50 rounded-lg border border-zinc-700"
                         >
                           <div className="flex-shrink-0 mr-3">
-                            {file.type?.startsWith("image/") ? (
+                            {file.type.startsWith("image/") ? (
                               <div className="w-10 h-10 rounded bg-zinc-700 flex items-center justify-center overflow-hidden">
                                 <Image
                                   src={file.preview}
-                                  alt={file.name}
+                                  alt={`Preview ${file.name}`}
                                   width={40}
                                   height={40}
                                   className="object-cover"
+                                  unoptimized
                                 />
                               </div>
                             ) : (

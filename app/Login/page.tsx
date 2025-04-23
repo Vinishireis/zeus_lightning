@@ -86,7 +86,7 @@ export default function LoginPage() {
                 </svg>
               </div>
             </motion.div>
-            <h1 className="text-3xl font-bold text-white bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 text-transparent">
+            <h1 className="text-3xl font-bold text-white bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">
               Zeus Lightning
             </h1>
             <p className="mt-2 text-zinc-400">Acesse sua conta para continuar</p>
