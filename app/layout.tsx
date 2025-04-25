@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuroraBackground } from "@/components/aurora-background";
 import NavBar from "@/components/NavBar";
+import { HeroHighlight } from "@/components/ui/hero-highlight";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -20,7 +21,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={inter.className}>
         <NavBar></NavBar>
-        <AuroraBackground>{children}</AuroraBackground>
+        <AuroraBackground>{children}</AuroraBackground>    
       </body>
     </html>
   );

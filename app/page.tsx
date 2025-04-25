@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { HeroHighlight } from "@/components/ui/hero-highlight";
 
 export default function Home() {
   return (
@@ -20,12 +21,22 @@ export default function Home() {
         </div>
 
         {/* Description */}
-        <p className="text-gray-300/90 text-lg md:text-xl text-pretty leading-relaxed max-w-3xl mx-auto">
-          Plataforma avançada para <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent font-semibold">análise automatizada</span> e 
-          geração de <span className="bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-transparent font-semibold">relatórios de sistemas</span>. 
-          Transforme dados brutos em <span className="bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-transparent font-semibold">informações acionáveis</span> com 
-          nossa solução completa para o projeto Ibracom.
-        </p>
+        <HeroHighlight>
+          <p className="text-gray-300/90 text-lg md:text-xl text-pretty leading-relaxed max-w-3xl mx-auto">
+            <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent font-semibold">
+              Plataforma avançada
+            </span>{" "}
+            para análise automatizada e geração de{" "}
+            <span className="bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-transparent font-semibold">
+              relatórios de sistemas
+            </span>
+            . Transforme dados brutos em{" "}
+            <span className="bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-transparent font-semibold">
+              informações acionáveis
+            </span>{" "}
+            com nossa solução completa para o projeto Ibracom.
+          </p>
+        </HeroHighlight>
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
