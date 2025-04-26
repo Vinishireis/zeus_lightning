@@ -130,7 +130,7 @@ export default function PricingPage() {
         className="container mx-auto px-4 sm:px-6 py-12 lg:py-16 max-w-7xl"
       >
         {/* Header Section */}
-        <div className="text-center mb-8 md:mb-12 px-4">
+        <div className="text-center pt-10 pb-20">
           <motion.h1
             className="text-4xl sm:text-5xl font-bold text-white mb-3 sm:mb-4"
             initial={{ opacity: 0, y: -20 }}

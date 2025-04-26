@@ -88,7 +88,7 @@ export default function ContactPage() {
         className="container mx-auto px-4 sm:px-6 py-12 md:py-16 max-w-6xl"
       >
         {/* Header */}
-        <div className="text-center mb-12 md:mb-16">
+        <div className="text-center pt-10 pb-20">
           <motion.h1 
             className="text-3xl xs:text-4xl sm:text-5xl font-bold text-white mb-3 sm:mb-4"
             initial={{ opacity: 0, y: -20 }}

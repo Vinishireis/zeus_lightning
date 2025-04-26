@@ -66,7 +66,7 @@ export default function SolutionsPage() {
         className="container mx-auto px-4 py-16 max-w-6xl"
       >
         {/* Hero Section */}
-        <div className="text-center mb-20">
+        <div className="text-center pt-10 pb-20"> {/* Aumentei o padding-top para 32 (pt-32) */}
           <motion.h1 
             className="text-4xl md:text-5xl font-bold text-white mb-6"
             initial={{ opacity: 0, y: -20 }}
@@ -84,7 +84,6 @@ export default function SolutionsPage() {
             Transforme dados brutos em insights acionáveis com nossa plataforma de análise inteligente e geração automática de relatórios.
           </motion.p>
         </div>
-
         {/* Features */}
         <div className="mb-20">
           <motion.h2 
