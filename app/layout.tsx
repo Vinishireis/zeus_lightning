@@ -20,6 +20,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
+      <head>
+        <meta name="description" content="Zeus Lightning - A poderosa plataforma de relatŕoios de sistemas" />
+      </head>
       <body className={inter.className}>
         <NavBar />
         {showAurora ? (
