@@ -21,7 +21,11 @@ export default function RootLayout({
   return (
     <html lang="pt-BR">
       <head>
-        <meta name="description" content="Zeus Lightning - A poderosa plataforma de relatŕoios de sistemas" />
+        <meta property="og:image" content="/Images/zeus-lightning.png" />
+        <meta name="title" content="Zeus Lightning - Plataforma de Relatórios de Sistemas" />
+        <meta name="keywords" content="Zeus Lightning, Relatórios, Sistemas, Plataforma, Análise de Dados" />
+        <meta name="author" content="Zeus Lightning" />
+        <meta name="description" content="Zeus Lightning - A poderosa plataforma de relatórios de sistemas" />
       </head>
       <body className={inter.className}>
         <NavBar />
