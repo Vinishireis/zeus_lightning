@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiUser, FiMail, FiLock, FiAlertCircle, FiCheckCircle, FiArrowLeft } from "react-icons/fi";
-import { AuroraBackground } from "@/components/aurora-background";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -64,7 +64,7 @@ export default function RegisterPage() {
             <p className="text-zinc-400 mb-6">Bem-vindo ao Zeus Lightning</p>
             
             <Link
-              href="/login"
+              href="/Login"
               className="inline-flex items-center justify-center w-full px-6 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white rounded-lg font-medium transition-all duration-300"
             >
               Ir para Login
@@ -76,7 +76,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <AuroraBackground>
+    <main className="min-h-screen w-full flex items-center justify-center bg-black ">
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -86,7 +86,7 @@ export default function RegisterPage() {
           <div className="w-full max-w-md mx-auto bg-gradient-to-br from-zinc-900/80 to-zinc-800/90 backdrop-blur-sm sm:backdrop-blur-md rounded-xl border border-zinc-700 shadow-lg overflow-hidden">
             {/* Header */}
             <div className="p-6 sm:p-8">
-              <Link href="/" className="inline-flex items-center text-sm text-zinc-400 hover:text-zinc-300 mb-6">
+              <Link href="/Login" className="inline-flex items-center text-sm text-zinc-400 hover:text-zinc-300 mb-6">
                 <FiArrowLeft className="mr-2" /> Voltar
               </Link>
               
@@ -237,7 +237,7 @@ export default function RegisterPage() {
                     />
                   </div>
                   <label htmlFor="terms" className="ml-3 text-xs sm:text-sm text-zinc-300">
-                    Concordo com os <Link href="/terms" className="text-blue-400 hover:underline">Termos</Link> e <Link href="/privacy" className="text-blue-400 hover:underline">Política de Privacidade</Link>
+                    Concordo com os <Link href="/Terms" className="text-blue-400 hover:underline">Termos</Link> e <Link href="/Privacy_Policy" className="text-blue-400 hover:underline">Política de Privacidade</Link>
                   </label>
                 </div>
 
@@ -278,7 +278,7 @@ export default function RegisterPage() {
             <div className="px-6 sm:px-8 py-4 border-t border-zinc-800 text-center">
               <p className="text-xs sm:text-sm text-zinc-400">
                 Já tem uma conta?{' '}
-                <Link href="/login" className="font-medium text-blue-400 hover:text-blue-300">
+                <Link href="/Login" className="font-medium text-blue-400 hover:text-blue-300">
                   Fazer Login
                 </Link>
               </p>
@@ -286,6 +286,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </motion.div>
-    </AuroraBackground>
+    </main>
   );
 }

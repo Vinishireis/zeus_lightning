@@ -4,7 +4,7 @@ import { useState, useCallback, useEffect } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion } from "framer-motion";
 import { FiUpload, FiX, FiFile, FiImage, FiVideo, FiMusic, FiFileText, FiCheckCircle, FiAlertCircle } from "react-icons/fi";
-import { AuroraBackground } from "@/components/aurora-background";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import Image from "next/image";
 
 type FileWithPreview = File & {
@@ -131,8 +131,8 @@ export default function UploadPage() {
   };
 
   return (
-    <AuroraBackground>
-      <motion.div
+    <main className="min-h-screen w-full flex items-center justify-center bg-black">
+    <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
@@ -365,6 +365,6 @@ export default function UploadPage() {
           )}
         </div>
       </motion.div>
-    </AuroraBackground>
+    </main>
   );
 }

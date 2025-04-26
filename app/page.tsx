@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { HeroHighlight } from "@/components/ui/hero-highlight";
+
 
 export default function Home() {
   return (
@@ -21,7 +21,6 @@ export default function Home() {
         </div>
 
         {/* Description */}
-        <HeroHighlight>
           <p className="text-gray-300/90 text-lg md:text-xl text-pretty leading-relaxed max-w-3xl mx-auto">
             <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent font-semibold">
               Plataforma avançada
@@ -36,7 +35,6 @@ export default function Home() {
             </span>{" "}
             com nossa solução completa para o projeto Ibracom.
           </p>
-        </HeroHighlight>
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">

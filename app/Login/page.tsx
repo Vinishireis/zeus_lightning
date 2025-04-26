@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiMail, FiLock, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
-import { AuroraBackground } from "@/components/aurora-background";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -52,7 +52,7 @@ export default function LoginPage() {
   };
 
   return (
-    <AuroraBackground>
+    <main className="min-h-screen w-full flex items-center justify-center bg-black ">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -217,6 +217,6 @@ export default function LoginPage() {
           </div>
         </div>
       </motion.div>
-    </AuroraBackground>
+    </main>
   );
 }

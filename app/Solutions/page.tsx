@@ -1,6 +1,6 @@
 "use client";
 
-import { AuroraBackground } from "@/components/aurora-background";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import { motion } from "framer-motion";
 import { FiBarChart2, FiCpu, FiDatabase, FiShield, FiCode, FiUsers } from "react-icons/fi";
 
@@ -58,7 +58,7 @@ export default function SolutionsPage() {
   ];
 
   return (
-    <AuroraBackground>
+    <main className="min-h-screen w-full flex items-center justify-center bg-black">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -168,6 +168,6 @@ export default function SolutionsPage() {
           </div>
         </motion.div>
       </motion.div>
-    </AuroraBackground>
+  </main>
   );
 }

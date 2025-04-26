@@ -1,6 +1,6 @@
 "use client";
 
-import { AuroraBackground } from "@/components/aurora-background";
+import { AuroraBackground } from "@/components/ui/aurora-background";
 import { motion } from "framer-motion";
 import { FiCheckCircle, FiZap, FiStar, FiArrowRight, FiHelpCircle } from "react-icons/fi";
 
@@ -122,7 +122,7 @@ export default function PricingPage() {
   ];
 
   return (
-    <AuroraBackground>
+    <main className="min-h-screen w-full flex items-center justify-center bg-black">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -130,22 +130,34 @@ export default function PricingPage() {
         className="container mx-auto px-4 sm:px-6 py-12 lg:py-16 max-w-7xl"
       >
         {/* Header Section */}
-        <div className="text-center mb-12 sm:mb-16 px-4">
-          <motion.h1 
-            className="text-3xl sm:text-4xl md:text-5xl font-bold text-white mb-4"
+        <div className="text-center mb-8 md:mb-12 px-4">
+          <motion.h1
+            className="text-4xl sm:text-5xl font-bold text-white mb-3 sm:mb-4"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.1 }}
+            transition={{
+              delay: 0.1,
+              duration: 0.6,
+              ease: "easeOut",
+            }}
           >
-            Planos para <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">todos os perfis</span>
+            Planos para{" "}
+            <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent block sm:inline">
+              todos os perfis
+            </span>
           </motion.h1>
-          <motion.p 
-            className="text-base sm:text-lg text-zinc-300 max-w-3xl mx-auto"
+
+          <motion.p
+            className="text-base sm:text-lg md:text-xl text-zinc-200 max-w-2xl md:max-w-3xl mx-auto leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
+            transition={{
+              delay: 0.3,
+              duration: 0.8,
+            }}
           >
-            Escolha o plano ideal para suas necessidades de análise e geração de relatórios de sistemas.
+            Escolha o plano ideal para suas necessidades de análise e geração de
+            relatórios de sistemas.
           </motion.p>
         </div>
 
@@ -338,6 +350,6 @@ export default function PricingPage() {
           </button>
         </motion.div>
       </motion.div>
-    </AuroraBackground>
+    </main>
   );
 }

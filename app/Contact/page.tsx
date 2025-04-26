@@ -1,6 +1,5 @@
 "use client";
 
-import { AuroraBackground } from "@/components/aurora-background";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import { FiMail, FiMapPin, FiPhone, FiSend, FiCheckCircle } from "react-icons/fi";
@@ -27,14 +26,32 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validação dos campos obrigatórios
+    if (!formData.name.trim() || !formData.email.trim() || !formData.message.trim()) {
+      alert("Por favor, preencha todos os campos obrigatórios.");
+      return;
+    }
+
     setIsSubmitting(true);
     
     try {
-      // Simular envio do formulário
+      // Simulação de envio - substitua por sua API real
+      console.log("Dados do formulário:", formData);
       await new Promise(resolve => setTimeout(resolve, 1500));
+      
+      // Limpar formulário após envio bem-sucedido
+      setFormData({
+        name: "",
+        email: "",
+        subject: "",
+        message: ""
+      });
+      
       setSubmitSuccess(true);
     } catch (error) {
       console.error("Erro ao enviar formulário:", error);
+      alert("Ocorreu um erro ao enviar sua mensagem. Por favor, tente novamente.");
     } finally {
       setIsSubmitting(false);
     }
@@ -56,23 +73,24 @@ export default function ContactPage() {
     {
       icon: <FiMapPin className="w-5 h-5" />,
       title: "Endereço",
-      value: "Av. Paulista, 1000 - São Paulo, SP",
-      link: "https://maps.google.com/?q=Av. Paulista, 1000, São Paulo"
+      value: "Av. Liberdade, 532 - Liberdade, São Paulo - SP",
+      link: "https://maps.google.com/?q=Av. Liberdade, 532, São Paulo"
     }
   ];
 
   return (
-    <AuroraBackground>
+    <main className="min-h-screen w-full flex items-center justify-center bg-black ">
+      <div className="z-10">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="container mx-auto px-4 py-16 max-w-6xl"
+        className="container mx-auto px-4 sm:px-6 py-12 md:py-16 max-w-6xl"
       >
         {/* Header */}
-        <div className="text-center mb-16">
+        <div className="text-center mb-12 md:mb-16">
           <motion.h1 
-            className="text-4xl md:text-5xl font-bold text-white mb-4"
+            className="text-3xl xs:text-4xl sm:text-5xl font-bold text-white mb-3 sm:mb-4"
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
@@ -80,7 +98,7 @@ export default function ContactPage() {
             Fale <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">conosco</span>
           </motion.h1>
           <motion.p 
-            className="text-lg text-zinc-400 max-w-2xl mx-auto"
+            className="text-sm sm:text-base md:text-lg text-zinc-300 max-w-md sm:max-w-xl md:max-w-2xl mx-auto leading-relaxed"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
@@ -89,26 +107,27 @@ export default function ContactPage() {
           </motion.p>
         </div>
 
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-          {/* Contact Info */}
+        {/* Grid Principal */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 sm:gap-10 md:gap-12">
+          {/* Seção de Informações de Contato */}
           <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
-            className="space-y-6"
+            className="space-y-5 sm:space-y-6"
           >
             {contactInfo.map((item, index) => (
-              <div key={index} className="flex items-start">
-                <div className="p-3 bg-blue-900/30 rounded-lg text-blue-400 mr-4">
+              <div key={index} className="flex items-start gap-4">
+                <div className="p-2.5 sm:p-3 bg-blue-900/30 rounded-lg text-blue-400">
                   {item.icon}
                 </div>
                 <div>
-                  <h3 className="text-lg font-medium text-white mb-1">{item.title}</h3>
+                  <h3 className="text-base sm:text-lg font-medium text-white mb-1">{item.title}</h3>
                   <a 
                     href={item.link} 
                     target="_blank" 
                     rel="noopener noreferrer"
-                    className="text-zinc-400 hover:text-blue-400 transition-colors"
+                    className="text-sm sm:text-base text-zinc-400 hover:text-blue-400 transition-colors"
                   >
                     {item.value}
                   </a>
@@ -116,65 +135,73 @@ export default function ContactPage() {
               </div>
             ))}
 
-<div className="pt-6 border-t border-zinc-800">
-  <h3 className="text-lg font-medium text-white mb-4">Redes Sociais</h3>
-  <div className="flex space-x-4">
-    {[
-      { name: "LinkedIn", icon: <FiLinkedin className="w-5 h-5" />, color: "hover:bg-blue-600" },
-      { name: "Twitter", icon: <FiTwitter className="w-5 h-5" />, color: "hover:bg-blue-400" },
-      { name: "Facebook", icon: <FiFacebook className="w-5 h-5" />, color: "hover:bg-blue-700" },
-      { name: "Instagram", icon: <FiInstagram className="w-5 h-5" />, color: "hover:bg-gradient-to-r hover:from-purple-600 hover:via-pink-600 hover:to-yellow-500" }
-    ].map((social, index) => (
-      <div key={index} className="relative group">
-        <a
-          href="#"
-          className={`w-10 h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 hover:text-white transition-colors ${social.color}`}
-          aria-label={social.name}
-        >
-          {social.icon}
-        </a>
-        <span className="absolute bottom-full mb-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-zinc-700 rounded whitespace-nowrap">
-          {social.name}
-        </span>
-      </div>
-    ))}
-  </div>
-</div>
-
-            {/* Map Placeholder */}
-            <div className="mt-8 bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden h-48">
-              <div className="w-full h-full flex items-center justify-center text-zinc-500">
-                Mapa do Local
+            {/* Redes Sociais */}
+            <div className="pt-5 sm:pt-6 border-t border-zinc-800">
+              <h3 className="text-base sm:text-lg font-medium text-white mb-3 sm:mb-4">Redes Sociais</h3>
+              <div className="flex flex-wrap gap-3 sm:gap-4">
+                {[
+                  { name: "LinkedIn", icon: <FiLinkedin className="w-5 h-5" />, color: "hover:bg-blue-600" },
+                  { name: "Twitter", icon: <FiTwitter className="w-5 h-5" />, color: "hover:bg-blue-400" },
+                  { name: "Facebook", icon: <FiFacebook className="w-5 h-5" />, color: "hover:bg-blue-700" },
+                  { name: "Instagram", icon: <FiInstagram className="w-5 h-5" />, color: "hover:bg-gradient-to-r hover:from-purple-600 hover:via-pink-600 hover:to-yellow-500" }
+                ].map((social, index) => (
+                  <div key={index} className="relative group">
+                    <a
+                      href="#"
+                      className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-zinc-800 flex items-center justify-center text-zinc-300 hover:text-white transition-colors ${social.color}`}
+                      aria-label={social.name}
+                    >
+                      {social.icon}
+                    </a>
+                    <span className="absolute bottom-full mb-2 hidden group-hover:block px-2 py-1 text-xs text-white bg-zinc-700 rounded whitespace-nowrap">
+                      {social.name}
+                    </span>
+                  </div>
+                ))}
               </div>
+            </div>
+
+            {/* Mapa */}
+            <div className="mt-6 sm:mt-8 bg-zinc-900/50 border border-zinc-800 rounded-xl overflow-hidden h-40 sm:h-48">
+              <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3657.3120178119443!2d-46.6395273593805!3d-23.557234778890834!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x94ce59a8b4d648f9%3A0x862df06cefe8bc3e!2sFECAP%20-%20Funda%C3%A7%C3%A3o%20Escola%20de%20Com%C3%A9rcio%20%C3%81lvares%20Penteado%20-%20Campus%20Liberdade!5e0!3m2!1sen!2sbr!4v1745637594036!5m2!1sen!2sbr"
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+              ></iframe>
             </div>
           </motion.div>
 
-          {/* Contact Form */}
+          {/* Formulário de Contato */}
           <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.4 }}
+            className="w-full"
           >
             {submitSuccess ? (
-              <div className="bg-emerald-900/30 border border-emerald-800/50 rounded-xl p-8 text-center">
-                <FiCheckCircle className="w-12 h-12 text-emerald-400 mx-auto mb-4" />
-                <h3 className="text-2xl font-bold text-white mb-2">Mensagem Enviada!</h3>
-                <p className="text-zinc-300 mb-6">
+              <div className="bg-emerald-900/30 border border-emerald-800/50 rounded-xl p-6 sm:p-8 text-center">
+                <FiCheckCircle className="w-10 h-10 sm:w-12 sm:h-12 text-emerald-400 mx-auto mb-3 sm:mb-4" />
+                <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">Mensagem Enviada!</h3>
+                <p className="text-sm sm:text-base text-zinc-300 mb-4 sm:mb-6">
                   Obrigado por entrar em contato. Nossa equipe responderá em breve.
                 </p>
                 <button
                   onClick={() => setSubmitSuccess(false)}
-                  className="px-6 py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded-lg font-medium transition-all duration-200"
+                  className="px-5 py-2 sm:px-6 sm:py-2 bg-zinc-800 hover:bg-zinc-700 border border-zinc-700 text-white rounded-lg font-medium transition-all duration-200 text-sm sm:text-base"
                 >
                   Enviar nova mensagem
                 </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit} className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6">
-                <div className="space-y-5">
+              <form onSubmit={handleSubmit} className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-5 sm:p-6">
+                <div className="space-y-4 sm:space-y-5">
                   <div>
                     <label htmlFor="name" className="block text-sm font-medium text-zinc-300 mb-1">
-                      Nome Completo
+                      Nome Completo *
                     </label>
                     <input
                       type="text"
@@ -183,14 +210,14 @@ export default function ContactPage() {
                       value={formData.name}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-200"
+                      className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-200 text-sm sm:text-base"
                       placeholder="Seu nome"
                     />
                   </div>
 
                   <div>
                     <label htmlFor="email" className="block text-sm font-medium text-zinc-300 mb-1">
-                      Email
+                      Email *
                     </label>
                     <input
                       type="email"
@@ -199,7 +226,7 @@ export default function ContactPage() {
                       value={formData.email}
                       onChange={handleChange}
                       required
-                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-200"
+                      className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-200 text-sm sm:text-base"
                       placeholder="seu@email.com"
                     />
                   </div>
@@ -214,15 +241,14 @@ export default function ContactPage() {
                       name="subject"
                       value={formData.subject}
                       onChange={handleChange}
-                      required
-                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-200"
+                      className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-200 text-sm sm:text-base"
                       placeholder="Qual é o assunto?"
                     />
                   </div>
 
                   <div>
                     <label htmlFor="message" className="block text-sm font-medium text-zinc-300 mb-1">
-                      Mensagem
+                      Mensagem *
                     </label>
                     <textarea
                       id="message"
@@ -230,8 +256,8 @@ export default function ContactPage() {
                       value={formData.message}
                       onChange={handleChange}
                       required
-                      rows={5}
-                      className="w-full px-4 py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-200"
+                      rows={4}
+                      className="w-full px-3 py-2.5 sm:px-4 sm:py-3 bg-zinc-800/50 border border-zinc-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-zinc-500 transition-all duration-200 text-sm sm:text-base"
                       placeholder="Sua mensagem..."
                     ></textarea>
                   </div>
@@ -239,7 +265,7 @@ export default function ContactPage() {
                   <button
                     type="submit"
                     disabled={isSubmitting}
-                    className={`w-full px-6 py-3 font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-blue-500 transition-all duration-200 flex items-center justify-center ${
+                    className={`w-full px-5 py-2.5 sm:px-6 sm:py-3 font-medium rounded-lg focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-zinc-900 focus:ring-blue-500 transition-all duration-200 flex items-center justify-center text-sm sm:text-base ${
                       isSubmitting
                         ? 'bg-blue-600/50 cursor-not-allowed'
                         : 'bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 text-white'
@@ -265,6 +291,7 @@ export default function ContactPage() {
           </motion.div>
         </div>
       </motion.div>
-    </AuroraBackground>
+      </div>
+    </main>
   );
 }

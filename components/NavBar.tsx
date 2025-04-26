@@ -2,7 +2,8 @@
 
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
-import { RiNextjsFill, RiMenu3Line, RiCloseLine } from 'react-icons/ri';
+import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
+import { BsLightning } from 'react-icons/bs';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const NavBar = () => {
@@ -51,7 +52,7 @@ const NavBar = () => {
       }`}>
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <RiNextjsFill className="text-3xl md:text-4xl text-white" />
+          <BsLightning className="text-3xl md:text-4xl text-white" />
           <span className="ml-2 text-xl font-semibold hidden sm:inline-block bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
             Zeus Lightning
           </span>
