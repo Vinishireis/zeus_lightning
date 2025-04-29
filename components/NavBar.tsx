@@ -37,6 +37,7 @@ const NavBar = () => {
     { href: '/Pricing', label: 'Preços' },
     { href: '/Solutions', label: 'Soluções' },
     { href: '/Contact', label: 'Contato' },
+    { href: '/Chat', label: 'Chat' },
   ];
 
   const authItems = [

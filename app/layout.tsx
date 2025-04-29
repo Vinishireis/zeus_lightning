@@ -3,7 +3,6 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import NavBar from "@/components/NavBar";
-import { HeroHighlight } from "@/components/ui/hero-highlight";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {

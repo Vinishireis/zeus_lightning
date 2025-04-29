@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import Link from "next/link";
 
 
 export default function Home() {
@@ -38,12 +39,16 @@ export default function Home() {
 
         {/* Buttons */}
         <div className="flex flex-col sm:flex-row gap-3 justify-center pt-4">
-          <Button size="lg" className="rounded-full px-8 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-blue-500/20">
-            Gerar Relatórios
-          </Button>
-          <Button variant="secondary" size="lg" className="rounded-full px-8 border-white/20 bg-white/5 hover:bg-white/10 backdrop-blur-lg transition-all duration-300">
+          <Link href="/Chat">
+            <Button size="lg" className="rounded-full px-8 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-blue-500/20 cursor-pointer">
+              Gerar Relatórios
+            </Button>
+          </Link>
+          <Link href="/Dashboard">
+          <Button variant="secondary" size="lg" className="rounded-full px-8 border-white/20 bg-white/5 hover:bg-white/10 backdrop-blur-lg transition-all duration-300 cursor-pointer">
             Acessar Dashboard
           </Button>
+          </Link>
         </div>
 
         {/* Destaques */}
