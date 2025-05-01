@@ -57,33 +57,23 @@ export default function RegisterPage() {
   const handleGoogleLogin = async () => {
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zeuslightning.vercel.app';
     
-    try {
-      // 1. Inicia o fluxo OAuth
-      const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${siteUrl}/api/auth/callback`, // Usando endpoint API
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent'
-          }
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: `${siteUrl}/api/auth/callback`,
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent'
         }
-      });
-  
-      // 2. Verifica erros imediatos
-      if (error) throw error;
-  
-      // 3. Se não houver URL de redirecionamento (mobile), força manualmente
-      if (!data?.url) {
-        window.location.href = `https://zeuslightning.vercel.app/api/auth/callback`;
       }
+    });
   
-    } catch (err) {
-      console.error('Google Auth Error:', err);
-      setError(err instanceof Error ? err.message : 'Erro no login com Google');
+    if (error) {
+      console.error('Google login error:', error);
+      setError(error.message);
     }
   };
-
+  
   if (success) {
     return (
       <AuroraBackground>
