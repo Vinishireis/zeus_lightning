@@ -17,46 +17,24 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
   // Configuração para redirecionamentos de autenticação
-  async redirects() {
+  async rewrites() {
     return [
       {
         source: '/auth/callback',
         destination: '/api/auth/callback',
-        permanent: true,
       },
-    ];
-  },
-  // Configuração para headers de segurança
-  async headers() {
-    return [
       {
-        source: '/(.*)',
-        headers: [
-          {
-            key: 'X-Frame-Options',
-            value: 'DENY',
-          },
-          {
-            key: 'X-Content-Type-Options',
-            value: 'nosniff',
-          },
-          {
-            key: 'Referrer-Policy',
-            value: 'origin-when-cross-origin',
-          },
-        ],
-      },
+        source: '/api/auth/callback',
+        destination: `${process.env.NEXT_PUBLIC_SUPABASE_URL}/auth/v1/callback`,
+      }
     ];
   },
-  // Habilitar o modo strict do React
-  reactStrictMode: true,
-  // Configuração para o Supabase
+  
   env: {
-    // Estas variáveis devem ser definidas nas configurações da Vercel
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-    NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
-    NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
-  },
+    NEXT_PUBLIC_FORCE_REDIRECT_URL: process.env.VERCEL_URL 
+      ? `https://${process.env.VERCEL_URL}` 
+      : 'https://zeuslightning.vercel.app'
+  }
 };
 
 export default nextConfig;

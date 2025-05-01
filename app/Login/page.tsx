@@ -49,12 +49,13 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
-    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zeuslightning.vercel.app';
-    
+    const forceRedirectUrl = process.env.NEXT_PUBLIC_FORCE_REDIRECT_URL 
+      || 'https://zeuslightning.vercel.app';
+  
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: `${siteUrl}/api/auth/callback`,
+        redirectTo: `${forceRedirectUrl}/api/auth/callback`,
         queryParams: {
           access_type: 'offline',
           prompt: 'consent'
@@ -63,8 +64,14 @@ export default function LoginPage() {
     });
   
     if (error) {
-      console.error('Google login error:', error);
-      setError(error.message);
+      console.error('Google Auth Error:', error);
+      setError('Falha no login com Google');
+      return;
+    }
+  
+    // Força redirecionamento absoluto
+    if (typeof window !== 'undefined') {
+      window.location.href = `${forceRedirectUrl}/api/auth/callback`;
     }
   };
   
