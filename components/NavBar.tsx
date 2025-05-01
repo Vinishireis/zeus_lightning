@@ -71,7 +71,6 @@ const NavBar = () => {
   const navItems = [
     { href: '/Upload', label: 'Upload' },
     { href: '/Pricing', label: 'Preços' },
-    { href: '/Solutions', label: 'Soluções' },
     { href: '/Services', label: 'Serviços'},
     { href: '/Contact', label: 'Contato' },
     { href: '/Chat', label: 'Chat' },

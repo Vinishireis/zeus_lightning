@@ -257,7 +257,7 @@ export default function DashboardPage() {
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold text-cyan-300">Relatórios</h3>
+                      <h3 className="text-lg font-semibold text-cyan-300 ">Relatórios</h3>
                       <p className="text-2xl font-bold mt-2 text-white">{reports.length}</p>
                     </div>
                     <div className="p-3 bg-cyan-600/20 rounded-full">
