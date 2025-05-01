@@ -49,30 +49,33 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
-    // URL absoluta em produção
     const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zeuslightning.vercel.app';
-    const redirectUrl = `${siteUrl}/auth/callback`;
+    
+    try {
+      // 1. Inicia o fluxo OAuth
+      const { data, error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${siteUrl}/api/auth/callback`, // Usando endpoint API
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent'
+          }
+        }
+      });
   
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: redirectUrl,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent'
-        },
-        skipBrowserRedirect: true // Controle manual do redirecionamento
+      // 2. Verifica erros imediatos
+      if (error) throw error;
+  
+      // 3. Se não houver URL de redirecionamento (mobile), força manualmente
+      if (!data?.url) {
+        window.location.href = `https://zeuslightning.vercel.app/api/auth/callback`;
       }
-    });
   
-    if (error) {
-      console.error('Erro no login:', error);
-      setError(error.message);
-      return;
+    } catch (err) {
+      console.error('Google Auth Error:', err);
+      setError(err instanceof Error ? err.message : 'Erro no login com Google');
     }
-  
-    // Redirecionamento manual garantido
-    window.location.href = redirectUrl;
   };
   
 
