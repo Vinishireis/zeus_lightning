@@ -49,27 +49,29 @@ export default function LoginPage() {
   };
 
   const handleGoogleLogin = async () => {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent',
-        },
-      },
-    });
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          queryParams: {
+            access_type: 'offline',
+            prompt: 'consent',
+          },
+          scopes: 'email profile', // Escopos simplificados
+          redirectTo: 'https://zeuslightning.vercel.app/dashboard' 
+        }
+      });
   
-    if (error) {
-      setError(error.message);
+      if (error) throw error;
+      
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Erro no login");
     }
-    await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        scopes: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
-        redirectTo: "/"
-      }
-    });
   };
+
+  const redirectUrl = window.location.hostname === 'localhost' 
+  ? 'http://localhost:3000/dashboard' 
+  : 'https://zeuslightning.vercel.app/dashboard';
   
   
 
