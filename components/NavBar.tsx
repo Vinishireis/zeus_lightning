@@ -5,32 +5,68 @@ import React, { useState, useEffect } from 'react';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
 import { BsLightning } from 'react-icons/bs';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '@/lib/supabase'; // Importe o cliente Supabase
+import { useRouter } from 'next/navigation';
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [, setLoading] = useState(true);
+  const router = useRouter();
 
-  // Fechar menu ao redimensionar para desktop
+  // Verificar sessão do usuário
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth >= 768) {
-        setIsOpen(false);
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session) {
+        // Buscar dados do perfil
+        const { data: profile } = await supabase
+          .from('profiles')
+          .select('name')
+          .eq('id', session.user.id)
+          .single();
+
+        setUser({
+          email: session.user.email,
+          name: profile?.name || session.user.email?.split('@')[0] || 'Usuário'
+        });
       }
+      setLoading(false);
     };
 
-    // Verificar scroll para efeito de fundo
+    checkSession();
+
+    // Ouvir mudanças na autenticação
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
+      if (session) {
+        setUser({
+          email: session.user.email,
+          name: session.user.user_metadata?.name || session.user.email?.split('@')[0] || 'Usuário'
+        });
+      } else {
+        setUser(null);
+      }
+    });
+
+    // Verificar scroll
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
 
-    window.addEventListener('resize', handleResize);
     window.addEventListener('scroll', handleScroll);
-
     return () => {
-      window.removeEventListener('resize', handleResize);
+      subscription?.unsubscribe();
       window.removeEventListener('scroll', handleScroll);
     };
   }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    router.push('/');
+  };
 
   const navItems = [
     { href: '/Upload', label: 'Upload' },
@@ -40,10 +76,26 @@ const NavBar = () => {
     { href: '/Chat', label: 'Chat' },
   ];
 
-  const authItems = [
-    { href: '/Login', label: 'Login', className: 'px-4 py-1 text-sm rounded-full bg-white/10 hover:bg-white/20' },
-    { href: '/Register', label: 'Registrar', className: 'px-4 py-1 text-sm rounded-full bg-blue-600 hover:bg-blue-700' },
+  const authItems = user ? [
+    {
+      element: (
+        <div className="flex items-center gap-3">
+          <span className="text-sm text-white">Olá, {user.name.split(' ')[0]}</span>
+          <button 
+            onClick={handleLogout}
+            className="px-4 py-1 text-sm rounded-full bg-red-600 hover:bg-red-700 text-white"
+          >
+            Sair
+          </button>
+        </div>
+      )
+    }
+  ] : [
+    { href: '/Login', label: 'Login', className: 'px-4 py-1 text-sm rounded-full bg-white/10 hover:bg-white/20 text-white' },
+    { href: '/Register', label: 'Registrar', className: 'px-4 py-1 text-sm rounded-full bg-blue-600 hover:bg-blue-700 text-white' },
   ];
+
+  // Restante do seu código...
 
   return (
     <>
@@ -75,14 +127,20 @@ const NavBar = () => {
 
         {/* Botões de autenticação - Desktop */}
         <div className="hidden md:flex items-center gap-3">
-          {authItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`text-white transition-colors ${item.className}`}
-            >
-              {item.label}
-            </Link>
+          {authItems.map((item, index) => (
+            'href' in item ? (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`text-white transition-colors ${item.className}`}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <React.Fragment key={index}>
+                {item.element}
+              </React.Fragment>
+            )
           ))}
         </div>
 
@@ -124,16 +182,35 @@ const NavBar = () => {
                 ))}
 
                 <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-zinc-800">
-                  {authItems.map((item) => (
-                    <Link
-                      key={item.href}
-                      href={item.href}
-                      className={`text-center text-white transition-colors ${item.className} py-2`}
-                      onClick={() => setIsOpen(false)}
-                    >
-                      {item.label}
-                    </Link>
-                  ))}
+                  {user ? (
+                    <>
+                      <span className="text-white py-2 px-4 text-center">
+                        Olá, {user.name.split(' ')[0]}
+                      </span>
+                      <button
+                        onClick={() => {
+                          handleLogout();
+                          setIsOpen(false);
+                        }}
+                        className="px-4 py-2 text-sm rounded-full bg-red-600 hover:bg-red-700 text-white text-center"
+                      >
+                        Sair
+                      </button>
+                    </>
+                  ) : (
+                    authItems.map((item) => (
+                      'href' in item && (
+                        <Link
+                          key={item.href}
+                          href={item.href}
+                          className={`text-center text-white transition-colors ${item.className} py-2`}
+                          onClick={() => setIsOpen(false)}
+                        >
+                          {item.label}
+                        </Link>
+                      )
+                    ))
+                  )}
                 </div>
               </div>
             </div>

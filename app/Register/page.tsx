@@ -5,6 +5,7 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiUser, FiMail, FiLock, FiAlertCircle, FiCheckCircle, FiArrowLeft } from "react-icons/fi";
 import { AuroraBackground } from "@/components/ui/aurora-background";
+import { supabase } from "@/lib/supabase";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -30,17 +31,28 @@ export default function RegisterPage() {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
-
+  
     try {
-      await new Promise(resolve => setTimeout(resolve, 1500));
-      if (email === "erro@exemplo.com") throw new Error("Este email já está em uso");
+      // 1. Cria o usuário no Supabase
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: { name }, // Campos adicionais (opcional)
+        },
+      });
+  
+      if (error) throw new Error(error.message);
+      
+      // 2. Mostra mensagem de sucesso
       setSuccess(true);
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro no cadastro");
+      setError(err instanceof Error ? err.message : "Erro ao cadastrar");
     } finally {
       setIsSubmitting(false);
     }
   };
+
 
   if (success) {
     return (

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiMail, FiLock, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
-import { AuroraBackground } from "@/components/ui/aurora-background";
+import { supabase } from "@/lib/supabase";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -29,23 +29,19 @@ export default function LoginPage() {
     e.preventDefault();
     setIsSubmitting(true);
     setError("");
-
+  
     try {
-      // Simulando chamada à API
-      await new Promise(resolve => setTimeout(resolve, 1500));
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+  
+      if (error) throw new Error(error.message);
       
-      // Aqui você faria a chamada real à sua API de autenticação
-      // const response = await fetch('/api/auth/login', { ... })
-      
-      // Simulando erro para demonstração
-      if (email === "erro@exemplo.com") {
-        throw new Error("Credenciais inválidas. Tente novamente.");
-      }
-      
-      // Redirecionamento após login bem-sucedido
-      // window.location.href = '/dashboard';
+      // Redireciona após login bem-sucedido
+      window.location.href = "/";
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Ocorreu um erro inesperado");
+      setError(err instanceof Error ? err.message : "Erro ao fazer login");
     } finally {
       setIsSubmitting(false);
     }
