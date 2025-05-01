@@ -55,25 +55,29 @@ export default function RegisterPage() {
   };
 
   const handleGoogleLogin = async () => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          queryParams: {
-            access_type: 'offline',
-            prompt: 'consent',
-          },
-          scopes: 'email profile', // Escopos simplificados
-          redirectTo: 'https://zeuslightning.vercel.app/dashboard' 
-        }
-      });
-  
-      if (error) throw error;
-      
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Erro no login");
+  // URL dinâmica que funciona em todos os ambientes
+  const redirectUrl = new URL(
+    process.env.NEXT_PUBLIC_VERCEL_URL 
+      ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}/dashboard` 
+      : 'http://localhost:3000/dashboard'
+  ).toString();
+
+  const { error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://zeuslightning.vercel.app/auth/callback', // ← Note o caminho
+      queryParams: {
+        access_type: 'offline',
+        prompt: 'consent'
+      }
     }
-  };  
+  });
+
+  if (error) {
+    console.error('Erro no login:', error);
+    setError(error.message);
+  }
+}; 
 
   if (success) {
     return (
