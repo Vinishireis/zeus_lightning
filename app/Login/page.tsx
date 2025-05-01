@@ -68,10 +68,6 @@ export default function LoginPage() {
       setError(err instanceof Error ? err.message : "Erro no login");
     }
   };
-
-  const redirectUrl = window.location.hostname === 'localhost' 
-  ? 'http://localhost:3000/dashboard' 
-  : 'https://zeuslightning.vercel.app/dashboard';
   
   
 
