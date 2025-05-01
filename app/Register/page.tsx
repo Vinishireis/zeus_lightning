@@ -55,8 +55,9 @@ export default function RegisterPage() {
   };
 
   const handleGoogleLogin = async () => {
-    // URL absoluta para produção
-    const redirectUrl = 'https://zeuslightning.vercel.app/auth/callback';
+    // URL absoluta em produção
+    const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://zeuslightning.vercel.app';
+    const redirectUrl = `${siteUrl}/auth/callback`;
   
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
@@ -65,14 +66,19 @@ export default function RegisterPage() {
         queryParams: {
           access_type: 'offline',
           prompt: 'consent'
-        }
+        },
+        skipBrowserRedirect: true // Controle manual do redirecionamento
       }
     });
   
     if (error) {
       console.error('Erro no login:', error);
       setError(error.message);
+      return;
     }
+  
+    // Redirecionamento manual garantido
+    window.location.href = redirectUrl;
   };
 
   if (success) {
