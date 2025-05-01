@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { FiUser, FiMail, FiLock, FiAlertCircle, FiCheckCircle, FiArrowLeft } from "react-icons/fi";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { supabase } from "@/lib/supabase";
-import { FaGoogle } from "react-icons/fa";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -51,33 +50,6 @@ export default function RegisterPage() {
       setError(err instanceof Error ? err.message : "Erro ao cadastrar");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    const forceRedirectUrl = process.env.NEXT_PUBLIC_FORCE_REDIRECT_URL 
-      || 'https://zeuslightning.vercel.app';
-  
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${forceRedirectUrl}/api/auth/callback`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent'
-        }
-      }
-    });
-  
-    if (error) {
-      console.error('Google Auth Error:', error);
-      setError('Falha no login com Google');
-      return;
-    }
-  
-    // Força redirecionamento absoluto
-    if (typeof window !== 'undefined') {
-      window.location.href = `${forceRedirectUrl}/api/auth/callback`;
     }
   };
 
@@ -310,15 +282,6 @@ export default function RegisterPage() {
                     'Criar Conta'
                   )}
                 </button>
-
-                 {/* Botão Google */}
-                            <button
-                              onClick={handleGoogleLogin}
-                              className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-                            >
-                              <FaGoogle />
-                              Continuar com Google
-                            </button>
               </form>
             </div>
 

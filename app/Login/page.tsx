@@ -5,7 +5,6 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { FiMail, FiLock, FiAlertCircle, FiCheckCircle } from "react-icons/fi";
 import { supabase } from "@/lib/supabase";
-import { FaGoogle } from "react-icons/fa";
 
 export default function LoginPage() {
   const [email, setEmail] = useState("");
@@ -47,34 +46,6 @@ export default function LoginPage() {
       setIsSubmitting(false);
     }
   };
-
-  const handleGoogleLogin = async () => {
-    const forceRedirectUrl = process.env.NEXT_PUBLIC_FORCE_REDIRECT_URL 
-      || 'https://zeuslightning.vercel.app';
-  
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: `${forceRedirectUrl}/api/auth/callback`,
-        queryParams: {
-          access_type: 'offline',
-          prompt: 'consent'
-        }
-      }
-    });
-  
-    if (error) {
-      console.error('Google Auth Error:', error);
-      setError('Falha no login com Google');
-      return;
-    }
-  
-    // Força redirecionamento absoluto
-    if (typeof window !== 'undefined') {
-      window.location.href = `${forceRedirectUrl}/api/auth/callback`;
-    }
-  };
-  
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center bg-black ">
@@ -186,15 +157,6 @@ export default function LoginPage() {
                 <p className="mt-1 text-xs text-amber-500">A senha deve ter pelo menos 8 caracteres</p>
               )}
             </div>
-
-            {/* Botão Google */}
-            <button
-              onClick={handleGoogleLogin}
-              className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
-            >
-              <FaGoogle />
-              Continuar com Google
-            </button>
 
             {/* Link "Esqueceu a senha" */}
             <div className="flex justify-end">
