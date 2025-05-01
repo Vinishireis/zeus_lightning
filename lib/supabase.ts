@@ -7,6 +7,7 @@ export const supabase = createClient(supabaseUrl, supabaseKey, {
   auth: {
     flowType: 'pkce', // Importante para mobile
     detectSessionInUrl: false, // Evita conflitos
-    autoRefreshToken: true
+    autoRefreshToken: true,
+    persistSession: true,
   }
 });
