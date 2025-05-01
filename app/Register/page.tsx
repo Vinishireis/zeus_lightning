@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { FiUser, FiMail, FiLock, FiAlertCircle, FiCheckCircle, FiArrowLeft } from "react-icons/fi";
 import { AuroraBackground } from "@/components/ui/aurora-background";
 import { supabase } from "@/lib/supabase";
+import { FaGoogle } from "react-icons/fa";
 
 export default function RegisterPage() {
   const [name, setName] = useState("");
@@ -53,6 +54,29 @@ export default function RegisterPage() {
     }
   };
 
+  const handleGoogleLogin = async () => {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        queryParams: {
+          access_type: 'offline',
+          prompt: 'consent',
+        },
+      },
+    });
+  
+    if (error) {
+      setError(error.message);
+    }
+    await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        scopes: 'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
+        redirectTo: "/"
+      }
+    });
+  };
+  
 
   if (success) {
     return (
@@ -283,6 +307,15 @@ export default function RegisterPage() {
                     'Criar Conta'
                   )}
                 </button>
+
+                 {/* Botão Google */}
+                            <button
+                              onClick={handleGoogleLogin}
+                              className="flex items-center justify-center gap-2 w-full px-4 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+                            >
+                              <FaGoogle />
+                              Continuar com Google
+                            </button>
               </form>
             </div>
 

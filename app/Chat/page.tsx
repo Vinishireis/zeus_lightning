@@ -4,7 +4,6 @@ import { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion } from "framer-motion";
 import { FiUpload, FiX, FiFile, FiImage, FiVideo, FiFileText, FiSend, FiUser, FiCpu } from "react-icons/fi";
-import { AuroraBackground } from "@/components/ui/aurora-background";
 import Image from "next/image";
 
 type FileWithPreview = File & {
@@ -153,7 +152,7 @@ export default function ChatPage() {
         formData.append("fileContent", fileContent);
       }
   
-      const response = await fetch("#", {
+      const response = await fetch("", {
         method: "POST",
         body: formData
       });

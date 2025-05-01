@@ -95,8 +95,7 @@ const NavBar = () => {
     { href: '/Register', label: 'Registrar', className: 'px-4 py-1 text-sm rounded-full bg-blue-600 hover:bg-blue-700 text-white' },
   ];
 
-  // Restante do seu código...
-
+  
   return (
     <>
       {/* Navbar Desktop */}
