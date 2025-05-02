@@ -16,7 +16,7 @@ export async function POST(request) {
     let relatorio = '';
     let previousResponseId = '';
 
-    for (let contador = 0; contador < 10; contador++) {
+    for (let contador = 0; contador < 11; contador++) {
       let requisicao;
 
       if (contador === 0) {
@@ -39,6 +39,13 @@ export async function POST(request) {
           previous_response_id: previousResponseId,
           input: [{ role: 'user', content: 'Gere a próxima seção' }],
         };
+      } else if (contador > 9 && contador <= 10) {
+        console.log("Mensagem: " + contador);
+        requisicao = {
+          model: 'gpt-4.1-mini',
+          previous_response_id: previousResponseId,
+          input: [{ role: 'user', content: 'Arrume o texto do relatório que concatenei. Deixe apenas a organização em tópicos, sem deixar alguns resíduos da minha conversa com você, adicionando quebra de linha e deixando ele organizado. Relatório para arrumar: ' + relatorio }],
+        };
       }
 
       const openaiResponse = await axios.post(
@@ -55,8 +62,10 @@ export async function POST(request) {
       const messageContent = openaiResponse.data.output[0].content[0].text;
       previousResponseId = openaiResponse.data.id;
 
-      if (contador > 0) {
+      if (contador > 0 && contador < 10) {
         relatorio += '\n\n' + messageContent;
+      }else if(contador == 10){
+        relatorio = messageContent;
       }
     }
     console.log("Relatório: " + relatorio);
