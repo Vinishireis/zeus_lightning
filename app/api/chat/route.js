@@ -82,7 +82,6 @@ export async function POST(request) {
   }
 }
 
-// bloqueia outros métodos (GET, PUT, etc.)
 export function GET() {
   return new Response(JSON.stringify({ message: 'Método não permitido' }), {
     status: 405,
