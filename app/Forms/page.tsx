@@ -113,6 +113,7 @@ export default function ESGFormPage() {
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
+      console.log("tentou")
       const report = generateReport();
       const response = await axios.post('https://www.zeus.dev.br/api/chat', { fullReport: report }, {
         headers: {
