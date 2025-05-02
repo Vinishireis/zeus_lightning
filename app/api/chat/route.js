@@ -14,6 +14,7 @@ export async function POST(request) {
       );
     }
     let relatorio = '';
+    let relatorioFinal = '';
     let previousResponseId = '';
 
     for (let contador = 0; contador < 11; contador++) {
@@ -65,13 +66,12 @@ export async function POST(request) {
       if (contador > 0 && contador < 10) {
         relatorio += '\n\n' + messageContent;
       }else if(contador == 10){
-        relatorio = messageContent;
+        relatorioFinal = messageContent;
       }
     }
-    console.log("Relatório: " + relatorio);
     return new Response(JSON.stringify({
       mensagem: 'Resposta recebida com sucesso',
-      relatorioCompleto: relatorio,
+      relatorioCompleto: relatorioFinal,
     }), {
       status: 200,
       headers: { 'Content-Type': 'application/json' },

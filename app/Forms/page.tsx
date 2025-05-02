@@ -125,7 +125,6 @@ export default function ESGFormPage() {
           'Content-Type': 'application/json',
         }
       })
-      
       if (response.data?.relatorioCompleto) {
         setApiResponse(response.data.relatorioCompleto)
         setStoreResponse(response.data.relatorioCompleto)
