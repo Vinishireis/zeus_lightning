@@ -7,7 +7,8 @@ import { FiCheckCircle, FiZap, FiStar, FiArrowRight, FiHelpCircle } from "react-
 export default function PricingPage() {
   const plans = [
     {
-      name: "Básico",
+      name: "Alfa",
+      subtitle: "Básico",
       price: "Grátis",
       description: "Ideal para testes e pequenos projetos",
       features: [
@@ -22,7 +23,8 @@ export default function PricingPage() {
       buttonVariant: "outline"
     },
     {
-      name: "Profissional",
+      name: "Sigma",
+      subtitle: "Profissional",
       price: "R$99",
       period: "/mês",
       description: "Para equipes e uso profissional",
@@ -39,7 +41,8 @@ export default function PricingPage() {
       buttonVariant: "primary"
     },
     {
-      name: "Empresarial",
+      name: "Delta",
+      subtitle: "Empresarial",
       price: "Sob consulta",
       description: "Solução personalizada para sua empresa",
       features: [
@@ -182,7 +185,8 @@ export default function PricingPage() {
               
               <div className={`bg-gradient-to-br ${plan.bgColor} h-full flex flex-col p-6 sm:p-7`}>
                 <div className="mb-6 sm:mb-7">
-                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-2">{plan.name}</h3>
+                  <h3 className="text-xl sm:text-2xl font-bold text-white mb-1">{plan.name}</h3>
+                  <p className="text-sm text-zinc-300 mb-2">{plan.subtitle}</p>
                   <div className="flex items-end">
                     <span className="text-3xl sm:text-4xl font-bold text-white">{plan.price}</span>
                     {plan.period && (
@@ -208,7 +212,7 @@ export default function PricingPage() {
                       : "bg-zinc-800/50 hover:bg-zinc-800 text-white border border-zinc-700 hover:border-zinc-600"
                   }`}
                 >
-                  {plan.name === "Empresarial" ? "Fale Conosco" : "Começar Agora"}
+                  {plan.subtitle === "Empresarial" ? "Fale Conosco" : "Começar Agora"}
                   <FiArrowRight className="ml-2" />
                 </button>
               </div>
@@ -234,9 +238,9 @@ export default function PricingPage() {
                 <thead>
                   <tr className="border-b border-zinc-700">
                     <th className="text-left pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Recursos</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Básico</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Profissional</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Empresarial</th>
+                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Alfa (Básico)</th>
+                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Sigma (Profissional)</th>
+                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Delta (Empresarial)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -277,7 +281,7 @@ export default function PricingPage() {
                   <h3 className="font-medium text-white mb-3">{feature.name}</h3>
                   <div className="grid grid-cols-3 gap-2 text-center">
                     <div>
-                      <p className="text-xs text-zinc-400 mb-1">Básico</p>
+                      <p className="text-xs text-zinc-400 mb-1">Alfa</p>
                       <p className={`text-sm ${
                         feature.basic === "-" ? "text-zinc-500" : "text-white"
                       }`}>
@@ -285,7 +289,7 @@ export default function PricingPage() {
                       </p>
                     </div>
                     <div className="bg-zinc-800/20 rounded py-1">
-                      <p className="text-xs text-zinc-400 mb-1">Profissional</p>
+                      <p className="text-xs text-zinc-400 mb-1">Sigma</p>
                       <p className={`text-sm ${
                         feature.pro === "-" ? "text-zinc-500" : "text-white"
                       }`}>
@@ -293,7 +297,7 @@ export default function PricingPage() {
                       </p>
                     </div>
                     <div>
-                      <p className="text-xs text-zinc-400 mb-1">Empresarial</p>
+                      <p className="text-xs text-zinc-400 mb-1">Delta</p>
                       <p className={`text-sm ${
                         feature.enterprise === "-" ? "text-zinc-500" : "text-white"
                       }`}>

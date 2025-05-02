@@ -152,7 +152,7 @@ export default function ChatPage() {
         formData.append("fileContent", fileContent);
       }
   
-      const response = await fetch("", {
+      const response = await fetch("https://api.openai.com/v1/responses", {
         method: "POST",
         body: formData
       });
