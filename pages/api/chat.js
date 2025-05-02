@@ -1,6 +1,9 @@
 import axios from 'axios';
-console.log("Começou o arquivo")
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
+import OpenAI from 'openai';
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 export default async function handler(req, res) {
   console.log("Entrou no endpoint")
@@ -40,7 +43,7 @@ export default async function handler(req, res) {
         requisicao,
         {
           headers: {
-            Authorization: `Bearer ${OPENAI_API_KEY}`,
+            Authorization: `Bearer ${openai}`,
             'Content-Type': 'application/json',
           },
         }
