@@ -1,6 +1,7 @@
 'use client'
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
+import axios from 'axios';
 
 const esgSections = [
         {
@@ -105,7 +106,7 @@ export default function ESGFormPage() {
     });
 
     // Concatenando com as diretrizes
-    const fullReport = reportGuidelines + answersText;
+     const fullReport = reportGuidelines + answersText;
     setGeneratedReport(fullReport);
     
     // Aqui você pode adicionar a lógica para enviar para a API ou fazer download
@@ -125,6 +126,14 @@ export default function ESGFormPage() {
       alert("Ocorreu um erro ao gerar o relatório.");
     } finally {
       setIsSubmitting(false);
+    }
+  };
+
+  const handleClick = async () => {
+    try {
+      const response = await axios.post('http://localhost/api/Chat');
+    } catch (error) {
+      console.error('Erro ao chamar API:', error);
     }
   };
 
@@ -210,7 +219,7 @@ export default function ESGFormPage() {
               <Button
                 size="lg"
                 className="rounded-full px-6 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-emerald-500/20"
-                onClick={handleSubmit}
+                onClick={handleClick}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Enviando..." : "Enviar Formulário"}
@@ -218,33 +227,6 @@ export default function ESGFormPage() {
             )}
           </div>
         </div>
-
-        {/* Área para visualização do relatório gerado */}
-        {generatedReport && (
-          <div className="mt-8 bg-white/5 p-6 rounded-xl border border-white/10">
-            <h3 className="text-xl font-semibold bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 text-transparent mb-4">
-              Pré-visualização do Relatório
-            </h3>
-            <div className="bg-black p-4 rounded-lg overflow-auto max-h-96">
-              <pre className="text-gray-300 text-sm whitespace-pre-wrap">{generatedReport}</pre>
-            </div>
-            <div className="mt-4 flex justify-end">
-              <Button
-                onClick={() => {
-                  const blob = new Blob([generatedReport], { type: 'text/plain' });
-                  const url = URL.createObjectURL(blob);
-                  const a = document.createElement('a');
-                  a.href = url;
-                  a.download = 'relatorio-esg.txt';
-                  a.click();
-                }}
-                className="rounded-full px-6 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700"
-              >
-                Baixar Relatório
-              </Button>
-            </div>
-          </div>
-        )}
       </div>
     </main>
   );
