@@ -82,7 +82,7 @@ export default function Home() {
           <span className="bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-transparent font-semibold">
             informações acionáveis
           </span>{" "}
-          com nossa solução completa para o projeto Ibracom.
+          com nossa solução completa para o projeto Ibracon.
         </p>
 
         {/* Buttons */}

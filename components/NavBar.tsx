@@ -78,7 +78,7 @@ const NavBar = () => {
   const authenticatedNavItems = [
     { href: '/Upload', label: 'Upload' },
     { href: '/Pricing', label: 'Planos' },
-    { href: '/Services', label: 'Serviços' },
+    { href: '/Services', label: 'Vitrine ESG' },
     { href: '/Investors', label: 'Investidores'},
     { href: '/Contact', label: 'Contato' },
     { href: '/Forms', label: 'Formulário' },

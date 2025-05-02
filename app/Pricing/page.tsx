@@ -23,18 +23,37 @@ export default function PricingPage() {
       buttonVariant: "outline"
     },
     {
-      name: "Sigma",
+      name: "Beta",
+      subtitle: "Iniciante",
+      price: "R$29",
+      period: "/mês",
+      description: "Para usuários individuais e freelancers",
+      features: [
+        "20 relatórios/mês",
+        "Suporte por e-mail",
+        "Armazenamento por 90 dias",
+        "Até 50MB por upload",
+        "Visualização básica de dados",
+        "Exportar em CSV"
+      ],
+      popular: false,
+      bgColor: "from-green-900/70 to-green-800/80",
+      buttonVariant: "outline"
+    },
+    {
+      name: "Gama",
       subtitle: "Profissional",
       price: "R$99",
       period: "/mês",
       description: "Para equipes e uso profissional",
       features: [
-        "50 relatórios/mês",
+        "100 relatórios/mês",
         "Suporte prioritário",
         "Armazenamento por 1 ano",
-        "Até 100MB por upload",
+        "Até 200MB por upload",
         "Exportar em PDF/CSV",
-        "Dashboards avançados"
+        "Dashboards avançados",
+        "3 usuários incluídos"
       ],
       popular: true,
       bgColor: "from-blue-900/70 to-blue-800/80",
@@ -42,6 +61,26 @@ export default function PricingPage() {
     },
     {
       name: "Delta",
+      subtitle: "Avançado",
+      price: "R$199",
+      period: "/mês",
+      description: "Para empresas em crescimento",
+      features: [
+        "500 relatórios/mês",
+        "Suporte 24/5",
+        "Armazenamento por 2 anos",
+        "Até 500MB por upload",
+        "Exportar em PDF/CSV/JSON",
+        "Dashboards personalizados",
+        "10 usuários incluídos",
+        "Integração com API"
+      ],
+      popular: false,
+      bgColor: "from-purple-900/70 to-purple-800/80",
+      buttonVariant: "outline"
+    },
+    {
+      name: "Ômega",
       subtitle: "Empresarial",
       price: "Sob consulta",
       description: "Solução personalizada para sua empresa",
@@ -49,13 +88,14 @@ export default function PricingPage() {
         "Relatórios ilimitados",
         "Suporte 24/7 dedicado",
         "Armazenamento permanente",
-        "Uploads até 1GB",
-        "API integrada",
+        "Uploads até 2GB",
+        "API integrada completa",
         "SSO e On-premise",
+        "Usuários ilimitados",
         "Treinamento personalizado"
       ],
       popular: false,
-      bgColor: "from-purple-900/70 to-purple-800/80",
+      bgColor: "from-red-900/70 to-red-800/80",
       buttonVariant: "outline"
     }
   ];
@@ -63,45 +103,59 @@ export default function PricingPage() {
   const featuresComparison = [
     {
       name: "Relatórios mensais",
-      basic: "5",
-      pro: "50",
-      enterprise: "Ilimitado"
+      alfa: "5",
+      beta: "20",
+      gama: "100",
+      delta: "500",
+      omega: "Ilimitado"
     },
     {
       name: "Armazenamento",
-      basic: "30 dias",
-      pro: "1 ano",
-      enterprise: "Permanente"
+      alfa: "30 dias",
+      beta: "90 dias",
+      gama: "1 ano",
+      delta: "2 anos",
+      omega: "Permanente"
     },
     {
       name: "Tamanho do upload",
-      basic: "10MB",
-      pro: "100MB",
-      enterprise: "1GB"
+      alfa: "10MB",
+      beta: "50MB",
+      gama: "200MB",
+      delta: "500MB",
+      omega: "2GB"
     },
     {
       name: "Suporte",
-      basic: "Básico",
-      pro: "Prioritário",
-      enterprise: "24/7 dedicado"
+      alfa: "E-mail",
+      beta: "E-mail",
+      gama: "Prioritário",
+      delta: "24/5",
+      omega: "24/7 dedicado"
     },
     {
       name: "Exportação de dados",
-      basic: "-",
-      pro: "PDF/CSV",
-      enterprise: "PDF/CSV/API"
+      alfa: "-",
+      beta: "CSV",
+      gama: "PDF/CSV",
+      delta: "PDF/CSV/JSON",
+      omega: "Todos + API"
     },
     {
-      name: "Usuários",
-      basic: "1",
-      pro: "3",
-      enterprise: "Ilimitado"
+      name: "Usuários incluídos",
+      alfa: "1",
+      beta: "1",
+      gama: "3",
+      delta: "10",
+      omega: "Ilimitado"
     },
     {
       name: "Integração",
-      basic: "-",
-      pro: "Básica",
-      enterprise: "Completa"
+      alfa: "-",
+      beta: "-",
+      gama: "Básica",
+      delta: "API",
+      omega: "Completa"
     }
   ];
 
@@ -120,7 +174,7 @@ export default function PricingPage() {
     },
     {
       question: "Existe um período de teste gratuito?",
-      answer: "Sim, oferecemos 14 dias grátis para testar o plano Profissional."
+      answer: "Sim, oferecemos 14 dias grátis para testar qualquer plano pago."
     }
   ];
 
@@ -165,7 +219,7 @@ export default function PricingPage() {
         </div>
 
         {/* Pricing Plans - Responsive Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-6 lg:gap-8">
           {plans.map((plan, index) => (
             <motion.div
               key={plan.name}
@@ -173,7 +227,9 @@ export default function PricingPage() {
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.1 + index * 0.1 }}
               className={`relative rounded-xl lg:rounded-2xl overflow-hidden border border-zinc-700/50 hover:border-zinc-600 transition-all duration-300 ${
-                plan.popular ? "ring-1 lg:ring-2 ring-blue-500 shadow-lg transform lg:scale-[1.03]" : "shadow-md"
+                plan.popular 
+                  ? "ring-1 lg:ring-2 ring-blue-500 shadow-lg transform lg:scale-[1.03] xl:col-span-1" 
+                  : "shadow-md"
               }`}
               whileHover={{ y: -5 }}
             >
@@ -238,9 +294,11 @@ export default function PricingPage() {
                 <thead>
                   <tr className="border-b border-zinc-700">
                     <th className="text-left pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Recursos</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Alfa (Básico)</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Sigma (Profissional)</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Delta (Empresarial)</th>
+                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Alfa</th>
+                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Beta</th>
+                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300 bg-blue-900/20">Gama</th>
+                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Delta</th>
+                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Ômega</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -249,23 +307,37 @@ export default function PricingPage() {
                       <td className="py-4 text-sm sm:text-base text-zinc-300 font-medium">{feature.name}</td>
                       <td className="text-center py-4">
                         <span className={`text-sm sm:text-base ${
-                          feature.basic === "-" ? "text-zinc-500" : "text-white"
+                          feature.alfa === "-" ? "text-zinc-500" : "text-white"
                         }`}>
-                          {feature.basic}
-                        </span>
-                      </td>
-                      <td className="text-center py-4 bg-zinc-800/20">
-                        <span className={`text-sm sm:text-base ${
-                          feature.pro === "-" ? "text-zinc-500" : "text-white"
-                        }`}>
-                          {feature.pro}
+                          {feature.alfa}
                         </span>
                       </td>
                       <td className="text-center py-4">
                         <span className={`text-sm sm:text-base ${
-                          feature.enterprise === "-" ? "text-zinc-500" : "text-white"
+                          feature.beta === "-" ? "text-zinc-500" : "text-white"
                         }`}>
-                          {feature.enterprise}
+                          {feature.beta}
+                        </span>
+                      </td>
+                      <td className="text-center py-4 bg-blue-900/10">
+                        <span className={`text-sm sm:text-base ${
+                          feature.gama === "-" ? "text-zinc-500" : "text-white"
+                        }`}>
+                          {feature.gama}
+                        </span>
+                      </td>
+                      <td className="text-center py-4">
+                        <span className={`text-sm sm:text-base ${
+                          feature.delta === "-" ? "text-zinc-500" : "text-white"
+                        }`}>
+                          {feature.delta}
+                        </span>
+                      </td>
+                      <td className="text-center py-4">
+                        <span className={`text-sm sm:text-base ${
+                          feature.omega === "-" ? "text-zinc-500" : "text-white"
+                        }`}>
+                          {feature.omega}
                         </span>
                       </td>
                     </tr>
@@ -279,29 +351,45 @@ export default function PricingPage() {
               {featuresComparison.map((feature, index) => (
                 <div key={index} className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700/50">
                   <h3 className="font-medium text-white mb-3">{feature.name}</h3>
-                  <div className="grid grid-cols-3 gap-2 text-center">
+                  <div className="grid grid-cols-5 gap-2 text-center">
                     <div>
                       <p className="text-xs text-zinc-400 mb-1">Alfa</p>
-                      <p className={`text-sm ${
-                        feature.basic === "-" ? "text-zinc-500" : "text-white"
+                      <p className={`text-xs ${
+                        feature.alfa === "-" ? "text-zinc-500" : "text-white"
                       }`}>
-                        {feature.basic}
+                        {feature.alfa}
                       </p>
                     </div>
-                    <div className="bg-zinc-800/20 rounded py-1">
-                      <p className="text-xs text-zinc-400 mb-1">Sigma</p>
-                      <p className={`text-sm ${
-                        feature.pro === "-" ? "text-zinc-500" : "text-white"
+                    <div>
+                      <p className="text-xs text-zinc-400 mb-1">Beta</p>
+                      <p className={`text-xs ${
+                        feature.beta === "-" ? "text-zinc-500" : "text-white"
                       }`}>
-                        {feature.pro}
+                        {feature.beta}
+                      </p>
+                    </div>
+                    <div className="bg-blue-900/20 rounded py-1">
+                      <p className="text-xs text-zinc-400 mb-1">Gama</p>
+                      <p className={`text-xs ${
+                        feature.gama === "-" ? "text-zinc-500" : "text-white"
+                      }`}>
+                        {feature.gama}
                       </p>
                     </div>
                     <div>
                       <p className="text-xs text-zinc-400 mb-1">Delta</p>
-                      <p className={`text-sm ${
-                        feature.enterprise === "-" ? "text-zinc-500" : "text-white"
+                      <p className={`text-xs ${
+                        feature.delta === "-" ? "text-zinc-500" : "text-white"
                       }`}>
-                        {feature.enterprise}
+                        {feature.delta}
+                      </p>
+                    </div>
+                    <div>
+                      <p className="text-xs text-zinc-400 mb-1">Ômega</p>
+                      <p className={`text-xs ${
+                        feature.omega === "-" ? "text-zinc-500" : "text-white"
+                      }`}>
+                        {feature.omega}
                       </p>
                     </div>
                   </div>
@@ -311,47 +399,27 @@ export default function PricingPage() {
           </div>
         </motion.div>
 
-        {/* FAQ Section - Enhanced */}
+        {/* FAQ Section */}
         <motion.div 
-          className="mt-16 bg-zinc-900/50 border border-zinc-700/50 rounded-xl lg:rounded-2xl p-6 sm:p-7 lg:p-8"
+          className="mt-16 bg-zinc-900/50 border border-zinc-700/50 rounded-xl lg:rounded-2xl overflow-hidden"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.4 }}
         >
-          <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 flex items-center">
-            <FiHelpCircle className="text-blue-400 mr-2" /> Perguntas Frequentes
-          </h2>
-          <div className="space-y-5">
-            {faqs.map((item, index) => (
-              <motion.div 
-                key={index} 
-                className="border-b border-zinc-800/50 pb-5"
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 + index * 0.1 }}
-              >
-                <h3 className="text-sm sm:text-base font-medium text-white mb-2">{item.question}</h3>
-                <p className="text-sm text-zinc-400">{item.answer}</p>
-              </motion.div>
-            ))}
+          <div className="p-6 sm:p-7 lg:p-8">
+            <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 flex items-center">
+              <FiHelpCircle className="text-indigo-400 mr-2" /> Perguntas Frequentes
+            </h2>
+            
+            <div className="space-y-4">
+              {faqs.map((faq, index) => (
+                <div key={index} className="border-b border-zinc-700/50 pb-4 last:border-0 last:pb-0">
+                  <h3 className="text-lg font-medium text-white mb-2">{faq.question}</h3>
+                  <p className="text-zinc-300 text-sm sm:text-base">{faq.answer}</p>
+                </div>
+              ))}
+            </div>
           </div>
-        </motion.div>
-
-        {/* CTA Section */}
-        <motion.div 
-          className="mt-16 text-center"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-        >
-          <h3 className="text-xl sm:text-2xl font-bold text-white mb-4">Ainda com dúvidas?</h3>
-          <p className="text-zinc-300 mb-6 max-w-2xl mx-auto">
-            Nossa equipe está pronta para ajudar você a escolher a melhor solução para suas necessidades.
-          </p>
-          <button className="bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white font-medium py-3 px-8 rounded-lg shadow-lg hover:shadow-blue-500/20 transition-all duration-300 inline-flex items-center">
-            Fale com nossos especialistas
-            <FiArrowRight className="ml-2" />
-          </button>
         </motion.div>
       </motion.div>
     </main>

@@ -3,12 +3,12 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion } from "framer-motion";
-import { FiUpload, FiX, FiFile, FiImage, FiVideo, FiFileText, FiSend, FiUser, FiCpu } from "react-icons/fi";
+import { FiUpload, FiFile, FiImage, FiSend, FiUser, FiCpu } from "react-icons/fi";
 import Image from "next/image";
+import { useStore } from "@/lib/store";
 
 type FileWithPreview = File & {
   preview: string;
-  status: "pending" | "uploaded" | "error";
   type: string;
   size: number;
   name: string;
@@ -23,71 +23,96 @@ type Message = {
 };
 
 export default function ChatPage() {
+  // State management
   const [files, setFiles] = useState<FileWithPreview[]>([]);
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  
+  // Zustand store for ESG report
+  const { apiResponse, clearApiResponse } = useStore();
 
+  // Add ESG report to messages when available
+  useEffect(() => {
+    if (apiResponse && !messages.some(msg => msg.id.startsWith('report-'))) {
+      const reportMessage: Message = {
+        id: `report-${Date.now()}`,
+        content: `📊 Relatório ESG Gerado\n\n${apiResponse}`,
+        role: "assistant"
+      };
+      
+      setMessages(prev => [...prev, reportMessage]);
+      clearApiResponse();
+      
+      // Scroll to bottom after adding report
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    }
+  }, [apiResponse, messages, clearApiResponse]);
+
+  // File drop handler
   const onDrop = useCallback((acceptedFiles: File[]) => {
+    if (acceptedFiles.length === 0) return;
+
     const newFiles = acceptedFiles.map(file => ({
       ...file,
       preview: URL.createObjectURL(file),
-      status: "pending" as const,
       type: file.type || "application/octet-stream",
       size: file.size || 0,
       name: file.name || "Arquivo sem nome"
     }));
 
-    setFiles(prevFiles => [...prevFiles, ...newFiles]);
+    // Only keep the first file if multiple is false
+    setFiles([newFiles[0]]);
   }, []);
 
+  // Dropzone configuration
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
-      "image/*": [".png", ".jpg", ".jpeg", ".gif", ".webp"],
+      "image/*": [".png", ".jpg", ".jpeg", ".gif"],
       "application/pdf": [".pdf"],
-      "text/plain": [".txt"],
+      "text/*": [".txt", ".csv"],
       "application/json": [".json"],
-      "text/csv": [".csv"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
-      "application/vnd.openxmlformats-officedocument.presentationml.presentation": [".pptx"]
+      "application/vnd.openxmlformats-officedocument.*": [".docx", ".xlsx", ".pptx"]
     },
     maxSize: 50 * 1024 * 1024, // 50MB
-    multiple: false
+    multiple: false,
+    noClick: false,
+    noKeyboard: true
   });
 
+  // Remove file handler
   const removeFile = useCallback(() => {
     setFiles(prevFiles => {
-      const removedFile = prevFiles[0];
-      URL.revokeObjectURL(removedFile.preview);
+      if (prevFiles.length > 0) {
+        URL.revokeObjectURL(prevFiles[0].preview);
+      }
       return [];
     });
   }, []);
 
+  // Extract text from different file types
   const extractTextFromFile = async (file: FileWithPreview): Promise<string> => {
     try {
       if (file.type.startsWith("image/")) {
-        // Para imagens, retornamos apenas informações básicas
-        return `[Imagem: ${file.name}]`;
+        return `[Arquivo de imagem: ${file.name}]`;
       } else if (file.type === "application/pdf") {
-        // Simulação de extração de texto de PDF
-        return `[Conteúdo extraído do PDF: ${file.name}]`;
-      } else if (file.type === "text/plain" || file.type === "application/json" || file.type === "text/csv") {
-        // Para arquivos de texto, lemos o conteúdo
-        const text = await file.text();
-        return text;
+        return `[Conteúdo PDF: ${file.name}]`;
+      } else if (file.type.startsWith("text/")) {
+        return await file.text();
       } else {
-        // Para outros tipos de arquivo
         return `[Arquivo: ${file.name}, Tipo: ${file.type}]`;
       }
     } catch (error) {
-      console.error("Erro ao extrair texto do arquivo:", error);
-      return `[Erro ao processar o arquivo: ${file.name}]`;
+      console.error("Erro ao extrair texto:", error);
+      return `[Erro ao processar arquivo: ${file.name}]`;
     }
   };
 
+  // Send message handler
   const handleSendMessage = async () => {
     if ((!inputMessage.trim() && files.length === 0) || isProcessing) return;
 
@@ -100,97 +125,68 @@ export default function ChatPage() {
       id: Date.now().toString(),
       content: inputMessage,
       role: "user",
-      file: files.length > 0 ? files[0] : null,
+      file: files[0] || null,
       fileContent
     };
 
     setMessages(prev => [...prev, userMessage]);
     setInputMessage("");
-    
-    if (files.length > 0) {
-      setFiles([]);
-    }
-
+    setFiles([]);
     setIsProcessing(true);
-    
+
     try {
-      // Simulação de chamada à API para processar a mensagem e o arquivo
-      const response = await processMessageWithAPI(userMessage.content, fileContent, userMessage.file);
+      // Simulate API processing with actual API call in production
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
+      const responseContent = files.length > 0
+        ? `Analisei seu arquivo ${files[0].name}:\n${fileContent.substring(0, 150)}${fileContent.length > 150 ? '...' : ''}`
+        : `Resposta para: "${inputMessage}"`;
+
       const aiResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: response,
+        content: responseContent,
         role: "assistant"
       };
-      
+
       setMessages(prev => [...prev, aiResponse]);
     } catch (error) {
-      console.error("Erro ao processar mensagem:", error);
-      
+      console.error("Error processing message:", error);
       const errorResponse: Message = {
         id: (Date.now() + 1).toString(),
-        content: "Desculpe, ocorreu um erro ao processar sua mensagem. Por favor, tente novamente.",
+        content: "Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.",
         role: "assistant"
       };
-      
       setMessages(prev => [...prev, errorResponse]);
     } finally {
       setIsProcessing(false);
+      setTimeout(() => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
     }
   };
 
-
-  // Simulação de chamada à API
-  const processMessageWithAPI = async (message: string, fileContent: string, file?: FileWithPreview | null): Promise<string> => {
-    try {
-      const formData = new FormData();
-      formData.append("message", message);
-      
-      if (file) {
-        formData.append("file", file);
-      } else if (fileContent) {
-        formData.append("fileContent", fileContent);
-      }
-  
-      const response = await fetch("https://api.openai.com/v1/responses", {
-        method: "POST",
-        body: formData
-      });
-  
-      if (!response.ok) {
-        throw new Error("Erro ao processar mensagem");
-      }
-  
-      const data = await response.json();
-      return data.response;
-    } catch (error) {
-      console.error("Erro na chamada da API:", error);
-      throw error;
-    }
-  };
-
+  // File icon component
   const getFileIcon = (type: string) => {
-    if (!type) return <FiFile className="text-zinc-400" />;
     if (type.startsWith("image/")) return <FiImage className="text-blue-400" />;
-    if (type.startsWith("video/")) return <FiVideo className="text-purple-400" />;
-    if (type === "application/pdf") return <FiFileText className="text-red-400" />;
-    if (type === "text/plain") return <FiFileText className="text-green-400" />;
-    if (type === "application/json") return <FiFileText className="text-yellow-400" />;
+    if (type === "application/pdf") return <FiFile className="text-red-400" />;
     return <FiFile className="text-zinc-400" />;
   };
 
+  // Format file size
   const formatFileSize = (bytes: number) => {
-    if (isNaN(bytes) || bytes === 0) return "0 Bytes";
+    if (bytes === 0) return "0 Bytes";
     const k = 1024;
     const sizes = ["Bytes", "KB", "MB", "GB"];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
-    return `${parseFloat((bytes / Math.pow(k, i)).toFixed(2))} ${sizes[i]}`;
+    return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
+  // Auto-scroll to new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
+  // Clean up object URLs
   useEffect(() => {
     return () => {
       files.forEach(file => URL.revokeObjectURL(file.preview));
@@ -198,7 +194,7 @@ export default function ChatPage() {
   }, [files]);
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center bg-black">
+    <main className="min-h-screen w-full flex items-center justify-center bg-black p-4">
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -209,10 +205,10 @@ export default function ChatPage() {
           {/* Header */}
           <div className="px-6 py-5 border-b border-zinc-800">
             <h1 className="text-2xl font-bold bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 text-transparent">
-              Chat com Arquivos
+              {apiResponse ? 'Análise de Relatório ESG' : 'ATENA'}
             </h1>
             <p className="mt-1 text-sm text-zinc-400">
-              Envie arquivos e interaja com seu conteúdo
+              {apiResponse ? 'Analise seu relatório ESG' : 'Consultoria ESG'}
             </p>
           </div>
 
@@ -221,11 +217,21 @@ export default function ChatPage() {
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center">
                 <div className="p-4 bg-zinc-800/50 rounded-full mb-4">
-                  <FiCpu className="h-8 w-8 text-indigo-400" />
+                  <Image 
+                  src="/atena.png" 
+                  alt="Atena" 
+                  width={100} 
+                  height={100} 
+                  className="object-cover rounded-full" 
+                  />
                 </div>
-                <h2 className="text-xl font-bold text-white mb-2">Como posso ajudar hoje?</h2>
+                <h2 className="text-xl font-bold text-white mb-2">
+                  {apiResponse ? 'Seu relatório está pronto!' : 'Como posso ajudar?'}
+                </h2>
                 <p className="text-zinc-400 max-w-md">
-                  Envie documentos, imagens ou textos e faça perguntas sobre seu conteúdo.
+                  {apiResponse 
+                    ? 'Faça perguntas sobre seu relatório ESG' 
+                    : 'Envie documentos, imagens e dúvidas para análise'}
                 </p>
               </div>
             ) : (
@@ -235,6 +241,7 @@ export default function ChatPage() {
                     key={message.id}
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.3 }}
                     className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
@@ -265,7 +272,7 @@ export default function ChatPage() {
                         <div className="mb-3 p-3 bg-zinc-900/50 rounded-lg border border-zinc-700">
                           <div className="flex items-center">
                             <div className="flex-shrink-0 mr-3">
-                              {message.file.type?.startsWith("image/") ? (
+                              {message.file.type.startsWith("image/") ? (
                                 <div className="w-10 h-10 rounded bg-zinc-700 flex items-center justify-center overflow-hidden">
                                   <Image
                                     src={message.file.preview}
@@ -287,7 +294,7 @@ export default function ChatPage() {
                                 {message.file.name}
                               </p>
                               <p className="text-xs text-zinc-400">
-                                {message.file.size ? formatFileSize(message.file.size) : "Tamanho não disponível"}
+                                {formatFileSize(message.file.size)}
                               </p>
                             </div>
                           </div>
@@ -306,9 +313,13 @@ export default function ChatPage() {
                   >
                     <div className="max-w-[80%] rounded-2xl p-4 bg-zinc-800/50 border border-zinc-700">
                       <div className="flex space-x-2">
-                        <div className="w-2 h-2 rounded-full bg-zinc-400 animate-pulse"></div>
-                        <div className="w-2 h-2 rounded-full bg-zinc-400 animate-pulse delay-100"></div>
-                        <div className="w-2 h-2 rounded-full bg-zinc-400 animate-pulse delay-200"></div>
+                        {[...Array(3)].map((_, i) => (
+                          <div 
+                            key={i}
+                            className="w-2 h-2 rounded-full bg-zinc-400 animate-pulse"
+                            style={{ animationDelay: `${i * 100}ms` }}
+                          />
+                        ))}
                       </div>
                     </div>
                   </motion.div>
@@ -323,7 +334,7 @@ export default function ChatPage() {
             {files.length > 0 && (
               <div className="mb-3">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-zinc-300">Arquivo para enviar</h3>
+                  <h3 className="text-sm font-medium text-zinc-300">Arquivo selecionado</h3>
                   <button
                     onClick={removeFile}
                     className="text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
@@ -334,7 +345,7 @@ export default function ChatPage() {
                 <div className="p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
                   <div className="flex items-center">
                     <div className="flex-shrink-0 mr-3">
-                      {files[0].type?.startsWith("image/") ? (
+                      {files[0].type.startsWith("image/") ? (
                         <div className="w-10 h-10 rounded bg-zinc-700 flex items-center justify-center overflow-hidden">
                           <Image
                             src={files[0].preview}
@@ -356,7 +367,7 @@ export default function ChatPage() {
                         {files[0].name}
                       </p>
                       <p className="text-xs text-zinc-400">
-                        {files[0].size ? formatFileSize(files[0].size) : "Tamanho não disponível"}
+                        {formatFileSize(files[0].size)}
                       </p>
                     </div>
                   </div>
@@ -367,7 +378,7 @@ export default function ChatPage() {
             <div className="flex items-center gap-2">
               <div
                 {...getRootProps()}
-                className="p-2 rounded-lg bg-zinc-800 hover:bg-zinc-700 cursor-pointer transition-colors"
+                className={`p-2 rounded-lg ${isDragActive ? 'bg-blue-900/30 border border-blue-500/50' : 'bg-zinc-800 hover:bg-zinc-700'} cursor-pointer transition-colors`}
               >
                 <input {...getInputProps()} />
                 <FiUpload className="h-5 w-5 text-zinc-400" />
@@ -378,9 +389,12 @@ export default function ChatPage() {
                   type="text"
                   value={inputMessage}
                   onChange={(e) => setInputMessage(e.target.value)}
-                  onKeyPress={(e) => e.key === "Enter" && handleSendMessage()}
-                  placeholder={files.length > 0 ? "Digite sua pergunta sobre o arquivo..." : "Digite sua mensagem..."}
+                  onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
+                  placeholder={files.length > 0 
+                    ? "Digite sua pergunta sobre o arquivo..." 
+                    : "Digite sua mensagem..."}
                   className="w-full bg-zinc-800 border border-zinc-700 rounded-lg py-3 px-4 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  disabled={isProcessing}
                 />
               </div>
               
@@ -398,7 +412,7 @@ export default function ChatPage() {
             </div>
             
             <p className="mt-2 text-xs text-zinc-500 text-center">
-              Formatos suportados: JPG, PNG, PDF, TXT, JSON, CSV, DOCX, XLSX, PPTX (Até 50MB)
+              Formatos suportados: JPG, PNG, PDF, TXT, CSV, JSON, DOCX, XLSX (Até 50MB)
             </p>
           </div>
         </div>

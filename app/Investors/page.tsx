@@ -7,11 +7,12 @@ import { useRouter } from "next/navigation";
 import Image from "next/image";
 
 // Imagens fictícias para os investidores
-import CapitalVerdeImg from '@/public/capital-verde.png';
-import EcoFundImg from '@/public/eco-fund.png';
-import SustainVenturesImg from '@/public/sustain-ventures.png';
-import GreenGrowthImg from '@/public/green-growth.png';
-import EarthCapitalImg from '@/public/earth-capital.png';
+import CapitalForteImg from '@/public/capital-verde.png';
+import FoodInvestImg from '@/public/eco-fund.png';
+import MercadoGlobalImg from '@/public/sustain-ventures.png';
+import AgroFoodImg from '@/public/green-growth.png';
+import DistribuidoraInvestImg from '@/public/earth-capital.png';
+import TraditionalGrowthImg from '@/public/TraditionalGrowthImg.png'
 
 export default function InvestorsPage() {
   const [selectedSector, setSelectedSector] = useState<string | null>(null);
@@ -19,59 +20,87 @@ export default function InvestorsPage() {
 
   const investors = [
     {
-      id: "capital-verde",
-      name: "Capital Verde",
-      logo: CapitalVerdeImg,
-      title: "Fundo de Investimento em Sustentabilidade",
-      description: "Foco em startups de tecnologia verde e soluções ambientais inovadoras.",
-      sectors: ["Energia", "Agro", "Tecnologia"],
+      id: "capital-forte",
+      name: "Capital Forte",
+      logo: CapitalForteImg,
+      title: "Fundo de Investimento em Atacado",
+      description: "Foco em distribuidoras e empresas atacadistas com potencial de expansão regional.",
+      sectors: ["Atacado", "Logística", "Distribuição"],
+      ticket: "R$ 1M - R$ 10M",
+      geography: "Brasil"
+    },
+    {
+      id: "food-invest",
+      name: "Food Invest Partners",
+      logo: FoodInvestImg,
+      title: "Especialistas em Alimentício",
+      description: "Investimos em empresas de alimentos, bebidas e insumos para o setor.",
+      sectors: ["Alimentício", "Bebidas", "Ingredientes"],
       ticket: "R$ 500K - R$ 5M",
       geography: "América Latina"
     },
     {
-      id: "eco-fund",
-      name: "Eco Fund",
-      logo: EcoFundImg,
-      title: "Fundo de Impacto Ambiental",
-      description: "Investimos em projetos com comprovado impacto positivo no meio ambiente.",
-      sectors: ["Reciclagem", "Água", "Florestas"],
-      ticket: "R$ 1M - R$ 10M",
+      id: "mercado-global",
+      name: "Mercado Global Capital",
+      logo: MercadoGlobalImg,
+      title: "Investimento em Comércio Atacadista",
+      description: "Apoiamos redes de atacado e distribuição com modelos comprovados.",
+      sectors: ["Atacado", "Distribuição", "Varejo Corporativo"],
+      ticket: "R$ 2M+",
       geography: "Global"
     },
     {
-      id: "sustain-ventures",
-      name: "Sustain Ventures",
-      logo: SustainVenturesImg,
-      title: "Capital de Risco Sustentável",
-      description: "Aceleramos negócios que estão reinventando indústrias tradicionais com sustentabilidade.",
-      sectors: ["Moda", "Construção", "Energia"],
-      ticket: "R$ 250K - R$ 2M",
-      geography: "Brasil"
-    },
-    {
-      id: "green-growth",
-      name: "Green Growth Partners",
-      logo: GreenGrowthImg,
-      title: "Private Equity Verde",
-      description: "Parceiros de crescimento para empresas maduras com modelos sustentáveis.",
-      sectors: ["Alimentos", "Turismo", "Logística"],
-      ticket: "R$ 5M+",
+      id: "agro-food-capital",
+      name: "Agro Food Capital",
+      logo: AgroFoodImg,
+      title: "Foco em Alimentos e Agroindústria",
+      description: "Parceiros estratégicos para empresas de processamento e comercialização de alimentos.",
+      sectors: ["Agroindústria", "Alimentos Processados", "Commodities Agrícolas"],
+      ticket: "R$ 3M - R$ 15M",
       geography: "América do Sul"
     },
     {
-      id: "earth-capital",
-      name: "Earth Capital",
-      logo: EarthCapitalImg,
-      title: "Investimento em Economia Circular",
-      description: "Focamos exclusivamente em negócios que fecham o ciclo de materiais e recursos.",
-      sectors: ["Plásticos", "Têxtil", "Eletrônicos"],
-      ticket: "R$ 500K - R$ 3M",
+      id: "distribuidora-invest",
+      name: "Distribuidora Invest",
+      logo: DistribuidoraInvestImg,
+      title: "Especialistas em Redes de Distribuição",
+      description: "Capital de crescimento para redes de distribuição e atacado consolidados.",
+      sectors: ["Atacado", "Distribuição", "Logística"],
+      ticket: "R$ 5M+",
+      geography: "Brasil"
+    },
+    {
+      id: "traditional-growth",
+      name: "Traditional Growth Partners",
+      logo: TraditionalGrowthImg,
+      title: "Private Equity para Setores Tradicionais",
+      description: "Investimos em empresas maduras de setores convencionais com fluxo estável.",
+      sectors: ["Manufatura", "Atacado", "Alimentício"],
+      ticket: "R$ 10M+",
       geography: "Global"
     }
   ];
 
-  const sectorsList = ["Energia", "Agro", "Tecnologia", "Reciclagem", "Água", "Florestas", "Moda", "Construção", "Alimentos", "Turismo", "Logística", "Plásticos", "Têxtil", "Eletrônicos"];
-
+  const sectorsList = [
+    "Atacado",
+    "Distribuição",
+    "Alimentício",
+    "Bebidas",
+    "Agroindústria",
+    "Logística",
+    "Manufatura",
+    "Comércio Exterior",
+    "Serviços Corporativos",
+    "Embalagens",
+    "Equipamentos Industriais",
+    "Químicos",
+    "Ingredientes",
+    "Carnes e Derivados",
+    "Grãos e Cereais",
+    "Varejo Corporativo",
+    "Transporte de Cargas",
+    "Armazenagem"
+  ];
   const filteredInvestors = selectedSector
   ? investors.filter(investor => investor.sectors.includes(selectedSector))
   : investors;
@@ -91,7 +120,7 @@ return (
           transition={{ duration: 0.5 }}
           className="text-4xl md:text-5xl font-bold text-white mb-6"
         >
-          Conecte-se com <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Investidores</span>
+          Painel para <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">Investidores</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0 }}
@@ -99,7 +128,7 @@ return (
           transition={{ delay: 0.2, duration: 0.5 }}
           className="text-lg text-zinc-400 max-w-3xl mx-auto"
         >
-          Encontre investidores alinhados com seus valores e prontos para impulsionar seu negócio sustentável.
+          Encontre uma empresa com matching perfeito entre indicadores ESG e indicadores Financeiros.
         </motion.p>
       </div>
 
