@@ -2,6 +2,7 @@ import axios from 'axios';
 
 export async function POST(request) {
   try {
+    console.log("Entrou no endpoint");
     const body = await request.json();
     const { fullReport } = body;
     
@@ -15,25 +16,28 @@ export async function POST(request) {
     let relatorio = '';
     let previousResponseId = '';
 
-    for (let contador = 0; contador < 7; contador++) {
+    for (let contador = 0; contador < 10; contador++) {
       let requisicao;
 
       if (contador === 0) {
+        console.log("Mensagem: " + contador);
         requisicao = {
           model: 'gpt-4.1-mini',
           input: fullReport,
         };
       } else if (contador === 1) {
+        console.log("Mensagem: " + contador);
         requisicao = {
           model: 'gpt-4.1-mini',
           previous_response_id: previousResponseId,
-          input: [{ role: 'user', content: 'Quero gerar o relatório a cada duas seções, me gere a seção 1 e 2' }],
+          input: [{ role: 'user', content: 'Quero gerar o relatório seção por seção, me gere a seção 1' }],
         };
-      } else if (contador > 1 && contador <= 6 ) {
+      } else if (contador > 1 && contador <= 9) {
+        console.log("Mensagem: " + contador);
         requisicao = {
           model: 'gpt-4.1-mini',
           previous_response_id: previousResponseId,
-          input: [{ role: 'user', content: 'Gere as próximas duas seções' }],
+          input: [{ role: 'user', content: 'Gere a próxima seção' }],
         };
       }
 
@@ -55,6 +59,7 @@ export async function POST(request) {
         relatorio += '\n\n' + messageContent;
       }
     }
+    console.log("Relatório: " + relatorio);
     return new Response(JSON.stringify({
       mensagem: 'Resposta recebida com sucesso',
       relatorioCompleto: relatorio,

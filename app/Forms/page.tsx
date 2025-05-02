@@ -125,14 +125,13 @@ export default function ESGFormPage() {
       }, {
         headers: {
           'Content-Type': 'application/json',
-        },
-        timeout: 30000
+        }
       })
       
       if (response.data?.relatorioCompleto) {
         setApiResponse(response.data.relatorioCompleto)
         setStoreResponse(response.data.relatorioCompleto)
-        router.push('/chat')
+        router.push('/Chat')
       } else {
         throw new Error("Resposta da API mal formatada")
       }
