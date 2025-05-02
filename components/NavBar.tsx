@@ -3,10 +3,10 @@
 import Link from 'next/link';
 import React, { useState, useEffect } from 'react';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
-import { BsLightning } from 'react-icons/bs';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 const NavBar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -116,8 +116,14 @@ const NavBar = () => {
       }`}>
         {/* Logo */}
         <Link href="/" className="flex items-center">
-          <BsLightning className="text-3xl md:text-4xl text-white" />
-          <span className="ml-2 text-xl font-semibold hidden sm:inline-block bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
+          <Image 
+            src="/logo.png" 
+            alt="Zeus Lightning Logo" 
+            width={50} 
+            height={50} 
+            className="text-3xl md:text-4xl text-white" 
+          />
+          <span className="ml-2 text-lg md:text-xl font-semibold bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
             Zeus Lightning
           </span>
         </Link>

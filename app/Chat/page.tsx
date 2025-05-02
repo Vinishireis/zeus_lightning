@@ -213,8 +213,8 @@ export default function ChatPage() {
             </p>
           </div>
 
-          {/* Chat Container */}
-          <div className="p-6 h-[500px] overflow-y-auto">
+           {/* Chat Container - Ajustado para desktop */}
+           <div className="p-6 h-[500px] md:h-[600px] lg:h-[700px] overflow-y-auto">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center">
                 <div className="p-4 bg-zinc-800/50 rounded-full mb-4">
