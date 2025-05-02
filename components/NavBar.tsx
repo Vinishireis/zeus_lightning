@@ -76,13 +76,13 @@ const NavBar = () => {
 
   // Todos os itens de navegação quando logado
   const authenticatedNavItems = [
-    { href: '/Upload', label: 'Upload' },
+    { href: '/Chat', label: 'Chat' },
+    { href: '/Contact', label: 'Contato' },
+    { href: '/Dashboard', label: 'Dashboard'},
+    { href: '/Forms', label: 'Formulário' },
+    { href: '/Investors', label: 'Investidores' },
     { href: '/Pricing', label: 'Planos' },
     { href: '/Services', label: 'Vitrine ESG' },
-    { href: '/Investors', label: 'Investidores'},
-    { href: '/Contact', label: 'Contato' },
-    { href: '/Forms', label: 'Formulário' },
-    { href: '/Chat', label: 'Chat' },
   ];
 
   // Itens de navegação baseados no estado de autenticação
