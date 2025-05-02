@@ -1,16 +1,18 @@
 import axios from 'axios';
-require('dotenv').config();
 
-const openai = process.env.CHAVE_OPENIA;
-
-export default async function handler(req, res) {
-  console.log(req.method)
-  if (req.method !== 'POST') {
-    return res.status(405).json({ message: 'Método não permitido' });
-  }
-
+export async function POST(request) {
   try {
-    const { fullReport } = req.body;
+    const body = await request.json();
+    const { fullReport } = body;
+
+    const openai = process.env.CHAVE_OPENIA;
+    if (!openai) {
+      return new Response(
+        JSON.stringify({ mensagem: 'CHAVE_OPENIA não encontrada' }),
+        { status: 500 }
+      );
+    }
+
     let relatorio = '';
     let previousResponseId = '';
 
@@ -55,15 +57,31 @@ export default async function handler(req, res) {
       }
     }
 
-    return res.status(200).json({
+    return new Response(JSON.stringify({
       mensagem: 'Resposta recebida com sucesso',
       relatorioCompleto: relatorio,
+    }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json' },
     });
+
   } catch (error) {
     console.error('Erro:', error.response?.data || error.message);
-    return res.status(500).json({
+
+    return new Response(JSON.stringify({
       mensagem: 'Erro ao gerar relatório',
       erro: error.response?.data || error.message,
+    }), {
+      status: 500,
+      headers: { 'Content-Type': 'application/json' },
     });
   }
+}
+
+// bloqueia outros métodos (GET, PUT, etc.)
+export function GET() {
+  return new Response(JSON.stringify({ message: 'Método não permitido' }), {
+    status: 405,
+    headers: { 'Content-Type': 'application/json' },
+  });
 }

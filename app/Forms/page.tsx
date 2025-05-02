@@ -115,7 +115,7 @@ export default function ESGFormPage() {
     try {
       const report = generateReport();
       
-      const response = await axios.post('https://www.zeus.dev.br/api/chat', { fullReport: report }, {
+      const response = await axios.post('/api/chat', { fullReport: report }, {
         headers: {
           'Content-Type': 'application/json',
         }
