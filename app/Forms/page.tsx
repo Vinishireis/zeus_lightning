@@ -115,6 +115,7 @@ export default function ESGFormPage() {
     try {
       console.log("tentou")
       const report = generateReport();
+      console.log(report)
       const response = await axios.post('https://www.zeus.dev.br/api/chat', { fullReport: report }, {
         headers: {
           'Content-Type': 'application/json'
