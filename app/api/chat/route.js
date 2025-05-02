@@ -1,10 +1,11 @@
 import axios from 'axios';
 
 export async function POST(request) {
+  console.log("entrou na rota");
   try {
     const body = await request.json();
     const { fullReport } = body;
-
+    
     const openai = process.env.CHAVE_OPENIA;
     if (!openai) {
       return new Response(
@@ -12,7 +13,7 @@ export async function POST(request) {
         { status: 500 }
       );
     }
-
+    console.log("verificou a chave");
     let relatorio = '';
     let previousResponseId = '';
 
@@ -20,17 +21,20 @@ export async function POST(request) {
       let requisicao;
 
       if (contador === 0) {
+        console.log("Contador: " + contador);
         requisicao = {
           model: 'gpt-4.1-mini',
           input: fullReport,
         };
       } else if (contador === 1) {
+        console.log("Contador: " + contador);
         requisicao = {
           model: 'gpt-4.1-mini',
           previous_response_id: previousResponseId,
           input: [{ role: 'user', content: 'Quero gerar o relatório seção por seção, me gere a seção 1' }],
         };
-      } else {
+      } else if (contador > 1 && contador <=9 ) {
+        console.log("Contador: " + contador);
         requisicao = {
           model: 'gpt-4.1-mini',
           previous_response_id: previousResponseId,
@@ -56,7 +60,7 @@ export async function POST(request) {
         relatorio += '\n\n' + messageContent;
       }
     }
-
+    console.log("Relatório Final: \n" + contador);
     return new Response(JSON.stringify({
       mensagem: 'Resposta recebida com sucesso',
       relatorioCompleto: relatorio,
