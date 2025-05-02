@@ -33,7 +33,7 @@ export async function POST(request) {
           previous_response_id: previousResponseId,
           input: [{ role: 'user', content: 'Quero gerar o relatório seção por seção, me gere a seção 1' }],
         };
-      } else if (contador > 1 && contador <=9 ) {
+      } else if (contador > 1 && contador <= 9 ) {
         console.log("Contador: " + contador);
         requisicao = {
           model: 'gpt-4.1-mini',
@@ -60,7 +60,7 @@ export async function POST(request) {
         relatorio += '\n\n' + messageContent;
       }
     }
-    console.log("Relatório Final: \n" + contador);
+    console.log("Relatório Final: \n" + relatorio);
     return new Response(JSON.stringify({
       mensagem: 'Resposta recebida com sucesso',
       relatorioCompleto: relatorio,
