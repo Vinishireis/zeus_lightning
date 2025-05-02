@@ -83,6 +83,7 @@ export default function ESGFormPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [generatedReport, setGeneratedReport] = useState("");
+  const [apiResponse, setApiResponse] = useState("");
 
   const handleAnswerChange = (questionIndex: number, value: string) => {
     setAnswers(prev => ({
@@ -92,48 +93,40 @@ export default function ESGFormPage() {
   };
 
   const generateReport = () => {
-    // Formatando as respostas para inclusão no relatório
     let answersText = "";
     
     esgSections.forEach((section, sectionIndex) => {
-      answersText += `${sectionIndex + 1}. ${section.title}`;
+      answersText += `\n\n${sectionIndex + 1}. ${section.title}\n`;
       
       section.questions.forEach((question, questionIndex) => {
         const answerKey = `${sectionIndex}-${questionIndex}`;
-        answersText += `${sectionIndex + 1}.${questionIndex + 1} ${question}`;
-        answersText += `Resposta: ${answers[answerKey] || "Não respondido"}`;
+        answersText += `\n${sectionIndex + 1}.${questionIndex + 1} ${question}\n`;
+        answersText += `Resposta: ${answers[answerKey] || "Não respondido"}\n`;
       });
     });
 
-    // Concatenando com as diretrizes
-     const fullReport = reportGuidelines + answersText;
+    const fullReport = reportGuidelines + answersText;
     setGeneratedReport(fullReport);
-    
-    // Aqui você pode adicionar a lógica para enviar para a API ou fazer download
-    console.log("Relatório gerado:", fullReport);
+    return fullReport;
   };
-
 
   const handleSubmit = async () => {
     setIsSubmitting(true);
     try {
-      // Simulando processamento
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      generateReport();
+      const report = generateReport();
+      const response = await axios.post('/api/Chat', { fullReport: report }, {
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      
+      setApiResponse(response.data.relatorioCompleto);
       alert("Relatório gerado com sucesso!");
     } catch (error) {
       console.error("Erro ao gerar relatório:", error);
       alert("Ocorreu um erro ao gerar o relatório.");
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleClick = async () => {
-    try {
-      const response = await axios.post('http://localhost/api/Chat');
-    } catch (error) {
-      console.error('Erro ao chamar API:', error);
     }
   };
 
@@ -219,7 +212,7 @@ export default function ESGFormPage() {
               <Button
                 size="lg"
                 className="rounded-full px-6 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-emerald-500/20"
-                onClick={handleClick}
+                onClick={handleSubmit}
                 disabled={isSubmitting}
               >
                 {isSubmitting ? "Enviando..." : "Enviar Formulário"}
@@ -227,8 +220,19 @@ export default function ESGFormPage() {
             )}
           </div>
         </div>
+
+        {/* Relatório Gerado */}
+        {apiResponse && (
+          <div className="bg-white/5 p-6 rounded-xl border border-white/10 backdrop-blur-lg mt-6">
+            <h3 className="text-xl font-semibold bg-clip-text bg-gradient-to-r from-blue-400 to-emerald-400 text-transparent mb-4">
+              Relatório Gerado
+            </h3>
+            <div className="bg-black/50 p-4 rounded-lg overflow-auto max-h-96">
+              <pre className="text-gray-300 whitespace-pre-wrap">{apiResponse}</pre>
+            </div>
+          </div>
+        )}
       </div>
     </main>
   );
 }
-
