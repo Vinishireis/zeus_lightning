@@ -1,9 +1,7 @@
 import axios from 'axios';
-import OpenAI from 'openai';
+require('dotenv').config();
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
+const openai = process.env.CHAVE_OPENIA;
 
 export default async function handler(req, res) {
   console.log(req.method)
