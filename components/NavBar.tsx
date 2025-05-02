@@ -5,7 +5,7 @@ import React, { useState, useEffect } from 'react';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
 import { BsLightning } from 'react-icons/bs';
 import { motion, AnimatePresence } from 'framer-motion';
-import { supabase } from '@/lib/supabase'; // Importe o cliente Supabase
+import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
 const NavBar = () => {
@@ -68,13 +68,25 @@ const NavBar = () => {
     router.push('/');
   };
 
-  const navItems = [
+  // Itens de navegação quando não logado
+  const unauthenticatedNavItems = [
+    { href: '/Pricing', label: 'Planos' },
+    { href: '/Contact', label: 'Contato' },
+  ];
+
+  // Todos os itens de navegação quando logado
+  const authenticatedNavItems = [
     { href: '/Upload', label: 'Upload' },
     { href: '/Pricing', label: 'Planos' },
-    { href: '/Services', label: 'Serviços'},
+    { href: '/Services', label: 'Serviços' },
+    { href: '/Investors', label: 'Investidores'},
     { href: '/Contact', label: 'Contato' },
+    { href: '/Forms', label: 'Formulário' },
     { href: '/Chat', label: 'Chat' },
   ];
+
+  // Itens de navegação baseados no estado de autenticação
+  const navItems = user ? authenticatedNavItems : unauthenticatedNavItems;
 
   const authItems = user ? [
     {
