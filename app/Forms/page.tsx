@@ -114,7 +114,7 @@ export default function ESGFormPage() {
     setIsSubmitting(true);
     try {
       const report = generateReport();
-      const response = await axios.post('pages\api\chat-app.js', { fullReport: report }, {
+      const response = await axios.post('/api/chat', { fullReport: report }, {
         headers: {
           'Content-Type': 'application/json'
         }
