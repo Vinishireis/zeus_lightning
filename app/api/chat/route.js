@@ -15,7 +15,7 @@ export async function POST(request) {
     let relatorio = '';
     let previousResponseId = '';
 
-    for (let contador = 0; contador < 10; contador++) {
+    for (let contador = 0; contador < 7; contador++) {
       let requisicao;
 
       if (contador === 0) {
@@ -27,13 +27,13 @@ export async function POST(request) {
         requisicao = {
           model: 'gpt-4.1-mini',
           previous_response_id: previousResponseId,
-          input: [{ role: 'user', content: 'Quero gerar o relatório seção por seção, me gere a seção 1' }],
+          input: [{ role: 'user', content: 'Quero gerar o relatório a cada duas seções, me gere a seção 1 e 2' }],
         };
-      } else if (contador > 1 && contador <= 9 ) {
+      } else if (contador > 1 && contador <= 6 ) {
         requisicao = {
           model: 'gpt-4.1-mini',
           previous_response_id: previousResponseId,
-          input: [{ role: 'user', content: 'Gere a próxima seção' }],
+          input: [{ role: 'user', content: 'Gere as próximas duas seções' }],
         };
       }
 
