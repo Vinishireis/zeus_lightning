@@ -96,12 +96,12 @@ export default function ESGFormPage() {
     let answersText = "";
     
     esgSections.forEach((section, sectionIndex) => {
-      answersText += `\n\n${sectionIndex + 1}. ${section.title}\n`;
+      answersText += `${sectionIndex + 1}. ${section.title}`;
       
       section.questions.forEach((question, questionIndex) => {
         const answerKey = `${sectionIndex}-${questionIndex}`;
-        answersText += `\n${sectionIndex + 1}.${questionIndex + 1} ${question}\n`;
-        answersText += `Resposta: ${answers[answerKey] || "Não respondido"}\n`;
+        answersText += `${sectionIndex + 1}.${questionIndex + 1} ${question}`;
+        answersText += `Resposta: ${answers[answerKey] || "Não respondido"}`;
       });
     });
 
@@ -119,7 +119,6 @@ export default function ESGFormPage() {
           'Content-Type': 'application/json'
         }
       });
-      
       setApiResponse(response.data.relatorioCompleto);
       alert("Relatório gerado com sucesso!");
     } catch (error) {
