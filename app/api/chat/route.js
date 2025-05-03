@@ -17,7 +17,7 @@ export async function POST(request) {
     let relatorioFinal = '';
     let previousResponseId = '';
 
-    for (let contador = 0; contador < 6; contador++) {
+    for (let contador = 0; contador < 11; contador++) {
       let requisicao;
 
       if (contador === 0) {
@@ -33,14 +33,14 @@ export async function POST(request) {
           previous_response_id: previousResponseId,
           input: [{ role: 'user', content: 'Quero gerar o relatório seção por seção, me gere a seção 1' }],
         };
-      } else if (contador > 1 && contador <= 4) {
+      } else if (contador > 1 && contador <= 9) {
         console.log("Mensagem: " + contador);
         requisicao = {
           model: 'gpt-4.1-nano',
           previous_response_id: previousResponseId,
           input: [{ role: 'user', content: 'Gere a próxima seção' }],
         };
-      } else if (contador > 4 && contador <= 5) {
+      } else if (contador > 9 && contador <= 10) {
         console.log("Mensagem: " + contador);
         requisicao = {
           model: 'gpt-4.1-nano',
