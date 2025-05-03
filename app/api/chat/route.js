@@ -63,9 +63,9 @@ export async function POST(request) {
       const messageContent = openaiResponse.data.output[0].content[0].text;
       previousResponseId = openaiResponse.data.id;
 
-      if (contador > 0 && contador < 10) {
+      if (contador > 0 && contador < 6) {
         relatorio += '\n\n' + messageContent;
-      }else if(contador == 10){
+      }else if(contador == 5){
         relatorioFinal = messageContent;
       }
     }
