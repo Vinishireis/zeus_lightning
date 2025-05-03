@@ -31,14 +31,14 @@ export async function POST(request) {
         requisicao = {
           model: 'gpt-4.1-nano',
           previous_response_id: previousResponseId,
-          input: [{ role: 'user', content: 'Quero gerar o relatório de 2 a 2 seções, me gere a seção 1 e 2' }],
+          input: [{ role: 'user', content: 'Quero gerar o relatório seção por seção, me gere a seção 1' }],
         };
       } else if (contador > 1 && contador <= 4) {
         console.log("Mensagem: " + contador);
         requisicao = {
           model: 'gpt-4.1-nano',
           previous_response_id: previousResponseId,
-          input: [{ role: 'user', content: 'Gere as 2 próximas seções' }],
+          input: [{ role: 'user', content: 'Gere a próxima seção' }],
         };
       } else if (contador > 4 && contador <= 5) {
         console.log("Mensagem: " + contador);
