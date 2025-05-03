@@ -138,3 +138,14 @@
     }
   }
 }
+
+
+/* Adicionar ao seu CSS global */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none; /* Esconde a barra de rolagem no Chrome, Safari e Edge */
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none; /* Internet Explorer 10+ */
+  scrollbar-width: none; /* Firefox */
+}
