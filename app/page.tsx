@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter } from "next/navigation";
+import { motion } from "framer-motion";
 
 export default function Home() {
   const [user, setUser] = useState<any>(null);
@@ -43,89 +44,100 @@ export default function Home() {
 
   if (loading) {
     return (
-      <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black">
+      <main className="min-h-screen w-full flex items-center justify-center bg-black">
         <div className="text-center">
-          <p className="text-white text-lg font-medium animate-pulse">Carregando...</p>
+          <p className="text-white">Carregando...</p>
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black">
-      <div className="text-center space-y-8 max-w-2xl z-10 px-6">
-        {/* Headings */}
-        <div className="space-y-4">
-          <h1 className="text-6xl md:text-8xl tracking-tighter bg-clip-text bg-gradient-to-r from-blue-400 via-emerald-400 to-cyan-400 text-transparent font-extrabold leading-tight">
+    <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6">
+      {/* Content Container */}
+      <div className="text-center w-full max-w-2xl mx-auto space-y-6 sm:space-y-8 py-12">
+        
+        {/* Headings with Better Mobile Scaling */}
+        <motion.div 
+          className="space-y-2 sm:space-y-3"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+        >
+          <h1 className="text-4xl xs:text-5xl sm:text-6xl md:text-7xl tracking-tight bg-clip-text bg-gradient-to-r from-blue-400 via-emerald-400 to-cyan-400 text-transparent font-bold leading-tight">
             Zeus
           </h1>
-          <h2 className="text-6xl md:text-8xl tracking-tighter bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-500 text-transparent font-extrabold leading-tight">
+          <h2 className="text-3xl xs:text-4xl sm:text-5xl md:text-6xl tracking-tight bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-500 text-transparent font-bold leading-tight">
             Lightning
           </h2>
-        </div>
+        </motion.div>
 
-        {/* Description */}
-        <p className="text-gray-300/90 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">
-          Zeus Lightning estrutura um{" "}
-          <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent font-semibold">
-            ecossistema completo
+        {/* Optimized Description */}
+        <motion.p
+          className="text-gray-300/90 text-base sm:text-lg md:text-xl leading-relaxed mx-auto px-2"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.2, duration: 0.6 }}
+        >
+          <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent font-medium">
+            Ecossistema completo
           </span>{" "}
-          para que empresas, investidores e instituições de benfeitorias unam-se para cumprir as normas da{" "}
-          <span className="bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-transparent font-semibold">
+            para ajudar empresas a cumprir normas da{" "}
+            <span className="bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-transparent font-medium">
             ESG
-          </span>{" "}
-          e transparecer o impacto da empresa na sociedade. Um sistema que conta com{" "}
-          <span className="bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-transparent font-semibold">
-            relatórios customizáveis
-          </span>{" "}
-          e análise de dados inteligente.
-        </p>
+            </span>{" "}
+            e mostrar seu impacto na sociedade.{" "}
+            <span className="bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-transparent font-medium">
+            Inclui relatórios customizáveis e análise de dados inteligente
+            </span>.
+        </motion.p>
 
-        {/* Buttons */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center pt-6">
+        {/* Responsive Buttons */}
+        <motion.div
+          className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+        >
           <Button 
-            size="lg" 
-            className="rounded-full px-10 py-4 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-blue-500/30 cursor-pointer text-white font-semibold text-lg"
+            size="lg"
+            className="rounded-full px-6 sm:px-8 py-5 text-sm sm:text-base bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 transition-all shadow-lg shadow-blue-500/20"
             onClick={() => handleProtectedNavigation("/Chat")}
           >
             Gerar Relatórios
           </Button>
           <Button 
-            variant="secondary" 
-            size="lg" 
-            className="rounded-full px-10 py-4 border-white/20 bg-white/10 hover:bg-white/20 backdrop-blur-lg transition-all duration-300 cursor-pointer text-white font-semibold text-lg"
+            variant="secondary"
+            size="lg"
+            className="rounded-full px-6 sm:px-8 py-5 text-sm sm:text-base border-white/20 bg-white/5 hover:bg-white/10 backdrop-blur-lg transition-all"
             onClick={() => handleProtectedNavigation("/Dashboard")}
           >
             Acessar Dashboard
           </Button>
-        </div>
+        </motion.div>
 
-        {/* Destaques */}
-        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-4 pt-8 text-sm sm:text-base">
-          {/* Item 1 - Eficiência */}
-          <div className="bg-white/10 p-4 sm:p-5 rounded-lg border border-white/20 flex items-center justify-center">
-            <span className="text-cyan-400 font-medium">Ecossistema</span>
-            <span className="ml-2 text-gray-300">ESG</span>
-          </div>
-
-          {/* Item 2 - Relatórios */}
-          <div className="bg-white/10 p-4 sm:p-5 rounded-lg border border-white/20 flex items-center justify-center">
-            <span className="text-emerald-400 font-medium">Relatórios</span>
-            <span className="ml-2 text-gray-300">personalizados</span>
-          </div>
-
-          {/* Item 3 - Integração */}
-          <div className="bg-white/10 p-4 sm:p-5 rounded-lg border border-white/20 col-span-2 sm:col-span-1 flex items-center justify-center">
-            <span className="text-blue-400 font-medium">Integração</span>
-            <span className="ml-2 text-gray-300">simplificada</span>
-          </div>
-
-          {/* Item 4 - IFRS */}
-          <div className="bg-white/10 p-4 sm:p-5 rounded-lg border border-white/20 col-span-2 sm:col-span-1 flex items-center justify-center">
-            <span className="text-blue-500 font-medium">Aderente</span>
-            <span className="ml-2 text-gray-300">ao IFRS</span>
-          </div>
-        </div>
+        {/* Features Grid - Mobile Optimized */}
+        <motion.div
+          className="grid grid-cols-2 gap-3 sm:gap-4 pt-6 sm:pt-8 max-w-xs sm:max-w-md mx-auto"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.6, duration: 0.6 }}
+        >
+          {[
+            { text: "Ecossistema", subtext: "ESG", color: "text-cyan-400" },
+            { text: "Relatórios", subtext: "personalizados", color: "text-emerald-400" },
+            { text: "Integração", subtext: "simplificada", color: "text-blue-400", span: "col-span-2 sm:col-span-1" },
+            { text: "Aderente", subtext: "ao IFRS", color: "text-blue-500", span: "col-span-2 sm:col-span-1" }
+          ].map((item, index) => (
+            <div 
+              key={index}
+              className={`${item.span || ""} bg-white/5 p-3 sm:p-4 rounded-lg border border-white/10 hover:border-white/20 transition-all flex flex-col items-center justify-center min-h-[80px]`}
+            >
+              <span className={`${item.color} font-medium text-sm sm:text-base`}>{item.text}</span>
+              <span className="text-gray-300 text-xs sm:text-sm mt-1">{item.subtext}</span>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </main>
   );
