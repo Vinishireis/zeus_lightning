@@ -170,11 +170,11 @@ export default function PricingPage() {
             </div>
           </div>
 
-          {/* Linha 2: Para Parceiros (DELTA) */}
+          {/* Linha 2: Prestadores ESG (DELTA) */}
           <div className="space-y-4">
             <h2 className="text-xl md:text-2xl font-bold text-white text-center md:text-left">
               <span className="bg-gradient-to-r from-purple-400 to-indigo-400 bg-clip-text text-transparent">
-                Para Parceiros e ONGs
+                Prestadores ESG 
               </span>
               <span className="block text-sm text-zinc-400 mt-1">Soluções especializadas para organizações</span>
             </h2>
@@ -196,7 +196,7 @@ export default function PricingPage() {
           <div className="space-y-4">
             <h2 className="text-xl md:text-2xl font-bold text-white text-center md:text-left">
               <span className="bg-gradient-to-r from-red-400 to-orange-400 bg-clip-text text-transparent">
-                Solução Premium
+                Investidores
               </span>
               <span className="block text-sm text-zinc-400 mt-1">Para investidores e necessidades avançadas</span>
             </h2>
@@ -211,44 +211,6 @@ export default function PricingPage() {
                   />
                 ))}
               </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* FAQ Section */}
-        <motion.div 
-          className="mt-12 md:mt-16 bg-gradient-to-br from-zinc-900/50 to-zinc-800/30 border border-zinc-700/30 rounded-xl backdrop-blur-sm"
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.5 }}
-        >
-          <div className="p-6 md:p-8">
-            <div className="flex items-center mb-6 md:mb-8">
-              <div className="p-2 rounded-lg bg-teal-900/30 border border-teal-700/30 mr-3">
-                <FiHelpCircle className="text-teal-400 text-xl" />
-              </div>
-              <h2 className="text-xl md:text-2xl font-bold text-white">
-                Perguntas Frequentes
-              </h2>
-            </div>
-            
-            <div className="space-y-5">
-              {faqs.map((faq, index) => (
-                <motion.div 
-                  key={index}
-                  className="pb-5 border-b border-zinc-700/30 last:border-0 last:pb-0"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ delay: 0.6 + index * 0.1 }}
-                >
-                  <h3 className="text-base md:text-lg font-semibold text-white mb-2">
-                    {faq.question}
-                  </h3>
-                  <p className="text-sm md:text-base text-zinc-300">
-                    {faq.answer}
-                  </p>
-                </motion.div>
-              ))}
             </div>
           </div>
         </motion.div>

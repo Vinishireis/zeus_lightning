@@ -71,18 +71,19 @@ export default function Home() {
 
         {/* Description */}
         <p className="text-gray-300/90 text-lg md:text-xl text-pretty leading-relaxed max-w-3xl mx-auto">
+          Zeus Lightning estrutura um{" "}
           <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent font-semibold">
-            Plataforma avançada
+            ecossistema completo
           </span>{" "}
-          para análise automatizada e geração de{" "}
+          para que empresas, investidores e instituições de benfeitorias unam-se para cumprir as normas da{" "}
           <span className="bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400 text-transparent font-semibold">
-            relatórios de sistemas
-          </span>
-          . Transforme dados brutos em{" "}
-          <span className="bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-transparent font-semibold">
-            informações acionáveis
+            ESG
           </span>{" "}
-          com nossa solução completa para o projeto Ibracon.
+          e transparecer o impacto da empresa na sociedade. Um sistema que conta com{" "}
+          <span className="bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-400 text-transparent font-semibold">
+            relatórios customizáveis
+          </span>{" "}
+          e análise de dados inteligente.
         </p>
 
         {/* Buttons */}
@@ -108,8 +109,8 @@ export default function Home() {
         <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 gap-3 pt-6 text-xs sm:text-sm">
           {/* Item 1 - Eficiência */}
           <div className="bg-white/5 p-2 sm:p-3 rounded-lg border border-white/10 flex items-center justify-center">
-            <span className="text-cyan-400 font-medium">+95%</span>
-            <span className="ml-1 text-gray-300">eficiência</span>
+            <span className="text-cyan-400 font-medium">Ecossitema%</span>
+            <span className="ml-1 text-gray-300">ESG</span>
           </div>
 
           {/* Item 2 - Relatórios */}
@@ -127,7 +128,7 @@ export default function Home() {
           {/* Item 4 - IFRS */}
           <div className="bg-white/5 p-2 sm:p-3 rounded-lg border border-white/10 col-span-2 sm:col-span-1 flex items-center justify-center">
             <span className="text-blue-500 font-medium">Dados</span>
-            <span className="ml-1 text-gray-300">com IFRS</span>
+            <span className="ml-1 text-gray-300">IFRS</span>
           </div>
         </div>
       </div>
