@@ -174,7 +174,7 @@ export default function ESGFormPage() {
           formData.append('files', file)
         })
 
-        const response = await axios.post('/api/Chat', formData, {
+        const response = await axios.post('/api/chat-with-files', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           }
@@ -323,36 +323,6 @@ export default function ESGFormPage() {
                       </p>
                     </div>
                   </div>
-
-                  {/* Uploaded files list */}
-                  {uploadedFiles.length > 0 && (
-                    <div className="mt-4 space-y-2">
-                      <h4 className="text-sm font-medium text-gray-300">Arquivos selecionados:</h4>
-                      <ul className="space-y-2">
-                        {uploadedFiles.map((file, index) => (
-                          <li key={index} className="flex items-center justify-between bg-white/5 p-3 rounded-lg">
-                            <div className="flex items-center space-x-2">
-                              <FiFile className="h-5 w-5 text-gray-400" />
-                              <div>
-                                <p className="text-sm font-medium text-white truncate max-w-xs">
-                                  {file.name}
-                                </p>
-                                <p className="text-xs text-gray-400">
-                                  {(file.size / 1024 / 1024).toFixed(2)} MB
-                                </p>
-                              </div>
-                            </div>
-                            <button
-                              onClick={() => removeFile(index)}
-                              className="text-red-400 hover:text-red-300 transition-colors duration-200"
-                            >
-                              <FiX className="h-5 w-5" />
-                            </button>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                 </div>
               )}
             </div>
