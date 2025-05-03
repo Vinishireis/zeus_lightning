@@ -54,11 +54,6 @@ export default function Home() {
   return (
     <main className="min-h-screen w-full flex items-center justify-center bg-black">
       <div className="text-center space-y-6 max-w-2xl z-10 px-4">
-        {/* Badge */}
-        <span className="inline-block py-1.5 px-4 bg-gradient-to-r from-blue-900/40 to-emerald-900/40 backdrop-blur-md rounded-full text-white text-sm md:text-base border border-white/10 tracking-wide">
-          TRANSFORME SEUS DADOS EM INSIGHTS
-        </span>
-
         {/* Headings */}
         <div className="space-y-2">
           <h1 className="text-5xl md:text-7xl tracking-tighter bg-clip-text bg-gradient-to-r from-blue-400 via-emerald-400 to-cyan-400 text-transparent font-bold leading-tight">
