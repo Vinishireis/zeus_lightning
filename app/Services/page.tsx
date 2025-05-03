@@ -5,6 +5,7 @@ import { FiFilter, FiArrowRight } from "react-icons/fi";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { useEffect } from "react";
 
 // Imagens fictícias para as empresas (substitua por suas próprias imagens)
 import EmpresaVerdeImg from '@/public/empresa-verde.jpg';
@@ -16,6 +17,15 @@ import SolarPowerImg from '@/public/solar-power.jpg';
 export default function ServicesPage() {
   const [selectedOds, setSelectedOds] = useState<number | null>(null);
   const router = useRouter();
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const services = [
     {
@@ -95,42 +105,55 @@ export default function ServicesPage() {
 
         {/* Filtro */}
         <motion.div 
-          className="mb-12 sticky top-4 z-10 backdrop-blur-sm py-4"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
+  className={`mb-12 sticky top-0 z-10 bg-zinc-900/90 backdrop-blur-sm border-b border-blue-800/50 transition-all duration-300 ${
+    isScrolled ? 'py-2' : 'py-4'
+  }`}
+  initial={{ opacity: 0 }}
+  animate={{ opacity: 1 }}
+  transition={{ delay: 0.3 }}
+>
+  <div className="container mx-auto px-4">
+    <div className={`flex flex-col md:flex-row items-center justify-between gap-3 ${
+      isScrolled ? 'md:gap-2' : 'md:gap-4'
+    } transition-all duration-300`}>
+      <h3 className={`${
+        isScrolled ? 'text-lg' : 'text-xl'
+      } font-bold text-white flex items-center gap-2 transition-all duration-300`}>
+        <FiFilter className="text-blue-400" />
+        {isScrolled ? 'ODS:' : 'Filtrar por ODS:'}
+      </h3>
+      <div className="flex flex-wrap gap-2 justify-center">
+        <button
+          onClick={() => setSelectedOds(null)}
+          className={`${
+            isScrolled ? 'px-3 py-1 text-sm' : 'px-4 py-2'
+          } rounded-lg font-medium transition-all ${
+            !selectedOds 
+              ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' 
+              : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
+          }`}
         >
-          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
-              <FiFilter className="text-blue-400" /> Filtrar por ODS:
-            </h3>
-            <div className="flex flex-wrap gap-2 justify-center">
-              <button
-                onClick={() => setSelectedOds(null)}
-                className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                  !selectedOds 
-                    ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' 
-                    : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                }`}
-              >
-                Todos
-              </button>
-              {odsList.map(ods => (
-                <button
-                  key={ods}
-                  onClick={() => setSelectedOds(ods)}
-                  className={`px-4 py-2 rounded-lg font-medium transition-all ${
-                    selectedOds === ods 
-                      ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' 
-                      : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
-                  }`}
-                >
-                  ODS {ods}
-                </button>
-              ))}
-            </div>
-          </div>
-        </motion.div>
+          Todos
+        </button>
+        {odsList.map(ods => (
+          <button
+            key={ods}
+            onClick={() => setSelectedOds(ods)}
+            className={`${
+              isScrolled ? 'px-3 py-1 text-sm' : 'px-4 py-2'
+            } rounded-lg font-medium transition-all ${
+              selectedOds === ods 
+                ? 'bg-blue-500 text-white shadow-lg shadow-blue-500/20' 
+                : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700 hover:text-white'
+            }`}
+          >
+            {isScrolled ? ods : `ODS ${ods}`}
+          </button>
+        ))}
+      </div>
+    </div>
+  </div>
+</motion.div>
 
         {/* Lista de Empresas */}
         <div className="space-y-6">

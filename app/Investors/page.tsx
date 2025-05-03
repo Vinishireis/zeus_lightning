@@ -128,7 +128,7 @@ export default function InvestorsPage() {
 
         {/* Filtro com responsividade e scroll horizontal */}
         <motion.div 
-          className={`mb-12 sticky top-0 z-30 bg-zinc-900/90 backdrop-blur-sm border-b border-zinc-800 transition-all duration-300 ${
+          className={`mb-12 sticky top-0 z-30 backdrop-blur-sm border-b border-zinc-800 transition-all duration-300 ${
             isScrolled ? 'py-2' : 'py-4'
           }`}
           initial={{ opacity: 0 }}
