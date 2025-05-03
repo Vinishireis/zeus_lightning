@@ -29,14 +29,13 @@ export default function ChatPage() {
   const [inputMessage, setInputMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const hasAddedReport = useRef(false);
+  
   // Zustand store for ESG report
   const { apiResponse, clearApiResponse } = useStore();
 
   // Add ESG report to messages when available
   useEffect(() => {
-    if (apiResponse && !messages.some(msg => msg.id.startsWith('report-')) && !hasAddedReport.current) {
-      hasAddedReport.current = true;
+    if (apiResponse && !messages.some(msg => msg.id.startsWith('report-'))) {
       const reportMessage: Message = {
         id: `report-${Date.now()}`,
         content: `📊 Relatório ESG Gerado\n\n${apiResponse}`,
@@ -51,7 +50,7 @@ export default function ChatPage() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
-  }, [apiResponse, clearApiResponse]);
+  }, [apiResponse, messages, clearApiResponse]);
 
   // File drop handler
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -213,17 +212,17 @@ export default function ChatPage() {
             </p>
           </div>
 
-           {/* Chat Container - Ajustado para desktop */}
-           <div className="p-6 h-[500px] md:h-[600px] lg:h-[700px] overflow-y-auto">
+          {/* Chat Container - Ajustado para desktop */}
+          <div className="p-6 h-[500px] md:h-[600px] lg:h-[700px] overflow-y-auto">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center">
                 <div className="p-4 bg-zinc-800/50 rounded-full mb-4">
                   <Image 
-                  src="/atena.png" 
-                  alt="Atena" 
-                  width={100} 
-                  height={100} 
-                  className="object-cover rounded-full" 
+                    src="/atena.png" 
+                    alt="Atena" 
+                    width={100} 
+                    height={100} 
+                    className="object-cover rounded-full" 
                   />
                 </div>
                 <h2 className="text-xl font-bold text-white mb-2">
@@ -246,7 +245,7 @@ export default function ChatPage() {
                     className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[80%] rounded-2xl p-4 ${
+                      className={`max-w-[80%] md:max-w-[70%] lg:max-w-[60%] rounded-2xl p-4 ${
                         message.role === "user"
                           ? "bg-gradient-to-r from-blue-600/30 to-indigo-600/30 border border-blue-500/20"
                           : "bg-zinc-800/50 border border-zinc-700"
@@ -312,7 +311,7 @@ export default function ChatPage() {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="max-w-[80%] rounded-2xl p-4 bg-zinc-800/50 border border-zinc-700">
+                    <div className="max-w-[80%] md:max-w-[70%] lg:max-w-[60%] rounded-2xl p-4 bg-zinc-800/50 border border-zinc-700">
                       <div className="flex space-x-2">
                         {[...Array(3)].map((_, i) => (
                           <div 

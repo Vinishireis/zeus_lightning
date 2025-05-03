@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, JSX } from "react";
 import { motion } from "framer-motion";
 import { FiUser, FiFileText, FiUpload, FiMessageSquare, FiBarChart2, FiSettings, FiDownload, FiClock, FiAlertCircle, FiActivity } from "react-icons/fi";
 import { supabase } from "@/lib/supabase";

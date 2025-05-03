@@ -1,12 +1,15 @@
 'use client'
 
 import { Button } from "@/components/ui/button"
-import { useState } from "react"
+import { useState, useCallback } from "react"
 import { useRouter } from 'next/navigation'
 import axios from 'axios'
 import { PDFDownloadLink, PDFViewer } from '@react-pdf/renderer'
 import { ESGReportPDF } from '../../components/ESGReportPDF'
 import { useStore } from '@/lib/store'
+import { FiUpload, FiX, FiFile } from 'react-icons/fi'
+import { useDropzone } from 'react-dropzone'
+
 
 const esgSections = [
   {
@@ -87,6 +90,7 @@ export default function ESGFormPage() {
   const [answers, setAnswers] = useState<Record<string, string>>({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [apiResponse, setApiResponse] = useState("")
+  const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
   const { setApiResponse: setStoreResponse } = useStore()
 
   const handleAnswerChange = (questionIndex: number, value: string) => {
@@ -94,6 +98,29 @@ export default function ESGFormPage() {
       ...prev,
       [`${currentSection}-${questionIndex}`]: value
     }))
+  }
+
+  const onDrop = useCallback((acceptedFiles: File[]) => {
+    setUploadedFiles(acceptedFiles)
+  }, [])
+
+  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+    onDrop,
+    accept: {
+      'application/pdf': ['.pdf'],
+      'application/msword': ['.doc'],
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document': ['.docx'],
+      'application/vnd.ms-excel': ['.xls'],
+      'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': ['.xlsx'],
+      'image/*': ['.png', '.jpg', '.jpeg', '.gif'],
+      'text/plain': ['.txt']
+    },
+    maxSize: 10 * 1024 * 1024, // 10MB
+    multiple: true
+  })
+
+  const removeFile = (index: number) => {
+    setUploadedFiles(prev => prev.filter((_, i) => i !== index))
   }
 
   const generateReport = (): string => {
@@ -109,28 +136,70 @@ export default function ESGFormPage() {
       })
     })
 
+    // Add information about uploaded files
+    if (uploadedFiles.length > 0) {
+      reportContent += `\nArquivos Anexados:\n`
+      uploadedFiles.forEach((file, index) => {
+        reportContent += `  ${index + 1}. ${file.name} (${(file.size / 1024).toFixed(2)} KB)\n`
+      })
+    }
+
     return reportContent
   }
 
   const handleSubmit = async () => {
     if (isSubmitting) return
     
+    // Validate all questions are answered
+    for (let sectionIndex = 0; sectionIndex < esgSections.length; sectionIndex++) {
+      for (let questionIndex = 0; questionIndex < esgSections[sectionIndex].questions.length; questionIndex++) {
+        const answerKey = `${sectionIndex}-${questionIndex}`
+        if (!answers[answerKey]?.trim()) {
+          alert(`Por favor, responda a pergunta ${sectionIndex + 1}.${questionIndex + 1} na seção "${esgSections[sectionIndex].title}"`)
+          setCurrentSection(sectionIndex)
+          return
+        }
+      }
+    }
+    
     setIsSubmitting(true)
     
     try {
       const report = generateReport()
       
-      const response = await axios.post('/api/chat', { fullReport: report }, {
-        headers: {
-          'Content-Type': 'application/json',
+      if (uploadedFiles.length > 0) {
+        const formData = new FormData()
+        formData.append('fullReport', report)
+        uploadedFiles.forEach(file => {
+          formData.append('files', file)
+        })
+
+        const response = await axios.post('/api/Chat', formData, {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+          }
+        })
+        
+        if (response.data?.relatorioCompleto) {
+          setApiResponse(response.data.relatorioCompleto)
+          setStoreResponse(response.data.relatorioCompleto)
+          router.push('/Chat')
+        } else {
+          throw new Error("Resposta da API mal formatada")
         }
-      })
-      if (response.data?.relatorioCompleto) {
-        setApiResponse(response.data.relatorioCompleto)
-        setStoreResponse(response.data.relatorioCompleto)
-        router.push('/Chat')
       } else {
-        throw new Error("Resposta da API mal formatada")
+        const response = await axios.post('/api/chat', { fullReport: report }, {
+          headers: {
+            'Content-Type': 'application/json',
+          }
+        })
+        if (response.data?.relatorioCompleto) {
+          setApiResponse(response.data.relatorioCompleto)
+          setStoreResponse(response.data.relatorioCompleto)
+          router.push('/Chat')
+        } else {
+          throw new Error("Resposta da API mal formatada")
+        }
       }
     } catch (error) {
       console.error("Erro ao gerar relatório:", error)
@@ -147,6 +216,16 @@ export default function ESGFormPage() {
   }
 
   const nextSection = () => {
+    // Validate current section questions before proceeding
+    const currentQuestions = esgSections[currentSection].questions
+    for (let i = 0; i < currentQuestions.length; i++) {
+      const answerKey = `${currentSection}-${i}`
+      if (!answers[answerKey]?.trim()) {
+        alert(`Por favor, responda a pergunta ${currentSection + 1}.${i + 1} antes de prosseguir`)
+        return
+      }
+    }
+
     if (currentSection < esgSections.length - 1) {
       setCurrentSection(prev => prev + 1)
     }
@@ -157,6 +236,8 @@ export default function ESGFormPage() {
       setCurrentSection(prev => prev - 1)
     }
   }
+
+  const isLastSection = currentSection === esgSections.length - 1
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center bg-black p-4">
@@ -203,7 +284,7 @@ export default function ESGFormPage() {
               {esgSections[currentSection].questions.map((question, index) => (
                 <div key={index} className="animate-fade-in">
                   <label className="block text-sm font-medium text-gray-300 mb-2">
-                    {currentSection + 1}.{index + 1} {question}
+                    {currentSection + 1}.{index + 1} {question} *
                   </label>
                   <textarea
                     className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-3 text-gray-200 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 transition-all duration-300 placeholder-gray-400"
@@ -211,50 +292,110 @@ export default function ESGFormPage() {
                     value={answers[`${currentSection}-${index}`] || ""}
                     onChange={(e) => handleAnswerChange(index, e.target.value)}
                     placeholder="Digite sua resposta aqui..."
+                    required
                   />
                 </div>
               ))}
-            </div>
-          </div>
 
-          {/* Navigation Buttons */}
-          <div className="flex justify-between pt-4 border-t border-white/10">
-            <Button
-              variant="secondary"
-              size="lg"
-              className="rounded-full px-6 border-white/20 bg-white/5 hover:bg-white/10 backdrop-blur-lg transition-all duration-300"
-              onClick={prevSection}
-              disabled={currentSection === 0}
-            >
-              Voltar
-            </Button>
-            
-            {currentSection < esgSections.length - 1 ? (
+              {/* File Upload Section (only on last section) */}
+              {isLastSection && (
+                <div className="animate-fade-in mt-8">
+                  <label className="block text-sm font-medium text-gray-300 mb-2">
+                    Deseja incluir documentos complementares? (Opcional)
+                  </label>
+                  
+                  <div 
+                    {...getRootProps()}
+                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
+                      isDragActive ? 'border-blue-500 bg-blue-900/10' : 'border-white/20 hover:border-white/40'
+                    }`}
+                  >
+                    <input {...getInputProps()} />
+                    <div className="flex flex-col items-center justify-center space-y-3">
+                      <FiUpload className="h-8 w-8 text-gray-400" />
+                      <p className="text-sm text-gray-400">
+                        {isDragActive ? 
+                          'Solte os arquivos aqui' : 
+                          'Arraste e solte arquivos aqui, ou clique para selecionar'}
+                      </p>
+                      <p className="text-xs text-gray-500">
+                        Formatos suportados: PDF, DOC, XLS, JPG, PNG (até 10MB cada)
+                      </p>
+                    </div>
+                  </div>
+
+                  {/* Uploaded files list */}
+                  {uploadedFiles.length > 0 && (
+                    <div className="mt-4 space-y-2">
+                      <h4 className="text-sm font-medium text-gray-300">Arquivos selecionados:</h4>
+                      <ul className="space-y-2">
+                        {uploadedFiles.map((file, index) => (
+                          <li key={index} className="flex items-center justify-between bg-white/5 p-3 rounded-lg">
+                            <div className="flex items-center space-x-2">
+                              <FiFile className="h-5 w-5 text-gray-400" />
+                              <div>
+                                <p className="text-sm font-medium text-white truncate max-w-xs">
+                                  {file.name}
+                                </p>
+                                <p className="text-xs text-gray-400">
+                                  {(file.size / 1024 / 1024).toFixed(2)} MB
+                                </p>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => removeFile(index)}
+                              className="text-red-400 hover:text-red-300 transition-colors duration-200"
+                            >
+                              <FiX className="h-5 w-5" />
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Navigation Buttons */}
+            <div className="flex justify-between pt-4 border-t border-white/10">
               <Button
+                variant="secondary"
                 size="lg"
-                className="rounded-full px-6 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-blue-500/20"
-                onClick={nextSection}
+                className="rounded-full px-6 border-white/20 bg-white/5 hover:bg-white/10 backdrop-blur-lg transition-all duration-300"
+                onClick={prevSection}
+                disabled={currentSection === 0}
               >
-                Próxima Seção
+                Voltar
               </Button>
-            ) : (
-              <Button
-                size="lg"
-                className="rounded-full px-6 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-emerald-500/20"
-                onClick={handleSubmit}
-                disabled={isSubmitting}
-              >
-                {isSubmitting ? (
-                  <span className="flex items-center">
-                    <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
-                    Enviando...
-                  </span>
-                ) : "Enviar Formulário"}
-              </Button>
-            )}
+              
+              {currentSection < esgSections.length - 1 ? (
+                <Button
+                  size="lg"
+                  className="rounded-full px-6 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-blue-500/20"
+                  onClick={nextSection}
+                >
+                  Próxima Seção
+                </Button>
+              ) : (
+                <Button
+                  size="lg"
+                  className="rounded-full px-6 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-700 hover:to-cyan-700 transition-all duration-300 shadow-lg shadow-emerald-500/20"
+                  onClick={handleSubmit}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? (
+                    <span className="flex items-center">
+                      <svg className="animate-spin -ml-1 mr-2 h-4 w-4 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Enviando...
+                    </span>
+                  ) : "Enviar Formulário"}
+                </Button>
+              )}
+            </div>
           </div>
         </div>
 
