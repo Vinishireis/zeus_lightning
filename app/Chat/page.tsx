@@ -29,13 +29,13 @@ export default function ChatPage() {
   const [inputMessage, setInputMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const hasAddedReport = useRef(false);
+  
   // Zustand store for ESG report
   const { apiResponse, clearApiResponse } = useStore();
 
+  // Add ESG report to messages when available
   useEffect(() => {
-    if (apiResponse && !messages.some(msg => msg.id.startsWith('report-')) && !hasAddedReport.current) {
-      hasAddedReport.current = true;
+    if (apiResponse && !messages.some(msg => msg.id.startsWith('report-'))) {
       const reportMessage: Message = {
         id: `report-${Date.now()}`,
         content: `📊 Relatório ESG Gerado\n\n${apiResponse}`,
@@ -50,7 +50,7 @@ export default function ChatPage() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
-  }, [apiResponse, clearApiResponse]);
+  }, [apiResponse, messages, clearApiResponse]);
 
   // File drop handler
   const onDrop = useCallback((acceptedFiles: File[]) => {
@@ -213,7 +213,7 @@ export default function ChatPage() {
           </div>
 
           {/* Chat Container - Ajustado para desktop */}
-          <div className="p-6 h-[500px] md:h-[600px] lg:h-[700px] overflow-y-auto">
+            <div className="p-6 h-[500px] md:h-[400px] lg:h-[400px] overflow-y-auto custom-scrollbar">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center">
                 <div className="p-4 bg-zinc-800/50 rounded-full mb-4">
