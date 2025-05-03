@@ -9,7 +9,7 @@ export default function PricingPage() {
     {
       name: "ALFA",
       subtitle: "Relatórios ESG Básicos",
-      price: "R$XXXX",
+      price: "R$1.500",
       period: "/mês",
       description: "Geração de relatórios ESG em conformidade com IFRS S1 e S2",
       features: [
@@ -26,7 +26,7 @@ export default function PricingPage() {
     {
       name: "BETA",
       subtitle: "ESG Completo",
-      price: "R$XXXX",
+      price: "R$3.500",
       period: "/mês",
       description: "Plataforma integrada com marketplace e repositório centralizado",
       features: [
@@ -44,7 +44,7 @@ export default function PricingPage() {
     {
       name: "GAMMA",
       subtitle: "Ecossistema ESG",
-      price: "R$XXXX",
+      price: "R$9.000",
       period: "/mês",
       description: "Solução completa com IA especializada e curadoria",
       features: [
@@ -62,7 +62,7 @@ export default function PricingPage() {
     {
       name: "DELTA",
       subtitle: "Para ONGs e Provedores",
-      price: "R$XXXX",
+      price: "R$200.00",
       period: "/mês",
       description: "Plataforma para divulgar projetos e conectar-se com investidores",
       features: [
@@ -80,7 +80,7 @@ export default function PricingPage() {
     {
       name: "ÔMEGA",
       subtitle: "Para Investidores",
-      price: "Sob consulta",
+      price: "R$90.00",
       description: "Dados financeiros e ESG das principais empresas",
       features: [
         "Portfólio completo de indicadores",
