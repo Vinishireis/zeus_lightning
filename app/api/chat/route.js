@@ -23,7 +23,7 @@ export async function POST(request) {
       if (contador === 0) {
         console.log("Mensagem: " + contador);
         requisicao = {
-          model: 'gpt-4.1-mini',
+          model: 'gpt-4.1',
           input: fullReport,
         };
       } else if (contador === 1) {
@@ -36,14 +36,14 @@ export async function POST(request) {
       } else if (contador > 1 && contador <= 4) {
         console.log("Mensagem: " + contador);
         requisicao = {
-          model: 'gpt-4.1-mini',
+          model: 'gpt-4.1',
           previous_response_id: previousResponseId,
           input: [{ role: 'user', content: 'Gere as 2 próximas seções' }],
         };
       } else if (contador > 4 && contador <= 5) {
         console.log("Mensagem: " + contador);
         requisicao = {
-          model: 'gpt-4.1-mini',
+          model: 'gpt-4.1',
           previous_response_id: previousResponseId,
           input: [{ role: 'user', content: 'Arrume o texto do relatório que concatenei. Deixe apenas a organização em tópicos, sem deixar alguns resíduos da minha conversa com você, adicionando quebra de linha e deixando ele organizado. Relatório para arrumar: ' + relatorio }],
         };
