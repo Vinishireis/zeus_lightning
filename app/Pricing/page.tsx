@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
+import Link from "next/link";
 import { FiCheckCircle, FiStar, FiArrowRight, FiHelpCircle } from "react-icons/fi";
 
 export default function PricingPage() {
@@ -196,17 +197,18 @@ export default function PricingPage() {
                     </li>
                   ))}
                 </ul>
-
-                <button
-                  className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center ${
+                <Link href={'/Register'}>
+                  <button
+                  className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center cursor-pointer ${
                     plan.popular
-                      ? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg hover:shadow-emerald-500/20"
-                      : "bg-zinc-800/50 hover:bg-zinc-800 text-white border border-zinc-700 hover:border-zinc-600"
+                    ? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg hover:shadow-emerald-500/20"
+                    : "bg-zinc-800/50 hover:bg-zinc-800 text-white border border-zinc-700 hover:border-zinc-600"
                   }`}
-                >
+                  >
                   {plan.price === "Sob consulta" ? "Fale Conosco" : "Começar Agora"}
                   <FiArrowRight className="ml-2" />
-                </button>
+                  </button>
+                </Link>
               </div>
             </motion.div>
           ))}
