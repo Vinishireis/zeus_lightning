@@ -29,13 +29,13 @@ export default function ChatPage() {
   const [inputMessage, setInputMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+  const hasAddedReport = useRef(false);
   // Zustand store for ESG report
   const { apiResponse, clearApiResponse } = useStore();
 
-  // Add ESG report to messages when available
   useEffect(() => {
-    if (apiResponse && !messages.some(msg => msg.id.startsWith('report-'))) {
+    if (apiResponse && !messages.some(msg => msg.id.startsWith('report-')) && !hasAddedReport.current) {
+      hasAddedReport.current = true;
       const reportMessage: Message = {
         id: `report-${Date.now()}`,
         content: `📊 Relatório ESG Gerado\n\n${apiResponse}`,
@@ -50,7 +50,7 @@ export default function ChatPage() {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
-  }, [apiResponse, messages, clearApiResponse]);
+  }, [apiResponse, clearApiResponse]);
 
   // File drop handler
   const onDrop = useCallback((acceptedFiles: File[]) => {

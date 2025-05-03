@@ -135,22 +135,12 @@ export default function ESGFormPage() {
         reportContent += `    Resposta: ${answers[answerKey] || "Não respondido"}\n\n`
       })
     })
-
-    // Add information about uploaded files
-    if (uploadedFiles.length > 0) {
-      reportContent += `\nArquivos Anexados:\n`
-      uploadedFiles.forEach((file, index) => {
-        reportContent += `  ${index + 1}. ${file.name} (${(file.size / 1024).toFixed(2)} KB)\n`
-      })
-    }
-
     return reportContent
   }
 
   const handleSubmit = async () => {
     if (isSubmitting) return
     
-    // Validate all questions are answered
     for (let sectionIndex = 0; sectionIndex < esgSections.length; sectionIndex++) {
       for (let questionIndex = 0; questionIndex < esgSections[sectionIndex].questions.length; questionIndex++) {
         const answerKey = `${sectionIndex}-${questionIndex}`
@@ -166,40 +156,17 @@ export default function ESGFormPage() {
     
     try {
       const report = generateReport()
-      
-      if (uploadedFiles.length > 0) {
-        const formData = new FormData()
-        formData.append('fullReport', report)
-        uploadedFiles.forEach(file => {
-          formData.append('files', file)
-        })
-
-        const response = await axios.post('/api/chat-with-files', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          }
-        })
-        
-        if (response.data?.relatorioCompleto) {
-          setApiResponse(response.data.relatorioCompleto)
-          setStoreResponse(response.data.relatorioCompleto)
-          router.push('/Chat')
-        } else {
-          throw new Error("Resposta da API mal formatada")
+      const response = await axios.post('/api/chat', { fullReport: report }, {
+        headers: {
+          'Content-Type': 'application/json',
         }
+      })
+      if (response.data?.relatorioCompleto) {
+        setApiResponse(response.data.relatorioCompleto)
+        setStoreResponse(response.data.relatorioCompleto)
+        router.push('/Chat')
       } else {
-        const response = await axios.post('/api/chat', { fullReport: report }, {
-          headers: {
-            'Content-Type': 'application/json',
-          }
-        })
-        if (response.data?.relatorioCompleto) {
-          setApiResponse(response.data.relatorioCompleto)
-          setStoreResponse(response.data.relatorioCompleto)
-          router.push('/Chat')
-        } else {
-          throw new Error("Resposta da API mal formatada")
-        }
+        throw new Error("Resposta da API mal formatada")
       }
     } catch (error) {
       console.error("Erro ao gerar relatório:", error)
@@ -216,7 +183,6 @@ export default function ESGFormPage() {
   }
 
   const nextSection = () => {
-    // Validate current section questions before proceeding
     const currentQuestions = esgSections[currentSection].questions
     for (let i = 0; i < currentQuestions.length; i++) {
       const answerKey = `${currentSection}-${i}`
@@ -296,35 +262,6 @@ export default function ESGFormPage() {
                   />
                 </div>
               ))}
-
-              {/* File Upload Section (only on last section) */}
-              {isLastSection && (
-                <div className="animate-fade-in mt-8">
-                  <label className="block text-sm font-medium text-gray-300 mb-2">
-                    Deseja incluir documentos complementares? (Opcional)
-                  </label>
-                  
-                  <div 
-                    {...getRootProps()}
-                    className={`border-2 border-dashed rounded-lg p-6 text-center cursor-pointer transition-colors ${
-                      isDragActive ? 'border-blue-500 bg-blue-900/10' : 'border-white/20 hover:border-white/40'
-                    }`}
-                  >
-                    <input {...getInputProps()} />
-                    <div className="flex flex-col items-center justify-center space-y-3">
-                      <FiUpload className="h-8 w-8 text-gray-400" />
-                      <p className="text-sm text-gray-400">
-                        {isDragActive ? 
-                          'Solte os arquivos aqui' : 
-                          'Arraste e solte arquivos aqui, ou clique para selecionar'}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        Formatos suportados: PDF, DOC, XLS, JPG, PNG (até 10MB cada)
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              )}
             </div>
 
             {/* Navigation Buttons */}
