@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion } from "framer-motion";
-import { FiUpload, FiFile, FiImage, FiSend, FiUser, FiCpu } from "react-icons/fi";
+import { FiUpload, FiFile, FiImage, FiSend, FiUser, FiCpu, FiMessageSquare } from "react-icons/fi";
 import Image from "next/image";
 import { useStore } from "@/lib/store";
 
@@ -199,109 +199,114 @@ export default function ChatPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.5 }}
-        className="container mx-auto px-4 py-12 max-w-4xl"
+        className="w-full max-w-2xl mx-auto px-4 py-6"
       >
-        <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-800/90 backdrop-blur-xl rounded-2xl border border-zinc-700 shadow-2xl shadow-zinc-900/50 overflow-hidden">
-          {/* Header */}
-          <div className="px-6 py-5 border-b border-zinc-800">
-            <h1 className="text-2xl font-bold bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 text-transparent">
-              {apiResponse ? 'Análise de Relatório ESG' : 'ATENA'}
-            </h1>
-            <p className="mt-1 text-sm text-zinc-400">
-              {apiResponse ? 'Analise seu relatório ESG' : 'Consultoria ESG'}
-            </p>
+        <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-800/90 backdrop-blur-xl rounded-xl border border-zinc-700 shadow-lg shadow-zinc-900/50 overflow-hidden">
+          {/* Header compacto */}
+          <div className="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
+            <div>
+              <h1 className="text-xl font-bold bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 text-transparent">
+                {apiResponse ? 'Análise ESG' : 'ATENA'}
+              </h1>
+              <p className="text-xs text-zinc-400 mt-1">
+                {apiResponse ? 'Analisando seu relatório' : 'Consultoria inteligente'}
+              </p>
+            </div>
+            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
+              <FiMessageSquare className="text-blue-400" />
+            </div>
           </div>
-
-          {/* Chat Container - Ajustado para desktop */}
-            <div className="p-6 h-[500px] md:h-[400px] lg:h-[400px] overflow-y-auto custom-scrollbar">
+  
+          {/* Área de mensagens ajustada */}
+          <div className="p-4 h-[60vh] max-h-[500px] overflow-y-auto custom-scrollbar">
             {messages.length === 0 ? (
-              <div className="h-full flex flex-col items-center justify-center text-center">
-                <div className="p-4 bg-zinc-800/50 rounded-full mb-4">
+              <div className="h-full flex flex-col items-center justify-center text-center px-4">
+                <div className="p-3 bg-zinc-800/50 rounded-full mb-3">
                   <Image 
                     src="/atena.png" 
                     alt="Atena" 
-                    width={100} 
-                    height={100} 
-                    className="object-cover rounded-full" 
+                    width={60} 
+                    height={60} 
+                    className="object-cover rounded-full"
                   />
                 </div>
-                <h2 className="text-xl font-bold text-white mb-2">
-                  {apiResponse ? 'Seu relatório está pronto!' : 'Como posso ajudar?'}
+                <h2 className="text-lg font-medium text-white mb-1">
+                  {apiResponse ? 'Relatório carregado!' : 'Como posso ajudar?'}
                 </h2>
-                <p className="text-zinc-400 max-w-md">
+                <p className="text-sm text-zinc-400 max-w-xs">
                   {apiResponse 
-                    ? 'Faça perguntas sobre seu relatório ESG' 
-                    : 'Envie documentos, imagens e dúvidas para análise'}
+                    ? 'Faça perguntas sobre seu documento' 
+                    : 'Envie arquivos ou digite sua dúvida'}
                 </p>
               </div>
             ) : (
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {messages.map((message) => (
                   <motion.div
                     key={message.id}
-                    initial={{ opacity: 0, y: 20 }}
+                    initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.3 }}
+                    transition={{ duration: 0.2 }}
                     className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[80%] md:max-w-[70%] lg:max-w-[60%] rounded-2xl p-4 ${
+                      className={`max-w-[85%] rounded-lg p-3 ${
                         message.role === "user"
-                          ? "bg-gradient-to-r from-blue-600/30 to-indigo-600/30 border border-blue-500/20"
-                          : "bg-zinc-800/50 border border-zinc-700"
+                          ? "bg-blue-600/20 border border-blue-500/30"
+                          : "bg-zinc-800/40 border border-zinc-700"
                       }`}
                     >
-                      <div className="flex items-center mb-2">
+                      <div className="flex items-center mb-1">
                         <div
-                          className={`w-6 h-6 rounded-full flex items-center justify-center mr-2 ${
+                          className={`w-5 h-5 rounded-full flex items-center justify-center mr-2 ${
                             message.role === "user" ? "bg-blue-500" : "bg-indigo-500"
                           }`}
                         >
                           {message.role === "user" ? (
-                            <FiUser className="h-3 w-3 text-white" />
+                            <FiUser className="h-2.5 w-2.5 text-white" />
                           ) : (
-                            <FiCpu className="h-3 w-3 text-white" />
+                            <FiCpu className="h-2.5 w-2.5 text-white" />
                           )}
                         </div>
                         <span className="text-xs font-medium text-zinc-300">
-                          {message.role === "user" ? "Você" : "Assistente"}
+                          {message.role === "user" ? "Você" : "ATENA"}
                         </span>
                       </div>
-
+  
                       {message.file && (
-                        <div className="mb-3 p-3 bg-zinc-900/50 rounded-lg border border-zinc-700">
+                        <div className="mb-2 p-2 bg-zinc-900/40 rounded border border-zinc-700">
                           <div className="flex items-center">
-                            <div className="flex-shrink-0 mr-3">
+                            <div className="flex-shrink-0 mr-2">
                               {message.file.type.startsWith("image/") ? (
-                                <div className="w-10 h-10 rounded bg-zinc-700 flex items-center justify-center overflow-hidden">
+                                <div className="w-8 h-8 rounded bg-zinc-700 flex items-center justify-center overflow-hidden">
                                   <Image
                                     src={message.file.preview}
                                     alt={`Preview ${message.file.name}`}
-                                    width={40}
-                                    height={40}
+                                    width={32}
+                                    height={32}
                                     className="object-cover"
                                     unoptimized
                                   />
                                 </div>
                               ) : (
-                                <div className="w-10 h-10 rounded bg-zinc-700 flex items-center justify-center">
+                                <div className="w-8 h-8 rounded bg-zinc-700 flex items-center justify-center">
                                   {getFileIcon(message.file.type)}
                                 </div>
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-sm font-medium text-white truncate">
+                              <p className="text-xs font-medium text-white truncate">
                                 {message.file.name}
                               </p>
-                              <p className="text-xs text-zinc-400">
+                              <p className="text-[10px] text-zinc-400">
                                 {formatFileSize(message.file.size)}
                               </p>
                             </div>
                           </div>
                         </div>
                       )}
-
-                      <p className="text-white whitespace-pre-wrap">{message.content}</p>
+  
+                      <p className="text-sm text-white whitespace-pre-wrap">{message.content}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -311,12 +316,12 @@ export default function ChatPage() {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="max-w-[80%] md:max-w-[70%] lg:max-w-[60%] rounded-2xl p-4 bg-zinc-800/50 border border-zinc-700">
-                      <div className="flex space-x-2">
+                    <div className="max-w-[85%] rounded-lg p-3 bg-zinc-800/40 border border-zinc-700">
+                      <div className="flex space-x-1.5">
                         {[...Array(3)].map((_, i) => (
                           <div 
                             key={i}
-                            className="w-2 h-2 rounded-full bg-zinc-400 animate-pulse"
+                            className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-pulse"
                             style={{ animationDelay: `${i * 100}ms` }}
                           />
                         ))}
@@ -328,60 +333,57 @@ export default function ChatPage() {
               </div>
             )}
           </div>
-
-          {/* Input Area */}
-          <div className="px-6 py-4 border-t border-zinc-800 bg-zinc-900/30">
+  
+          {/* Área de input compacta */}
+          <div className="px-4 py-3 border-t border-zinc-800 bg-zinc-900/30">
             {files.length > 0 && (
-              <div className="mb-3">
-                <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-sm font-medium text-zinc-300">Arquivo selecionado</h3>
+              <div className="mb-2">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-xs text-zinc-300">Arquivo anexado</span>
                   <button
                     onClick={removeFile}
-                    className="text-xs text-zinc-400 hover:text-zinc-300 transition-colors"
+                    className="text-xs text-zinc-400 hover:text-zinc-200"
                   >
                     Remover
                   </button>
                 </div>
-                <div className="p-3 bg-zinc-800/50 rounded-lg border border-zinc-700">
+                <div className="p-2 bg-zinc-800/40 rounded border border-zinc-700">
                   <div className="flex items-center">
-                    <div className="flex-shrink-0 mr-3">
+                    <div className="w-6 h-6 rounded bg-zinc-700 flex items-center justify-center mr-2">
                       {files[0].type.startsWith("image/") ? (
-                        <div className="w-10 h-10 rounded bg-zinc-700 flex items-center justify-center overflow-hidden">
-                          <Image
-                            src={files[0].preview}
-                            alt={`Preview ${files[0].name}`}
-                            width={40}
-                            height={40}
-                            className="object-cover"
-                            unoptimized
-                          />
-                        </div>
+                        <Image
+                          src={files[0].preview}
+                          alt={`Preview ${files[0].name}`}
+                          width={24}
+                          height={24}
+                          className="object-cover rounded"
+                          unoptimized
+                        />
                       ) : (
-                        <div className="w-10 h-10 rounded bg-zinc-700 flex items-center justify-center">
-                          {getFileIcon(files[0].type)}
-                        </div>
+                        getFileIcon(files[0].type)
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-white truncate">
+                      <p className="text-xs font-medium text-white truncate">
                         {files[0].name}
-                      </p>
-                      <p className="text-xs text-zinc-400">
-                        {formatFileSize(files[0].size)}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
             )}
-
+  
             <div className="flex items-center gap-2">
               <div
                 {...getRootProps()}
-                className={`p-2 rounded-lg ${isDragActive ? 'bg-blue-900/30 border border-blue-500/50' : 'bg-zinc-800 hover:bg-zinc-700'} cursor-pointer transition-colors`}
+                className={`p-1.5 rounded-md ${
+                  isDragActive 
+                    ? 'bg-blue-900/30 border border-blue-500/50' 
+                    : 'bg-zinc-800 hover:bg-zinc-700'
+                } cursor-pointer transition-colors`}
               >
                 <input {...getInputProps()} />
-                <FiUpload className="h-5 w-5 text-zinc-400" />
+                <FiUpload className="h-4 w-4 text-zinc-400" />
               </div>
               
               <div className="flex-1 relative">
@@ -391,9 +393,9 @@ export default function ChatPage() {
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder={files.length > 0 
-                    ? "Digite sua pergunta sobre o arquivo..." 
+                    ? "Digite sua pergunta..." 
                     : "Digite sua mensagem..."}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-lg py-3 px-4 text-white placeholder-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full bg-zinc-800 border border-zinc-700 rounded-md py-2 px-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
                   disabled={isProcessing}
                 />
               </div>
@@ -401,18 +403,18 @@ export default function ChatPage() {
               <button
                 onClick={handleSendMessage}
                 disabled={(!inputMessage.trim() && files.length === 0) || isProcessing}
-                className={`p-3 rounded-lg focus:outline-none transition-all ${
+                className={`p-2 rounded-md ${
                   (!inputMessage.trim() && files.length === 0) || isProcessing
-                    ? "bg-blue-600/50 cursor-not-allowed"
+                    ? "bg-blue-600/30 cursor-not-allowed"
                     : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500"
                 }`}
               >
-                <FiSend className="h-5 w-5 text-white" />
+                <FiSend className="h-4 w-4 text-white" />
               </button>
             </div>
             
-            <p className="mt-2 text-xs text-zinc-500 text-center">
-              Formatos suportados: JPG, PNG, PDF, TXT, CSV, JSON, DOCX, XLSX (Até 50MB)
+            <p className="mt-1 text-[10px] text-zinc-500 text-center">
+              Formatos: JPG, PNG, PDF, TXT, CSV, JSON (Até 50MB)
             </p>
           </div>
         </div>
