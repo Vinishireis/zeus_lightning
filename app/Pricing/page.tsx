@@ -1,98 +1,94 @@
 "use client";
 
-import { AuroraBackground } from "@/components/ui/aurora-background";
 import { motion } from "framer-motion";
-import { FiCheckCircle, FiZap, FiStar, FiArrowRight, FiHelpCircle } from "react-icons/fi";
+import { FiCheckCircle, FiStar, FiArrowRight, FiHelpCircle } from "react-icons/fi";
 
 export default function PricingPage() {
   const plans = [
     {
-      name: "Alfa",
-      subtitle: "Básico",
-      price: "Grátis",
-      description: "Ideal para testes e pequenos projetos",
+      name: "ALFA",
+      subtitle: "Relatórios ESG Básicos",
+      price: "R$XXXX",
+      period: "/mês",
+      description: "Geração de relatórios ESG em conformidade com IFRS S1 e S2",
       features: [
-        "5 relatórios/mês",
+        "Processo automatizado de relatórios",
+        "Dados auditáveis e transparentes",
+        "Custo-benefício acessível",
         "Suporte por e-mail",
-        "Armazenamento por 30 dias",
-        "Até 10MB por upload",
-        "Visualização básica de dados"
+        "Atualização regulatória básica"
       ],
       popular: false,
       bgColor: "from-zinc-900/80 to-zinc-800/90",
       buttonVariant: "outline"
     },
     {
-      name: "Beta",
-      subtitle: "Iniciante",
-      price: "R$29",
+      name: "BETA",
+      subtitle: "ESG Completo",
+      price: "R$XXXX",
       period: "/mês",
-      description: "Para usuários individuais e freelancers",
+      description: "Plataforma integrada com marketplace e repositório centralizado",
       features: [
-        "20 relatórios/mês",
-        "Suporte por e-mail",
-        "Armazenamento por 90 dias",
-        "Até 50MB por upload",
-        "Visualização básica de dados",
-        "Exportar em CSV"
-      ],
-      popular: false,
-      bgColor: "from-green-900/70 to-green-800/80",
-      buttonVariant: "outline"
-    },
-    {
-      name: "Gama",
-      subtitle: "Profissional",
-      price: "R$99",
-      period: "/mês",
-      description: "Para equipes e uso profissional",
-      features: [
-        "100 relatórios/mês",
+        "Tudo do ALFA +",
+        "Marketplace de soluções ESG",
+        "Repositório centralizado de documentos",
+        "Processo 10x mais rápido",
         "Suporte prioritário",
-        "Armazenamento por 1 ano",
-        "Até 200MB por upload",
-        "Exportar em PDF/CSV",
-        "Dashboards avançados",
-        "3 usuários incluídos"
+        "Integração com dados básicos"
       ],
       popular: true,
-      bgColor: "from-blue-900/70 to-blue-800/80",
+      bgColor: "from-green-900/70 to-green-800/80",
       buttonVariant: "primary"
     },
     {
-      name: "Delta",
-      subtitle: "Avançado",
-      price: "R$199",
+      name: "GAMMA",
+      subtitle: "Ecossistema ESG",
+      price: "R$XXXX",
       period: "/mês",
-      description: "Para empresas em crescimento",
+      description: "Solução completa com IA especializada e curadoria",
       features: [
-        "500 relatórios/mês",
-        "Suporte 24/5",
-        "Armazenamento por 2 anos",
-        "Até 500MB por upload",
-        "Exportar em PDF/CSV/JSON",
-        "Dashboards personalizados",
-        "10 usuários incluídos",
-        "Integração com API"
+        "Tudo do BETA +",
+        "Atena - IA especialista em ESG",
+        "Curadoria ESG sob demanda",
+        "Análises inteligentes de dados",
+        "Recomendações personalizadas",
+        "Mentoria para programas sustentáveis"
+      ],
+      popular: false,
+      bgColor: "from-blue-900/70 to-blue-800/80",
+      buttonVariant: "outline"
+    },
+    {
+      name: "DELTA",
+      subtitle: "Para ONGs e Provedores",
+      price: "R$XXXX",
+      period: "/mês",
+      description: "Plataforma para divulgar projetos e conectar-se com investidores",
+      features: [
+        "Visibilidade estratégica",
+        "Networking de impacto",
+        "Conexão com investidores ESG",
+        "Ferramentas de credibilidade",
+        "Dashboard de oportunidades",
+        "Relatórios de engajamento"
       ],
       popular: false,
       bgColor: "from-purple-900/70 to-purple-800/80",
       buttonVariant: "outline"
     },
     {
-      name: "Ômega",
-      subtitle: "Empresarial",
+      name: "ÔMEGA",
+      subtitle: "Para Investidores",
       price: "Sob consulta",
-      description: "Solução personalizada para sua empresa",
+      description: "Dados financeiros e ESG das principais empresas",
       features: [
-        "Relatórios ilimitados",
-        "Suporte 24/7 dedicado",
-        "Armazenamento permanente",
-        "Uploads até 2GB",
-        "API integrada completa",
-        "SSO e On-premise",
-        "Usuários ilimitados",
-        "Treinamento personalizado"
+        "Portfólio completo de indicadores",
+        "Dados financeiros precisos",
+        "Transparência em métricas ESG",
+        "Ferramentas de análise avançada",
+        "Alertas de desempenho",
+        "Relatórios comparativos",
+        "Acesso premium a dados do mercado"
       ],
       popular: false,
       bgColor: "from-red-900/70 to-red-800/80",
@@ -100,81 +96,22 @@ export default function PricingPage() {
     }
   ];
 
-  const featuresComparison = [
-    {
-      name: "Relatórios mensais",
-      alfa: "5",
-      beta: "20",
-      gama: "100",
-      delta: "500",
-      omega: "Ilimitado"
-    },
-    {
-      name: "Armazenamento",
-      alfa: "30 dias",
-      beta: "90 dias",
-      gama: "1 ano",
-      delta: "2 anos",
-      omega: "Permanente"
-    },
-    {
-      name: "Tamanho do upload",
-      alfa: "10MB",
-      beta: "50MB",
-      gama: "200MB",
-      delta: "500MB",
-      omega: "2GB"
-    },
-    {
-      name: "Suporte",
-      alfa: "E-mail",
-      beta: "E-mail",
-      gama: "Prioritário",
-      delta: "24/5",
-      omega: "24/7 dedicado"
-    },
-    {
-      name: "Exportação de dados",
-      alfa: "-",
-      beta: "CSV",
-      gama: "PDF/CSV",
-      delta: "PDF/CSV/JSON",
-      omega: "Todos + API"
-    },
-    {
-      name: "Usuários incluídos",
-      alfa: "1",
-      beta: "1",
-      gama: "3",
-      delta: "10",
-      omega: "Ilimitado"
-    },
-    {
-      name: "Integração",
-      alfa: "-",
-      beta: "-",
-      gama: "Básica",
-      delta: "API",
-      omega: "Completa"
-    }
-  ];
-
   const faqs = [
     {
-      question: "Posso mudar de plano depois?",
-      answer: "Sim, você pode atualizar ou downgrade seu plano a qualquer momento."
+      question: "Posso testar antes de comprar?",
+      answer: "Sim, oferecemos demonstração personalizada de qualquer plano."
     },
     {
-      question: "Há cobrança por cancelamento?",
-      answer: "Não, você pode cancelar quando quiser sem taxas adicionais."
+      question: "Há descontos para ONGs?",
+      answer: "Sim, oferecemos condições especiais para organizações sem fins lucrativos."
     },
     {
-      question: "Quais métodos de pagamento são aceitos?",
-      answer: "Cartões de crédito, PIX e boleto bancário."
+      question: "Como é feita a atualização regulatória?",
+      answer: "Nossa equipe monitora constantemente as mudanças nas normas IFRS e atualiza automaticamente a plataforma."
     },
     {
-      question: "Existe um período de teste gratuito?",
-      answer: "Sim, oferecemos 14 dias grátis para testar qualquer plano pago."
+      question: "Posso migrar de plano depois?",
+      answer: "Sim, você pode alterar seu plano a qualquer momento sem custos adicionais."
     }
   ];
 
@@ -198,9 +135,9 @@ export default function PricingPage() {
               ease: "easeOut",
             }}
           >
-            Planos para{" "}
-            <span className="bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent block sm:inline">
-              todos os perfis
+            Planos ESG para{" "}
+            <span className="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent block sm:inline">
+              todas as necessidades
             </span>
           </motion.h1>
 
@@ -213,8 +150,7 @@ export default function PricingPage() {
               duration: 0.8,
             }}
           >
-            Escolha o plano ideal para suas necessidades de análise e geração de
-            relatórios de sistemas.
+            Escolha o plano ideal para sua jornada de sustentabilidade e conformidade com as normas internacionais.
           </motion.p>
         </div>
 
@@ -228,13 +164,13 @@ export default function PricingPage() {
               transition={{ delay: 0.1 + index * 0.1 }}
               className={`relative rounded-xl lg:rounded-2xl overflow-hidden border border-zinc-700/50 hover:border-zinc-600 transition-all duration-300 ${
                 plan.popular 
-                  ? "ring-1 lg:ring-2 ring-blue-500 shadow-lg transform lg:scale-[1.03] xl:col-span-1" 
+                  ? "ring-1 lg:ring-2 ring-emerald-500 shadow-lg transform lg:scale-[1.03] xl:col-span-1" 
                   : "shadow-md"
               }`}
               whileHover={{ y: -5 }}
             >
               {plan.popular && (
-                <div className="absolute top-0 right-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-xs font-bold px-3 py-1.5 rounded-bl-lg flex items-center">
+                <div className="absolute top-0 right-0 bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-bold px-3 py-1.5 rounded-bl-lg flex items-center">
                   <FiStar className="mr-1.5" /> POPULAR
                 </div>
               )}
@@ -264,140 +200,17 @@ export default function PricingPage() {
                 <button
                   className={`w-full py-3 px-4 rounded-lg font-medium transition-all duration-300 flex items-center justify-center ${
                     plan.popular
-                      ? "bg-gradient-to-r from-blue-500 to-indigo-500 hover:from-blue-600 hover:to-indigo-600 text-white shadow-lg hover:shadow-blue-500/20"
+                      ? "bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white shadow-lg hover:shadow-emerald-500/20"
                       : "bg-zinc-800/50 hover:bg-zinc-800 text-white border border-zinc-700 hover:border-zinc-600"
                   }`}
                 >
-                  {plan.subtitle === "Empresarial" ? "Fale Conosco" : "Começar Agora"}
+                  {plan.price === "Sob consulta" ? "Fale Conosco" : "Começar Agora"}
                   <FiArrowRight className="ml-2" />
                 </button>
               </div>
             </motion.div>
           ))}
         </div>
-
-        {/* Feature Comparison - Mobile Friendly */}
-        <motion.div 
-          className="mt-16 bg-zinc-900/50 border border-zinc-700/50 rounded-xl lg:rounded-2xl overflow-hidden"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-        >
-          <div className="p-6 sm:p-7 lg:p-8">
-            <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 flex items-center">
-              <FiZap className="text-yellow-400 mr-2" /> Comparação Detalhada
-            </h2>
-            
-            {/* Desktop Table */}
-            <div className="hidden md:block overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-zinc-700">
-                    <th className="text-left pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Recursos</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Alfa</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Beta</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300 bg-blue-900/20">Gama</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Delta</th>
-                    <th className="text-center pb-4 sm:pb-5 text-sm sm:text-base font-medium text-zinc-300">Ômega</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {featuresComparison.map((feature, index) => (
-                    <tr key={index} className={`${index !== featuresComparison.length - 1 ? "border-b border-zinc-800/50" : ""}`}>
-                      <td className="py-4 text-sm sm:text-base text-zinc-300 font-medium">{feature.name}</td>
-                      <td className="text-center py-4">
-                        <span className={`text-sm sm:text-base ${
-                          feature.alfa === "-" ? "text-zinc-500" : "text-white"
-                        }`}>
-                          {feature.alfa}
-                        </span>
-                      </td>
-                      <td className="text-center py-4">
-                        <span className={`text-sm sm:text-base ${
-                          feature.beta === "-" ? "text-zinc-500" : "text-white"
-                        }`}>
-                          {feature.beta}
-                        </span>
-                      </td>
-                      <td className="text-center py-4 bg-blue-900/10">
-                        <span className={`text-sm sm:text-base ${
-                          feature.gama === "-" ? "text-zinc-500" : "text-white"
-                        }`}>
-                          {feature.gama}
-                        </span>
-                      </td>
-                      <td className="text-center py-4">
-                        <span className={`text-sm sm:text-base ${
-                          feature.delta === "-" ? "text-zinc-500" : "text-white"
-                        }`}>
-                          {feature.delta}
-                        </span>
-                      </td>
-                      <td className="text-center py-4">
-                        <span className={`text-sm sm:text-base ${
-                          feature.omega === "-" ? "text-zinc-500" : "text-white"
-                        }`}>
-                          {feature.omega}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Mobile Cards */}
-            <div className="md:hidden space-y-4">
-              {featuresComparison.map((feature, index) => (
-                <div key={index} className="bg-zinc-800/30 rounded-lg p-4 border border-zinc-700/50">
-                  <h3 className="font-medium text-white mb-3">{feature.name}</h3>
-                  <div className="grid grid-cols-5 gap-2 text-center">
-                    <div>
-                      <p className="text-xs text-zinc-400 mb-1">Alfa</p>
-                      <p className={`text-xs ${
-                        feature.alfa === "-" ? "text-zinc-500" : "text-white"
-                      }`}>
-                        {feature.alfa}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-zinc-400 mb-1">Beta</p>
-                      <p className={`text-xs ${
-                        feature.beta === "-" ? "text-zinc-500" : "text-white"
-                      }`}>
-                        {feature.beta}
-                      </p>
-                    </div>
-                    <div className="bg-blue-900/20 rounded py-1">
-                      <p className="text-xs text-zinc-400 mb-1">Gama</p>
-                      <p className={`text-xs ${
-                        feature.gama === "-" ? "text-zinc-500" : "text-white"
-                      }`}>
-                        {feature.gama}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-zinc-400 mb-1">Delta</p>
-                      <p className={`text-xs ${
-                        feature.delta === "-" ? "text-zinc-500" : "text-white"
-                      }`}>
-                        {feature.delta}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-zinc-400 mb-1">Ômega</p>
-                      <p className={`text-xs ${
-                        feature.omega === "-" ? "text-zinc-500" : "text-white"
-                      }`}>
-                        {feature.omega}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </motion.div>
 
         {/* FAQ Section */}
         <motion.div 
@@ -408,7 +221,7 @@ export default function PricingPage() {
         >
           <div className="p-6 sm:p-7 lg:p-8">
             <h2 className="text-xl sm:text-2xl font-bold text-white mb-6 flex items-center">
-              <FiHelpCircle className="text-indigo-400 mr-2" /> Perguntas Frequentes
+              <FiHelpCircle className="text-teal-400 mr-2" /> Perguntas Frequentes
             </h2>
             
             <div className="space-y-4">
