@@ -1,7 +1,7 @@
 "use client";
 
 import Link from 'next/link';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { RiMenu3Line, RiCloseLine } from 'react-icons/ri';
 import { motion, AnimatePresence } from 'framer-motion';
 import { supabase } from '@/lib/supabase';
@@ -14,14 +14,26 @@ const NavBar = () => {
   const [user, setUser] = useState<any>(null);
   const [, setLoading] = useState(true);
   const router = useRouter();
+  const navRef = useRef<HTMLDivElement>(null);
 
-  // Verificar sessão do usuário
+  // Fechar menu ao clicar fora
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isOpen && navRef.current && !navRef.current.contains(event.target as Node)) {
+        setIsOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, [isOpen]);
+
   useEffect(() => {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      
       if (session) {
-        // Buscar dados do perfil
         const { data: profile } = await supabase
           .from('profiles')
           .select('name')
@@ -38,7 +50,6 @@ const NavBar = () => {
 
     checkSession();
 
-    // Ouvir mudanças na autenticação
     const { data: { subscription } } = supabase.auth.onAuthStateChange((_, session) => {
       if (session) {
         setUser({
@@ -50,7 +61,6 @@ const NavBar = () => {
       }
     });
 
-    // Verificar scroll
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20);
     };
@@ -65,35 +75,33 @@ const NavBar = () => {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setUser(null);
+    setIsOpen(false);
     router.push('/');
   };
 
-  // Itens de navegação quando não logado
   const unauthenticatedNavItems = [
     { href: '/Pricing', label: 'Planos' },
     { href: '/Contact', label: 'Contato' },
   ];
 
-  // Todos os itens de navegação quando logado
   const authenticatedNavItems = [
     { href: '/Chat', label: 'Chat' },
     { href: '/Contact', label: 'Contato' },
-    { href: '/Dashboard', label: 'Dashboard'},
+    { href: '/Dashboard', label: 'Dashboard' },
     { href: '/Forms', label: 'Formulário' },
     { href: '/Investors', label: 'Investidores' },
     { href: '/Pricing', label: 'Planos' },
     { href: '/Services', label: 'Vitrine ESG' },
   ];
 
-  // Itens de navegação baseados no estado de autenticação
   const navItems = user ? authenticatedNavItems : unauthenticatedNavItems;
 
   const authItems = user ? [
     {
       element: (
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 flex-wrap justify-center">
           <span className="text-sm text-white">Olá, {user.name.split(' ')[0]}</span>
-          <button 
+          <button
             onClick={handleLogout}
             className="px-4 py-1 text-sm rounded-full bg-red-600 hover:bg-red-700 text-white"
           >
@@ -107,108 +115,102 @@ const NavBar = () => {
     { href: '/Register', label: 'Registrar', className: 'px-4 py-1 text-sm rounded-full bg-blue-600 hover:bg-blue-700 text-white' },
   ];
 
-  
   return (
     <>
-      {/* Navbar Desktop */}
-      <nav className={`z-50 fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl flex items-center justify-between py-2 px-6 rounded-full transition-all duration-300 ${
-        isScrolled ? 'bg-black/80 backdrop-blur-lg border border-zinc-800 shadow-lg' : 'bg-black/60 backdrop-blur-md border border-zinc-800'
-      }`}>
-        {/* Logo */}
-        <Link href="/" className="flex items-center">
-          <Image 
-            src="/logo.png" 
-            alt="Zeus Lightning Logo" 
-            width={50} 
-            height={50} 
-            className="text-3xl md:text-4xl text-white" 
-          />
-          <span className="ml-2 text-lg md:text-xl font-semibold bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
-            Zeus Lightning
-          </span>
-        </Link>
+      {/* Navbar Principal */}
+      <div ref={navRef}>
+        <nav className={`z-50 fixed top-4 left-1/2 -translate-x-1/2 w-[95%] max-w-6xl flex flex-wrap items-center justify-between py-2 px-6 rounded-full transition-all duration-300 ${
+          isScrolled ? 'bg-black/80 backdrop-blur-lg border border-zinc-800 shadow-lg' : 'bg-black/60 backdrop-blur-md border border-zinc-800'
+        }`}>
+          {/* Logo */}
+          <Link href="/" className="flex items-center" onClick={() => setIsOpen(false)}>
+            <Image
+              src="/logo.png"
+              alt="Zeus Lightning Logo"
+              width={50}
+              height={50}
+              className="text-3xl md:text-4xl text-white"
+            />
+            <span className="ml-2 text-lg md:text-xl font-semibold bg-gradient-to-r from-blue-400 to-indigo-300 bg-clip-text text-transparent">
+              Zeus Lightning
+            </span>
+          </Link>
 
-        {/* Itens de navegação - Desktop */}
-        <div className="hidden md:flex items-center gap-6">
-          {navItems.map((item) => (
-            <Link 
-              key={item.href} 
-              href={item.href}
-              className="text-white hover:text-blue-300 transition-colors text-sm font-medium relative group"
-            >
-              {item.label}
-              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
-            </Link>
-          ))}
-        </div>
-
-        {/* Botões de autenticação - Desktop */}
-        <div className="hidden md:flex items-center gap-3">
-          {authItems.map((item, index) => (
-            'href' in item ? (
+          {/* Itens Desktop */}
+          <div className="hidden lg:flex items-center gap-6">
+            {navItems.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`text-white transition-colors ${item.className}`}
+                className="text-white hover:text-blue-300 transition-colors text-sm font-medium relative group"
+                onClick={() => setIsOpen(false)}
               >
                 {item.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-blue-400 transition-all duration-300 group-hover:w-full"></span>
               </Link>
-            ) : (
-              <React.Fragment key={index}>
-                {item.element}
-              </React.Fragment>
-            )
-          ))}
-        </div>
+            ))}
+          </div>
 
-        {/* Botão Hamburguer - Mobile */}
-        <button 
-          className="md:hidden text-white p-2 focus:outline-none"
-          onClick={() => setIsOpen(!isOpen)}
-          aria-label="Menu"
-        >
-          {isOpen ? (
-            <RiCloseLine className="w-6 h-6" />
-          ) : (
-            <RiMenu3Line className="w-6 h-6" />
-          )}
-        </button>
-      </nav>
+          {/* Autenticação Desktop */}
+          <div className="hidden lg:flex items-center gap-3 flex-wrap justify-end">
+            {authItems.map((item, index) => (
+              'href' in item ? (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={`text-white transition-colors ${item.className}`}
+                  onClick={() => setIsOpen(false)}
+                >
+                  {item.label}
+                </Link>
+              ) : (
+                <React.Fragment key={index}>
+                  {item.element}
+                </React.Fragment>
+              )
+            ))}
+          </div>
 
-      {/* Menu Mobile */}
-      <AnimatePresence>
-        {isOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -20 }}
-            transition={{ duration: 0.3 }}
-            className="fixed z-40 top-20 left-0 right-0 bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-800 shadow-xl md:hidden"
+          {/* Botão Menu Mobile */}
+          <button
+            className="lg:hidden text-white p-2 focus:outline-none"
+            onClick={() => setIsOpen(!isOpen)}
+            aria-label="Menu"
           >
-            <div className="container mx-auto px-4 py-4">
-              <div className="flex flex-col space-y-4">
+            {isOpen ? <RiCloseLine className="w-6 h-6" /> : <RiMenu3Line className="w-6 h-6" />}
+          </button>
+        </nav>
+
+        {/* Menu Mobile e Tablet */}
+        <AnimatePresence>
+          {isOpen && (
+            <motion.div
+              initial={{ opacity: 0, y: -20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="fixed z-40 top-20 inset-x-0 bg-zinc-900/95 backdrop-blur-xl border-b border-zinc-800 shadow-xl lg:hidden"
+            >
+              <div className="max-w-6xl mx-auto px-4 py-6 flex flex-col gap-4">
                 {navItems.map((item) => (
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="text-white hover:text-blue-300 py-3 px-4 rounded-lg hover:bg-zinc-800/50 transition-colors"
+                    className="text-white hover:text-blue-300 py-3 px-4 rounded-lg hover:bg-zinc-800/50 transition-colors text-center"
                     onClick={() => setIsOpen(false)}
                   >
                     {item.label}
                   </Link>
                 ))}
 
-                <div className="flex flex-col sm:flex-row gap-3 pt-2 border-t border-zinc-800">
+                <div className="flex flex-col sm:flex-row sm:justify-center gap-3 pt-4 border-t border-zinc-800">
                   {user ? (
                     <>
-                      <span className="text-white py-2 px-4 text-center">
+                      <span className="text-white py-2 text-center">
                         Olá, {user.name.split(' ')[0]}
                       </span>
                       <button
-                        onClick={() => {
-                          handleLogout();
-                          setIsOpen(false);
-                        }}
+                        onClick={handleLogout}
                         className="px-4 py-2 text-sm rounded-full bg-red-600 hover:bg-red-700 text-white text-center"
                       >
                         Sair
@@ -220,7 +222,7 @@ const NavBar = () => {
                         <Link
                           key={item.href}
                           href={item.href}
-                          className={`text-center text-white transition-colors ${item.className} py-2`}
+                          className={`text-white transition-colors ${item.className} text-center`}
                           onClick={() => setIsOpen(false)}
                         >
                           {item.label}
@@ -230,10 +232,10 @@ const NavBar = () => {
                   )}
                 </div>
               </div>
-            </div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+            </motion.div>
+          )}
+        </AnimatePresence>
+      </div>
     </>
   );
 };
