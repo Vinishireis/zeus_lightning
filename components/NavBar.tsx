@@ -85,7 +85,7 @@ const NavBar = () => {
   ];
 
   const authenticatedNavItems = [
-    { href: '/Chat', label: 'Chat' },
+    { href: '/Chat', label: 'Atena' },
     { href: '/Contact', label: 'Contato' },
     { href: '/Dashboard', label: 'Dashboard' },
     { href: '/Forms', label: 'Formulário' },
