@@ -77,16 +77,33 @@ export default function InvestorsPage() {
   
 return (
   <main className="min-h-screen w-full bg-black relative overflow-x-hidden">
-    {/* Efeitos de background otimizados */}
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      {/* Backgrounds otimizados para mobile */}
-      <div className="absolute top-1/3 left-1/4 w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-emerald-500/10 blur-[80px] md:blur-[150px] animate-[pulse_8s_ease-in-out_infinite]"></div>
-      <div className="absolute bottom-1/4 right-1/3 w-[250px] h-[250px] md:w-[400px] md:h-[400px] rounded-full bg-cyan-500/10 blur-[100px] md:blur-[180px] animate-[pulse_12s_ease-in-out_infinite]"></div>
-      <div className="absolute top-1/2 right-1/4 w-[180px] h-[180px] md:w-[250px] md:h-[250px] rounded-full bg-blue-500/10 blur-[60px] md:blur-[120px] animate-[pulse_10s_ease-in-out_infinite]"></div>
+    {/* Optimized background effects with reduced repaints */}
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 will-change-transform">
+      <div 
+        className="absolute top-1/3 left-1/4 w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-emerald-500/10 blur-[80px] md:blur-[150px]"
+        style={{
+          animation: 'pulse 8s ease-in-out infinite',
+          transform: 'translate3d(0,0,0)'
+        }}
+      ></div>
+      <div 
+        className="absolute bottom-1/4 right-1/3 w-[250px] h-[250px] md:w-[400px] md:h-[400px] rounded-full bg-cyan-500/10 blur-[100px] md:blur-[180px]"
+        style={{
+          animation: 'pulse 12s ease-in-out infinite',
+          transform: 'translate3d(0,0,0)'
+        }}
+      ></div>
+      <div 
+        className="absolute top-1/2 right-1/4 w-[180px] h-[180px] md:w-[250px] md:h-[250px] rounded-full bg-blue-500/10 blur-[60px] md:blur-[120px]"
+        style={{
+          animation: 'pulse 10s ease-in-out infinite',
+          transform: 'translate3d(0,0,0)'
+        }}
+      ></div>
     </div>
 
     <div className="container mx-auto px-4 sm:px-6 py-12 md:py-16 max-w-6xl relative z-10">
-      {/* Cabeçalho otimizado */}
+      {/* Optimized header with reduced motion for prefers-reduced-motion */}
       <motion.div 
         className="text-center pt-8 md:pt-10 pb-10 md:pb-12 relative"
         initial={{ opacity: 0 }}
@@ -124,11 +141,12 @@ return (
         </motion.p>
       </motion.div>
 
-      {/* Filtro otimizado para mobile */}
+      {/* Optimized filter bar with hardware acceleration */}
       <motion.div 
         className={`mb-8 md:mb-12 sticky top-0 z-30 bg-zinc-950/80 backdrop-blur-sm md:backdrop-blur-lg border-b border-zinc-800 transition-all duration-300 ${
           isScrolled ? 'py-2' : 'py-3 md:py-4'
         }`}
+        style={{ willChange: 'transform, opacity' }}
         initial={{ opacity: 0, y: -10 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.4 }}
@@ -153,6 +171,7 @@ return (
                         ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                     }`}
+                    style={{ willChange: 'transform' }}
                   >
                     Todos
                   </button>
@@ -166,6 +185,7 @@ return (
                           ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
                           : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                       }`}
+                      style={{ willChange: 'transform' }}
                     >
                       {sector}
                     </button>
@@ -177,7 +197,7 @@ return (
         </div>
       </motion.div>
 
-      {/* Lista de Investidores otimizada */}
+      {/* Optimized investor list with efficient animations */}
       <div className="space-y-4 sm:space-y-6">
         {filteredInvestors.map((investor, index) => (
           <motion.div
@@ -191,9 +211,10 @@ return (
             }}
             className="bg-zinc-900/70 border border-zinc-800 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer"
             onClick={() => navigateToInvestor(investor.id)}
+            style={{ willChange: 'transform, opacity' }}
           >
             <div className="flex flex-col sm:flex-row">
-              {/* Imagem responsiva */}
+              {/* Optimized image loading */}
               <div className="sm:w-1/3 h-48 sm:h-auto relative">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent sm:bg-gradient-to-r sm:from-black/80 sm:to-transparent z-10"></div>
                 <Image
@@ -203,13 +224,14 @@ return (
                   className="object-cover"
                   sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
                   priority={index < 3}
+                  loading={index < 3 ? "eager" : "lazy"}
                 />
                 <span className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20 text-white font-bold text-lg sm:text-xl">
                   {investor.name}
                 </span>
               </div>
               
-              {/* Conteúdo otimizado */}
+              {/* Content with optimized reflows */}
               <div className="sm:w-2/3 p-4 sm:p-5 md:p-6">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4">
                   <h3 className="text-lg sm:text-xl font-bold text-white">{investor.title}</h3>
