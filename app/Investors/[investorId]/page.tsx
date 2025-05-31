@@ -7,6 +7,9 @@ import {
   FiMail,
   FiTrendingUp,
   FiCalendar,
+  FiBriefcase,
+  FiBarChart2
+
 } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
@@ -177,38 +180,53 @@ export default function InvestorDetails({
     );
   }
 
-  return (
-    <main className="min-h-screen w-full bg-black text-white z-1">
-      <div className="container  pt-25 mx-auto px-4 py-8 max-w-6xl">
-        {/* Botão Voltar - Versão Melhorada */}
-        <Link href="/Investors">
-          <motion.button
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="flex items-center gap-3 mb-8 px-5 py-3 rounded-xl border-2 border-emerald-500/40 hover:bg-emerald-500/10 text-emerald-400 hover:text-emerald-300 transition-all group active:scale-95 w-full"
-          >
-            <FiArrowLeft className="text-xl group-hover:-translate-x-1 transition-transform flex-shrink-0" />
-            <span className="font-semibold text-lg">
-              Voltar para lista de investidores
-            </span>
-          </motion.button>
-        </Link>
+return (
+  <main className="min-h-screen w-full text-white relative overflow-hidden">
+    {/* Efeito de background sutil */}
+    <div className="absolute inset-0 opacity-5 pointer-events-none">
+      <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-emerald-500 blur-[100px]"></div>
+      <div className="absolute bottom-1/3 right-1/3 w-64 h-64 rounded-full bg-blue-500 blur-[100px]"></div>
+    </div>
 
-        {/* Container principal com layout mais limpo */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="flex flex-col lg:flex-row gap-8"
+    <div className="container relative pt-25 mx-auto px-4 py-8 max-w-6xl z-10">
+      {/* Botão Voltar - Com animação mais suave */}
+      <Link href="/Investors" className="block mb-8">
+        <motion.button
+          initial={{ opacity: 0, x: -10 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ type: "spring", stiffness: 300, damping: 20 }}
+          whileHover={{ x: -3 }}
+          className="flex items-center gap-3 px-5 py-3 rounded-xl border-2 border-emerald-500/40 hover:bg-emerald-500/10 text-emerald-400 hover:text-emerald-300 transition-all group active:scale-95 w-full max-w-md"
         >
-          {/* Coluna esquerda - informações básicas */}
-          <div className="lg:w-1/3 space-y-6">
-            {/* Card de perfil com mais contraste */}
-            <div className="bg-zinc-900 border-2 border-zinc-800 rounded-3xl overflow-hidden shadow-lg shadow-emerald-500/10">
-              {/* Imagem com overlay para melhor legibilidade */}
-              <div className="relative h-64 w-full">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10" />
+          <FiArrowLeft className="text-xl group-hover:-translate-x-1 transition-transform flex-shrink-0" />
+          <span className="font-semibold text-lg">
+            Voltar para lista de investidores
+          </span>
+        </motion.button>
+      </Link>
+
+      {/* Container principal com animação refinada */}
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+        className="flex flex-col lg:flex-row gap-8"
+      >
+        {/* Coluna esquerda - informações básicas */}
+        <div className="lg:w-1/3 space-y-6">
+          {/* Card de perfil com efeito de hover */}
+          <motion.div 
+            whileHover={{ y: -5 }}
+            className="bg-zinc-900 border-2 border-zinc-800 rounded-3xl overflow-hidden shadow-lg shadow-emerald-500/10 transition-all duration-300"
+          >
+            {/* Imagem com overlay e efeito de zoom sutil */}
+            <div className="relative h-64 w-full overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent z-10" />
+              <motion.div
+                whileHover={{ scale: 1.03 }}
+                transition={{ duration: 0.3 }}
+                className="h-full w-full"
+              >
                 <Image
                   src={investor.logo}
                   alt={investor.name}
@@ -216,136 +234,198 @@ export default function InvestorDetails({
                   className="object-cover"
                   priority
                 />
-                <h1 className="absolute bottom-4 left-4 z-20 text-3xl font-bold">
-                  {investor.name}
-                </h1>
-              </div>
-
-              {/* Informações com melhor espaçamento */}
-              <div className="p-6 space-y-4">
-                <div className="flex items-center gap-3 text-zinc-300">
-                  <FiCalendar className="flex-shrink-0 text-emerald-400" />
-                  <span>Fundado em {investor.founded}</span>
-                </div>
-
-                {/* Setores como chips destacados */}
-                <div>
-                  <h3 className="text-sm font-medium text-zinc-400 mb-2">
-                    SETORES
-                  </h3>
-                  <div className="flex flex-wrap gap-2">
-                    {investor.sectors.map((sector) => (
-                      <span
-                        key={sector}
-                        className="px-3 py-1 bg-emerald-900/30 text-emerald-300 text-xs rounded-full border border-emerald-800/50 font-medium"
-                      >
-                        {sector}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-
-                {/* Informações financeiras em grid */}
-                <div className="grid grid-cols-2 gap-4 pt-2">
-                  <div>
-                    <p className="text-sm text-zinc-400">TICKET</p>
-                    <p className="text-lg font-semibold text-emerald-400">
-                      {investor.ticket}
-                    </p>
-                  </div>
-                  <div>
-                    <p className="text-sm text-zinc-400">ATUAÇÃO</p>
-                    <p className="text-lg font-semibold text-blue-400">
-                      {investor.geography}
-                    </p>
-                  </div>
-                </div>
-              </div>
+              </motion.div>
+              <h1 className="absolute bottom-4 left-4 z-20 text-3xl font-bold drop-shadow-lg">
+                {investor.name}
+              </h1>
             </div>
 
-            {/* Card de contato mais destacado */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="bg-gradient-to-br from-emerald-900/60 to-cyan-900/40 border-2 border-emerald-800/40 rounded-3xl p-6 text-center shadow-lg shadow-emerald-500/10"
-            >
-              <h3 className="text-2xl font-bold mb-4">Entrar em Contato</h3>
-              <Link
-                href={`mailto:${investor.contact}`}
-                className="inline-flex items-center justify-center gap-2 w-full px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-emerald-500/20"
+            {/* Informações com animação escalonada */}
+            <div className="p-6 space-y-4">
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.1 }}
+                className="flex items-center gap-3 text-zinc-300"
               >
-                <FiMail className="text-xl" />
-                Enviar Proposta
-              </Link>
-            </motion.div>
-          </div>
+                <FiCalendar className="flex-shrink-0 text-emerald-400" />
+                <span>Fundado em {investor.founded}</span>
+              </motion.div>
 
-          {/* Coluna direita - detalhes */}
-          <div className="lg:w-2/3 space-y-8">
-            {/* Seção de descrição */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="bg-zinc-900/80 border-2 border-zinc-800 rounded-3xl p-8"
+              {/* Setores com animação em cascata */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.2 }}
+              >
+                <h3 className="text-sm font-medium text-zinc-400 mb-2">
+                  SETORES
+                </h3>
+                <div className="flex flex-wrap gap-2">
+                  {investor.sectors.map((sector, i) => (
+                    <motion.span
+                      key={sector}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.2 + i * 0.05 }}
+                      className="px-3 py-1 bg-emerald-900/30 text-emerald-300 text-xs rounded-full border border-emerald-800/50 font-medium hover:bg-emerald-900/50 transition-colors"
+                    >
+                      {sector}
+                    </motion.span>
+                  ))}
+                </div>
+              </motion.div>
+
+              {/* Grid de informações com animação */}
+              <motion.div 
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.3 }}
+                className="grid grid-cols-2 gap-4 pt-2"
+              >
+                <div className="bg-zinc-800/20 p-3 rounded-lg">
+                  <p className="text-sm text-zinc-400">TICKET</p>
+                  <p className="text-lg font-semibold text-emerald-400">
+                    {investor.ticket}
+                  </p>
+                </div>
+                <div className="bg-zinc-800/20 p-3 rounded-lg">
+                  <p className="text-sm text-zinc-400">ATUAÇÃO</p>
+                  <p className="text-lg font-semibold text-blue-400">
+                    {investor.geography}
+                  </p>
+                </div>
+              </motion.div>
+            </div>
+          </motion.div>
+
+          {/* Card de contato com efeito pulsante sutil */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            whileHover={{ scale: 1.02 }}
+            transition={{ 
+              delay: 0.4,
+              whileHover: { 
+                type: "spring",
+                stiffness: 400,
+                damping: 10
+              }
+            }}
+            className="bg-gradient-to-br from-emerald-900/60 to-cyan-900/40 border-2 border-emerald-800/40 rounded-3xl p-6 text-center shadow-lg shadow-emerald-500/10 relative overflow-hidden"
+          >
+            {/* Efeito de brilho sutil */}
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-gradient-to-r from-transparent via-emerald-500/10 to-transparent opacity-0 hover:opacity-100 hover:animate-[spin_6s_linear_infinite] transition-opacity duration-300"></div>
+            </div>
+            
+            <h3 className="text-2xl font-bold mb-4 relative z-10">Entrar em Contato</h3>
+            <Link
+              href={`mailto:${investor.contact}`}
+              className="relative inline-flex items-center justify-center gap-2 w-full px-6 py-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-semibold transition-all hover:shadow-lg hover:shadow-emerald-500/20 overflow-hidden group"
             >
-              <h2 className="text-3xl font-bold mb-6">{investor.title}</h2>
+              <span className="absolute inset-0 bg-gradient-to-r from-emerald-500/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></span>
+              <FiMail className="text-xl relative z-10" />
+              <span className="relative z-10">Enviar Proposta</span>
+            </Link>
+          </motion.div>
+        </div>
+
+        {/* Coluna direita - detalhes */}
+        <div className="lg:w-2/3 space-y-8">
+          {/* Seção de descrição com efeito de entrada */}
+          <motion.div
+            initial={{ opacity: 0, x: 20 }}
+            animate={{ opacity: 1, x: 0 }}
+            transition={{ delay: 0.3 }}
+            className="bg-zinc-900/80 border-2 border-zinc-800 rounded-3xl p-8 backdrop-blur-sm"
+          >
+            <h2 className="text-3xl font-bold mb-6 relative">
+              <span className="relative inline-block">
+                {investor.title}
+                <span className="absolute bottom-0 left-0 w-full h-0.5 bg-emerald-500/50"></span>
+              </span>
+            </h2>
+            <div className="prose prose-invert max-w-none">
               <p className="text-zinc-300 text-lg leading-relaxed">
                 {investor.fullDescription}
               </p>
-            </motion.div>
-
-            {/* Critérios de investimento */}
-            <div className="bg-zinc-900/80 border-2 border-zinc-800 rounded-3xl p-8">
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                <FiCheck className="text-emerald-400" />
-                <span>Critérios de Investimento</span>
-              </h3>
-              <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {investor.investmentCriteria.map((criterion, index) => (
-                  <li
-                    key={index}
-                    className="flex items-start gap-3 p-4 bg-zinc-800/30 rounded-xl border-l-4 border-emerald-500"
-                  >
-                    <FiCheck className="text-emerald-400 mt-1 flex-shrink-0" />
-                    <span className="text-zinc-300">{criterion}</span>
-                  </li>
-                ))}
-              </ul>
             </div>
+          </motion.div>
 
-            {/* Portfólio */}
-            <div className="bg-zinc-900/80 border-2 border-zinc-800 rounded-3xl p-8">
-              <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                <FiTrendingUp className="text-blue-400" />
-                <span>Portfólio de Investimentos</span>
-              </h3>
-              <div className="space-y-4">
-                {investor.portfolio.map((investment, index) => (
-                  <div
-                    key={index}
-                    className="p-5 bg-zinc-800/20 hover:bg-zinc-800/40 rounded-xl border border-zinc-700 transition-all"
-                  >
-                    <div className="flex justify-between items-center mb-2">
-                      <h4 className="font-bold text-lg">
-                        {investment.company}
-                      </h4>
-                      <span className="text-emerald-400 font-semibold">
-                        {investment.amount}
-                      </span>
-                    </div>
-                    <div className="flex flex-wrap justify-between gap-2 text-sm text-zinc-400">
-                      <span>Setor: {investment.sector}</span>
-                      <span>Estágio: {investment.stage}</span>
-                    </div>
+          {/* Critérios de investimento com animação em cascata */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.4 }}
+            className="bg-zinc-900/80 border-2 border-zinc-800 rounded-3xl p-8 backdrop-blur-sm"
+          >
+            <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <FiCheck className="text-emerald-400" />
+              <span>Critérios de Investimento</span>
+            </h3>
+            <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {investor.investmentCriteria.map((criterion, index) => (
+                <motion.li
+                  key={index}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.5 + index * 0.05 }}
+                  className="flex items-start gap-3 p-4 bg-zinc-800/30 rounded-xl border-l-4 border-emerald-500 hover:bg-zinc-800/50 transition-colors"
+                >
+                  <FiCheck className="text-emerald-400 mt-1 flex-shrink-0" />
+                  <span className="text-zinc-300">{criterion}</span>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.div>
+
+          {/* Portfólio com animação de itens */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.5 }}
+            className="bg-zinc-900/80 border-2 border-zinc-800 rounded-3xl p-8 backdrop-blur-sm"
+          >
+            <h3 className="text-2xl font-bold mb-6 flex items-center gap-3">
+              <FiTrendingUp className="text-blue-400" />
+              <span>Portfólio de Investimentos</span>
+            </h3>
+            <div className="space-y-4">
+              {investor.portfolio.map((investment, index) => (
+                <motion.div
+                  key={index}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.6 + index * 0.1 }}
+                  whileHover={{ y: -3 }}
+                  className="p-5 bg-zinc-800/20 hover:bg-zinc-800/40 rounded-xl border border-zinc-700 transition-all group"
+                >
+                  <div className="flex justify-between items-center mb-2">
+                    <h4 className="font-bold text-lg group-hover:text-emerald-300 transition-colors">
+                      {investment.company}
+                    </h4>
+                    <span className="text-emerald-400 font-semibold bg-emerald-900/30 px-3 py-1 rounded-full text-sm">
+                      {investment.amount}
+                    </span>
                   </div>
-                ))}
-              </div>
+                  <div className="flex flex-wrap justify-between gap-2 text-sm text-zinc-400">
+                    <span className="flex items-center gap-1">
+                      <FiBriefcase className="text-xs opacity-60" />
+                      Setor: {investment.sector}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <FiBarChart2 className="text-xs opacity-60" />
+                      Estágio: {investment.stage}
+                    </span>
+                  </div>
+                </motion.div>
+              ))}
             </div>
-          </div>
-        </motion.div>
-      </div>
-    </main>
-  );
+          </motion.div>
+        </div>
+      </motion.div>
+    </div>
+  </main>
+);
 }
