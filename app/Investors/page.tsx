@@ -76,37 +76,32 @@ export default function InvestorsPage() {
   };
   
 return (
-    <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">
+  <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">
     {/* Background effects - optimized */}
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
-      <div 
-        className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-emerald-500/10 blur-[150px]"
-        style={{
-          animation: 'pulse 8s ease-in-out infinite',
-          transform: 'translate3d(0,0,0)',
-          willChange: 'transform, opacity'
-        }}
-      ></div>
-      <div 
-        className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] rounded-full bg-cyan-500/10 blur-[180px]"
-        style={{
-          animation: 'pulse 12s ease-in-out infinite',
-          transform: 'translate3d(0,0,0)',
-          willChange: 'transform, opacity'
-        }}
-      ></div>
-      <div 
-        className="absolute top-1/2 right-1/4 w-[250px] h-[250px] rounded-full bg-blue-500/10 blur-[120px]"
-        style={{
-          animation: 'pulse 10s ease-in-out infinite',
-          transform: 'translate3d(0,0,0)',
-          willChange: 'transform, opacity'
-        }}
-      ></div>
+      {[{
+        className: "top-1/3 left-1/4 w-[300px] h-[300px] bg-emerald-500/10 blur-[150px]",
+        duration: '8s'
+      }, {
+        className: "bottom-1/4 right-1/3 w-[400px] h-[400px] bg-cyan-500/10 blur-[180px]",
+        duration: '12s'
+      }, {
+        className: "top-1/2 right-1/4 w-[250px] h-[250px] bg-blue-500/10 blur-[120px]",
+        duration: '10s'
+      }].map((style, idx) => (
+        <div
+          key={idx}
+          className={`absolute rounded-full ${style.className}`}
+          style={{
+            animation: `pulse ${style.duration} ease-in-out infinite`,
+            transform: 'translate3d(0,0,0)',
+            willChange: 'transform, opacity'
+          }}
+        ></div>
+      ))}
     </div>
 
     <div className="container mx-auto px-4 py-16 max-w-6xl relative z-10">
-      {/* Header - optimized */}
       <motion.div 
         className="text-center pt-10 pb-12 relative"
         initial={{ opacity: 0 }}
@@ -114,16 +109,11 @@ return (
         transition={{ duration: 0.6 }}
       >
         <div className="absolute -top-20 -left-20 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl animate-[spin_15s_linear_infinite]"></div>
-        
-        <motion.h1 
+
+        <motion.h1
           initial={{ opacity: 0, y: -30 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ 
-            type: "spring",
-            stiffness: 80,
-            damping: 8,
-            delay: 0.2
-          }}
+          transition={{ type: "spring", stiffness: 80, damping: 8, delay: 0.2 }}
           className="text-4xl md:text-6xl font-bold text-white mb-6 relative"
         >
           <span className="relative inline-block">
@@ -133,23 +123,18 @@ return (
             </span>
           </span>
         </motion.h1>
-        
+
         <motion.p
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
-          transition={{ 
-            delay: 0.4,
-            duration: 0.8,
-            ease: [0.16, 1, 0.3, 1]
-          }}
+          transition={{ delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto leading-relaxed relative"
         >
           Encontre uma empresa com matching perfeito entre indicadores{' '}
           <span className="relative inline-block">
             <span className="text-emerald-300 font-medium relative z-10">ESG</span>
             <span className="absolute bottom-0 left-0 w-full h-px bg-emerald-400/50 animate-[scaleX_4s_ease-in-out_infinite] origin-left"></span>
-          </span>{' '}
-          e indicadores{' '}
+          </span>{' '}e indicadores{' '}
           <span className="relative inline-block">
             <span className="text-blue-300 font-medium relative z-10">Financeiros</span>
             <span className="absolute bottom-0 left-0 w-full h-px bg-blue-400/50 animate-[scaleX_4s_ease-in-out_infinite] origin-left"></span>
@@ -157,65 +142,42 @@ return (
         </motion.p>
       </motion.div>
 
-      {/* Filter bar - optimized */}
       <motion.div 
-        className={`mb-12 sticky top-0 z-30transition-all duration-300 ${
-          isScrolled ? 'py-3' : 'py-5'
-        }`}
+        className={`mb-12 sticky top-0 z-30 transition-all duration-300 ${isScrolled ? 'py-3' : 'py-5'}`}
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ 
-          delay: 0.5,
-          type: "spring",
-          stiffness: 200,
-          damping: 15
-        }}
+        transition={{ delay: 0.5, type: "spring", stiffness: 200, damping: 15 }}
         style={{ willChange: 'transform, opacity' }}
       >
         <div className="container mx-auto px-4 max-w-6xl">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
-            <motion.h3 
-              className={`${
-                isScrolled ? 'text-base' : 'text-lg'
-              } font-bold text-white flex items-center gap-2`}
+            <motion.h3
+              className={`${isScrolled ? 'text-base' : 'text-lg'} font-bold text-white flex items-center gap-2`}
               whileHover={{ x: 3 }}
             >
               <motion.span
-                animate={{
-                  rotate: [0, 5, -5, 0],
-                  transition: {
-                    repeat: Infinity,
-                    repeatType: "mirror",
-                    duration: 2,
-                    ease: "easeInOut"
-                  }
-                }}
+                animate={{ rotate: [0, 5, -5, 0] }}
+                transition={{ repeat: Infinity, repeatType: "mirror", duration: 2, ease: "easeInOut" }}
                 className="text-emerald-400"
               >
                 <FiFilter />
               </motion.span>
               {isScrolled ? 'Filtros:' : 'Filtrar por Setor:'}
             </motion.h3>
-            
+
             <div className="w-full relative">
-              
-              
               <div className="w-full overflow-x-auto scrollbar-hide pb-2">
                 <div className="flex flex-nowrap gap-3 py-1 px-1">
                   <motion.button
                     onClick={() => setSelectedSector(null)}
                     whileTap={{ scale: 0.95 }}
                     whileHover={{ y: -2 }}
-                    className={`flex-shrink-0 px-5 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${
-                      !selectedSector
-                        ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/40'
-                        : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'
-                    }`}
+                    className={`flex-shrink-0 px-5 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${!selectedSector ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/40' : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'}`}
                     style={{ willChange: 'transform' }}
                   >
                     Todos
                   </motion.button>
-                  
+
                   {sectorsList.map((sector, index) => (
                     <motion.button
                       key={sector}
@@ -225,11 +187,7 @@ return (
                       transition={{ delay: 0.6 + index * 0.05 }}
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`flex-shrink-0 px-5 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${
-                        selectedSector === sector
-                          ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/40'
-                          : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'
-                      }`}
+                      className={`flex-shrink-0 px-5 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${selectedSector === sector ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/40' : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'}`}
                       style={{ willChange: 'transform' }}
                     >
                       {sector}
@@ -242,22 +200,14 @@ return (
         </div>
       </motion.div>
 
-      {/* Investor list - optimized */}
       <div className="space-y-8">
         {filteredInvestors.map((investor, index) => (
           <motion.div
             key={investor.id}
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ 
-              delay: 0.7 + index * 0.08,
-              type: "spring",
-              stiffness: 120,
-              damping: 10
-            }}
-            whileHover={{ 
-              y: -5
-            }}
+            transition={{ delay: 0.7 + index * 0.08, type: "spring", stiffness: 120, damping: 10 }}
+            whileHover={{ y: -5 }}
             className="group bg-zinc-900/80 border border-zinc-800/50 rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer"
             onClick={() => navigateToInvestor(investor.id)}
             style={{ willChange: 'transform, opacity' }}
@@ -278,7 +228,7 @@ return (
                   {investor.name}
                 </span>
               </div>
-              
+
               <div className="md:w-2/3 p-6 md:p-8 flex flex-col justify-between">
                 <div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
@@ -299,32 +249,8 @@ return (
                       ))}
                     </div>
                   </div>
-                  
-                  <p className="text-zinc-400 mt-4 leading-relaxed">
-                    {investor.description}
-                  </p>
-                </div>
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-8">
-                  <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg border border-zinc-700/50 hover:border-emerald-500/30 transition-colors">
-                    <div className="p-2 bg-emerald-900/20 rounded-lg text-emerald-400">
-                      <FiDollarSign className="text-lg" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-zinc-400">Ticket</p>
-                      <p className="text-emerald-400 font-medium text-lg">{investor.ticket}</p>
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg border border-zinc-700/50 hover:border-blue-500/30 transition-colors">
-                    <div className="p-2 bg-blue-900/20 rounded-lg text-blue-400">
-                      <FiGlobe className="text-lg" />
-                    </div>
-                    <div>
-                      <p className="text-xs text-zinc-400">Atuação</p>
-                      <p className="text-blue-400 font-medium text-lg">{investor.geography}</p>
-                    </div>
-                  </div>
+
+                  <p className="text-zinc-400 truncate">{investor.description}</p>
                 </div>
               </div>
             </div>
@@ -334,4 +260,5 @@ return (
     </div>
   </main>
 );
+
 }
