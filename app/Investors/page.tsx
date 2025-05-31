@@ -78,34 +78,37 @@ export default function InvestorsPage() {
 return (
     <main className="min-h-screen w-full flex items-center justify-center bg-black p-4">
     {/* Optimized background effects with reduced repaints */}
-    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 will-change-transform">
+    <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
       <div 
-        className="absolute top-1/3 left-1/4 w-[200px] h-[200px] md:w-[300px] md:h-[300px] rounded-full bg-emerald-500/10 blur-[80px] md:blur-[150px]"
+        className="absolute top-1/3 left-1/4 w-[300px] h-[300px] rounded-full bg-emerald-500/10 blur-[150px]"
         style={{
           animation: 'pulse 8s ease-in-out infinite',
-          transform: 'translate3d(0,0,0)'
+          transform: 'translate3d(0,0,0)',
+          willChange: 'transform, opacity'
         }}
       ></div>
       <div 
-        className="absolute bottom-1/4 right-1/3 w-[250px] h-[250px] md:w-[400px] md:h-[400px] rounded-full bg-cyan-500/10 blur-[100px] md:blur-[180px]"
+        className="absolute bottom-1/4 right-1/3 w-[400px] h-[400px] rounded-full bg-cyan-500/10 blur-[180px]"
         style={{
           animation: 'pulse 12s ease-in-out infinite',
-          transform: 'translate3d(0,0,0)'
+          transform: 'translate3d(0,0,0)',
+          willChange: 'transform, opacity'
         }}
       ></div>
       <div 
-        className="absolute top-1/2 right-1/4 w-[180px] h-[180px] md:w-[250px] md:h-[250px] rounded-full bg-blue-500/10 blur-[60px] md:blur-[120px]"
+        className="absolute top-1/2 right-1/4 w-[250px] h-[250px] rounded-full bg-blue-500/10 blur-[120px]"
         style={{
           animation: 'pulse 10s ease-in-out infinite',
-          transform: 'translate3d(0,0,0)'
+          transform: 'translate3d(0,0,0)',
+          willChange: 'transform, opacity'
         }}
       ></div>
     </div>
 
-    <div className="container mx-auto px-4 sm:px-6 py-12 md:py-16 max-w-6xl relative z-10">
-      {/* Optimized header with reduced motion for prefers-reduced-motion */}
+    <div className="container mx-auto px-4 py-16 max-w-6xl relative z-10">
+      {/* Optimized header with reduced motion */}
       <motion.div 
-        className="text-center pt-8 md:pt-10 pb-10 md:pb-12 relative"
+        className="text-center pt-10 pb-12 relative"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
@@ -119,7 +122,7 @@ return (
             damping: 10,
             delay: 0.2
           }}
-          className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6"
+          className="text-4xl md:text-5xl font-bold text-white mb-6"
         >
           Painel para <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">
             Investidores
@@ -133,7 +136,7 @@ return (
             delay: 0.3,
             duration: 0.8
           }}
-          className="text-base sm:text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto leading-relaxed px-2"
+          className="text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto leading-relaxed"
         >
           Encontre uma empresa com matching perfeito entre indicadores{' '}
           <span className="text-emerald-300 font-medium">ESG</span> e indicadores{' '}
@@ -141,54 +144,86 @@ return (
         </motion.p>
       </motion.div>
 
-      {/* Optimized filter bar with hardware acceleration */}
+      {/* Optimized sticky filter bar */}
       <motion.div 
-        className={`mb-8 md:mb-12 sticky top-0 z-30 bg-zinc-950/80 backdrop-blur-sm md:backdrop-blur-lg border-b border-zinc-800 transition-all duration-300 ${
-          isScrolled ? 'py-2' : 'py-3 md:py-4'
+        className={`sticky top-0 z-40 transition-all duration-300 ${
+          isScrolled ? 'py-3 ' : 'py-4'
         }`}
-        style={{ willChange: 'transform, opacity' }}
-        initial={{ opacity: 0, y: -10 }}
+        initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.4 }}
+        transition={{ 
+          delay: 0.4,
+          type: "spring",
+          stiffness: 300,
+          damping: 20
+        }}
+        style={{ willChange: 'transform, opacity' }}
       >
-        <div className="container mx-auto px-2 sm:px-4 max-w-6xl">
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4 md:gap-6">
-            <h3 className="text-sm sm:text-base md:text-lg font-bold text-white flex items-center gap-2">
-              <FiFilter className="text-emerald-400" />
-              {isScrolled ? 'Filtros:' : 'Filtrar por Setor:'}
-            </h3>
+        <div className="container mx-auto px-4 max-w-6xl">
+          <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 md:gap-6">
+            <motion.div
+              className="flex items-center gap-2"
+              whileHover={{ x: 3 }}
+            >
+              <motion.span
+                animate={{
+                  rotate: [0, 5, -5, 0],
+                  transition: {
+                    repeat: Infinity,
+                    repeatType: "mirror",
+                    duration: 2,
+                    ease: "easeInOut"
+                  }
+                }}
+                className="text-emerald-400 inline-block"
+              >
+                <FiFilter />
+              </motion.span>
+              <span className={`${
+                isScrolled ? 'text-base' : 'text-lg'
+              } font-bold text-white`}>
+                {isScrolled ? 'Filtros:' : 'Filtrar por Setor:'}
+              </span>
+            </motion.div>
             
             <div className="w-full relative">
-              <div className="absolute inset-y-0 left-0 w-6 bg-gradient-to-r from-zinc-950 to-transparent z-20 pointer-events-none"></div>
-              <div className="absolute inset-y-0 right-0 w-6 bg-gradient-to-l from-zinc-950 to-transparent z-20 pointer-events-none"></div>
+              <div className="absolute inset-y-0 left-0 w-8 bg-gradient-to-r from-zinc-950 to-transparent z-20 pointer-events-none"></div>
+              <div className="absolute inset-y-0 right-0 w-8 bg-gradient-to-l from-zinc-950 to-transparent z-20 pointer-events-none"></div>
               
               <div className="w-full overflow-x-auto scrollbar-hide pb-1">
                 <div className="flex flex-nowrap gap-2 py-1">
-                  <button
+                  <motion.button
                     onClick={() => setSelectedSector(null)}
-                    className={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 text-sm rounded-lg font-medium transition-all whitespace-nowrap ${
+                    whileTap={{ scale: 0.95 }}
+                    whileHover={{ y: -2 }}
+                    className={`flex-shrink-0 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                       !selectedSector
-                        ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                        ? 'bg-emerald-600 text-white shadow-md'
                         : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                     }`}
                     style={{ willChange: 'transform' }}
                   >
                     Todos
-                  </button>
+                  </motion.button>
                   
-                  {sectorsList.map(sector => (
-                    <button
+                  {sectorsList.map((sector, index) => (
+                    <motion.button
                       key={sector}
                       onClick={() => setSelectedSector(sector)}
-                      className={`flex-shrink-0 px-3 sm:px-4 py-1.5 sm:py-2 text-sm rounded-lg font-medium transition-all whitespace-nowrap ${
+                      initial={{ opacity: 0, x: 10 }}
+                      animate={{ opacity: 1, x: 0 }}
+                      transition={{ delay: 0.5 + index * 0.05 }}
+                      whileHover={{ y: -2 }}
+                      whileTap={{ scale: 0.95 }}
+                      className={`flex-shrink-0 px-4 py-2 rounded-lg font-medium text-sm transition-all ${
                         selectedSector === sector
-                          ? 'bg-emerald-500 text-white shadow-lg shadow-emerald-500/20'
+                          ? 'bg-emerald-600 text-white shadow-md'
                           : 'bg-zinc-800 text-zinc-300 hover:bg-zinc-700'
                       }`}
                       style={{ willChange: 'transform' }}
                     >
                       {sector}
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               </div>
@@ -197,78 +232,85 @@ return (
         </div>
       </motion.div>
 
-      {/* Optimized investor list with efficient animations */}
-      <div className="space-y-4 sm:space-y-6">
+      {/* Optimized investor cards list */}
+      <div className="space-y-6 mt-8">
         {filteredInvestors.map((investor, index) => (
           <motion.div
             key={investor.id}
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ 
-              delay: 0.5 + index * 0.05,
+              delay: 0.6 + index * 0.07,
               type: "spring",
-              stiffness: 150
+              stiffness: 150,
+              damping: 10
             }}
-            className="bg-zinc-900/70 border border-zinc-800 rounded-xl sm:rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer"
+            whileHover={{ 
+              y: -5,
+              boxShadow: '0 10px 25px -5px rgba(16, 185, 129, 0.1)'
+            }}
+            className="bg-zinc-900/80 border border-zinc-800 rounded-2xl overflow-hidden transition-all duration-300 cursor-pointer"
             onClick={() => navigateToInvestor(investor.id)}
             style={{ willChange: 'transform, opacity' }}
           >
-            <div className="flex flex-col sm:flex-row">
-              {/* Optimized image loading */}
-              <div className="sm:w-1/3 h-48 sm:h-auto relative">
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent sm:bg-gradient-to-r sm:from-black/80 sm:to-transparent z-10"></div>
+            <div className="flex flex-col md:flex-row">
+              {/* Optimized image with priority loading */}
+              <div className="md:w-1/3 h-56 md:h-auto relative">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent md:bg-gradient-to-r md:from-black/80 md:to-transparent z-10"></div>
                 <Image
                   src={investor.logo}
                   alt={investor.name}
                   fill
                   className="object-cover"
-                  sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                  sizes="(max-width: 768px) 100vw, 33vw"
                   priority={index < 3}
                   loading={index < 3 ? "eager" : "lazy"}
                 />
-                <span className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 z-20 text-white font-bold text-lg sm:text-xl">
+                <span className="absolute bottom-4 left-4 z-20 text-white font-bold text-xl">
                   {investor.name}
                 </span>
               </div>
               
-              {/* Content with optimized reflows */}
-              <div className="sm:w-2/3 p-4 sm:p-5 md:p-6">
-                <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4">
-                  <h3 className="text-lg sm:text-xl font-bold text-white">{investor.title}</h3>
-                  <div className="flex flex-wrap gap-1 sm:gap-2 mt-1 sm:mt-0">
-                    {investor.sectors.map(sector => (
-                      <span 
-                        key={sector} 
-                        className="px-2 sm:px-3 py-0.5 sm:py-1 bg-emerald-900/30 text-xs rounded-full text-emerald-300 border border-emerald-800/50"
+              <div className="md:w-2/3 p-6">
+                <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
+                  <h3 className="text-xl font-bold text-white">{investor.title}</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {investor.sectors.map((sector, i) => (
+                      <motion.span
+                        key={sector}
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ delay: 0.7 + index * 0.07 + i * 0.03 }}
+                        className="px-3 py-1 bg-emerald-900/30 text-emerald-300 text-xs rounded-full border border-emerald-800/50"
                       >
                         {sector}
-                      </span>
+                      </motion.span>
                     ))}
                   </div>
                 </div>
                 
-                <p className="text-zinc-400 mt-2 sm:mt-3 text-sm sm:text-base">
+                <p className="text-zinc-400 mt-3 mb-6">
                   {investor.description}
                 </p>
                 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 mt-4 sm:mt-5">
-                  <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-zinc-800/30 rounded-lg">
-                    <div className="p-1 sm:p-2 bg-emerald-900/20 rounded-md text-emerald-400">
-                      <FiDollarSign className="text-sm sm:text-base" />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                    <div className="p-2 bg-emerald-900/20 rounded-lg text-emerald-400">
+                      <FiDollarSign />
                     </div>
                     <div>
                       <p className="text-xs text-zinc-400">Ticket</p>
-                      <p className="text-emerald-400 font-medium text-sm sm:text-base">{investor.ticket}</p>
+                      <p className="text-emerald-400 font-medium">{investor.ticket}</p>
                     </div>
                   </div>
                   
-                  <div className="flex items-center gap-2 sm:gap-3 p-2 sm:p-3 bg-zinc-800/30 rounded-lg">
-                    <div className="p-1 sm:p-2 bg-blue-900/20 rounded-md text-blue-400">
-                      <FiGlobe className="text-sm sm:text-base" />
+                  <div className="flex items-center gap-3 p-3 bg-zinc-800/30 rounded-lg">
+                    <div className="p-2 bg-blue-900/20 rounded-lg text-blue-400">
+                      <FiGlobe />
                     </div>
                     <div>
                       <p className="text-xs text-zinc-400">Atuação</p>
-                      <p className="text-blue-400 font-medium text-sm sm:text-base">{investor.geography}</p>
+                      <p className="text-blue-400 font-medium">{investor.geography}</p>
                     </div>
                   </div>
                 </div>
