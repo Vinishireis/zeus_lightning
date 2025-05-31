@@ -76,7 +76,7 @@ export default function InvestorsPage() {
   };
   
 return (
-  <main className="min-h-screen w-full bg-black relative overflow-x-hidden">
+    <main className="min-h-screen w-full flex items-center justify-center bg-black p-4">
     {/* Optimized background effects with reduced repaints */}
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0 will-change-transform">
       <div 
