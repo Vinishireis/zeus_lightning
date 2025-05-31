@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import { useDropzone } from "react-dropzone";
 import { motion } from "framer-motion";
-import { FiUpload, FiFile, FiImage, FiSend, FiUser, FiCpu, FiMessageSquare } from "react-icons/fi";
+import { FiUpload, FiFile, FiImage, FiSend, FiUser, FiCpu, FiMessageSquare, FiPlus, FiTrash2, FiX } from "react-icons/fi";
 import Image from "next/image";
 import { useStore } from "@/lib/store";
 
@@ -23,38 +23,62 @@ type Message = {
 };
 
 export default function ChatPage() {
-  // State management
   const [files, setFiles] = useState<FileWithPreview[]>([]);
-  const [messages, setMessages] = useState<Message[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [showHistory, setShowHistory] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const hasAddedReport = useRef(false);
   
-  // Zustand store for ESG report
-  const { apiResponse, clearApiResponse } = useStore();
+  const {
+    apiResponse,
+    esgData,
+    clearApiResponse,
+    conversations,
+    currentConversationId,
+    addConversation,
+    setCurrentConversation,
+    updateConversation,
+    deleteConversation
+  } = useStore();
+  
+  const currentConversation = conversations.find(c => c.id === currentConversationId) || 
+    (conversations.length > 0 ? conversations[0] : null);
 
-  // Add ESG report to messages when available
+  const messages = currentConversation?.messages || [];
+
+  const createNewConversation = () => {
+    const newConversation = {
+      id: Date.now().toString(),
+      title: `Conversa ${conversations.length + 1}`,
+      messages: [],
+      createdAt: Date.now(),
+      esgData: null
+    };
+    addConversation(newConversation);
+    setCurrentConversation(newConversation.id);
+    setShowHistory(false);
+  };
+
   useEffect(() => {
-    if (apiResponse && !messages.some(msg => msg.id.startsWith('report-')) && !hasAddedReport.current) {
-      hasAddedReport.current = true;
+    if (apiResponse && esgData && currentConversation && 
+        !currentConversation.messages.some(msg => msg.id.startsWith('report-'))) {
+      
       const reportMessage: Message = {
         id: `report-${Date.now()}`,
         content: `📊 Relatório ESG Gerado\n\n${apiResponse}`,
         role: "assistant"
       };
       
-      setMessages(prev => [...prev, reportMessage]);
+      const updatedMessages = [...currentConversation.messages, reportMessage];
+      updateConversation(currentConversation.id, updatedMessages);
       clearApiResponse();
       
-      // Scroll to bottom after adding report
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
-  }, [apiResponse, messages, clearApiResponse]);
+  }, [apiResponse, esgData, currentConversation, clearApiResponse, updateConversation]);
 
-  // File drop handler
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
 
@@ -66,11 +90,9 @@ export default function ChatPage() {
       name: file.name || "Arquivo sem nome"
     }));
 
-    // Only keep the first file if multiple is false
     setFiles([newFiles[0]]);
   }, []);
 
-  // Dropzone configuration
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
     accept: {
@@ -80,13 +102,12 @@ export default function ChatPage() {
       "application/json": [".json"],
       "application/vnd.openxmlformats-officedocument.*": [".docx", ".xlsx", ".pptx"]
     },
-    maxSize: 50 * 1024 * 1024, // 50MB
+    maxSize: 50 * 1024 * 1024,
     multiple: false,
     noClick: false,
     noKeyboard: true
   });
 
-  // Remove file handler
   const removeFile = useCallback(() => {
     setFiles(prevFiles => {
       if (prevFiles.length > 0) {
@@ -96,7 +117,6 @@ export default function ChatPage() {
     });
   }, []);
 
-  // Extract text from different file types
   const extractTextFromFile = async (file: FileWithPreview): Promise<string> => {
     try {
       if (file.type.startsWith("image/")) {
@@ -114,9 +134,8 @@ export default function ChatPage() {
     }
   };
 
-  // Send message handler
   const handleSendMessage = async () => {
-    if ((!inputMessage.trim() && files.length === 0) || isProcessing) return;
+    if ((!inputMessage.trim() && files.length === 0) || isProcessing || !currentConversation) return;
 
     let fileContent = "";
     if (files.length > 0) {
@@ -131,13 +150,14 @@ export default function ChatPage() {
       fileContent
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    const updatedMessages = [...currentConversation.messages, userMessage];
+    updateConversation(currentConversation.id, updatedMessages);
+    
     setInputMessage("");
     setFiles([]);
     setIsProcessing(true);
 
     try {
-      // Simulate API processing with actual API call in production
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const responseContent = files.length > 0
@@ -150,7 +170,7 @@ export default function ChatPage() {
         role: "assistant"
       };
 
-      setMessages(prev => [...prev, aiResponse]);
+      updateConversation(currentConversation.id, [...updatedMessages, aiResponse]);
     } catch (error) {
       console.error("Error processing message:", error);
       const errorResponse: Message = {
@@ -158,7 +178,7 @@ export default function ChatPage() {
         content: "Ocorreu um erro ao processar sua solicitação. Por favor, tente novamente.",
         role: "assistant"
       };
-      setMessages(prev => [...prev, errorResponse]);
+      updateConversation(currentConversation.id, [...updatedMessages, errorResponse]);
     } finally {
       setIsProcessing(false);
       setTimeout(() => {
@@ -167,14 +187,12 @@ export default function ChatPage() {
     }
   };
 
-  // File icon component
   const getFileIcon = (type: string) => {
     if (type.startsWith("image/")) return <FiImage className="text-blue-400" />;
     if (type === "application/pdf") return <FiFile className="text-red-400" />;
     return <FiFile className="text-zinc-400" />;
   };
 
-  // Format file size
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -183,62 +201,135 @@ export default function ChatPage() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
-  // Auto-scroll to new messages
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
-  // Clean up object URLs
   useEffect(() => {
     return () => {
       files.forEach(file => URL.revokeObjectURL(file.preview));
     };
   }, [files]);
 
+  useEffect(() => {
+    if (conversations.length === 0) {
+      createNewConversation();
+    }
+  }, []);
+
   return (
-    <main className="min-h-screen w-full flex items-center justify-center bg-black p-4">
+    <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">
+      {/* History Panel */}
+      {showHistory && (
+        <div className="fixed inset-0 bg-black/80 z-20 flex justify-center items-center p-4">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.2 }}
+            className="bg-gray-900/90 backdrop-blur-lg rounded-xl border border-gray-700 w-full max-w-md max-h-[90vh] overflow-hidden flex flex-col"
+          >
+            <div className="p-4 border-b border-gray-800 flex justify-between items-center">
+              <h2 className="text-xl font-semibold text-white">Histórico de Conversas</h2>
+              <button
+                onClick={() => setShowHistory(false)}
+                className="p-1 rounded-full hover:bg-gray-800 text-gray-400 hover:text-white"
+              >
+                <FiX size={20} />
+              </button>
+            </div>
+            
+            <div className="flex-1 overflow-y-auto p-4">
+              <button
+                onClick={createNewConversation}
+                className="w-full mb-4 flex items-center justify-center gap-2 py-2.5 px-4 bg-blue-600 hover:bg-blue-700 rounded-lg text-sm font-medium text-white transition-colors"
+              >
+                <FiPlus /> Nova Conversa
+              </button>
+              
+              <div className="space-y-2">
+                {conversations.map((conversation) => (
+                  <div
+                    key={conversation.id}
+                    onClick={() => {
+                      setCurrentConversation(conversation.id);
+                      setShowHistory(false);
+                    }}
+                    className={`p-3 rounded-lg cursor-pointer transition-colors ${
+                      currentConversation?.id === conversation.id
+                        ? "bg-gray-800 border border-gray-700"
+                        : "bg-gray-800/50 hover:bg-gray-800/70"
+                    }`}
+                  >
+                    <div className="flex justify-between items-start">
+                      <h3 className="text-sm font-medium text-white truncate">
+                        {conversation.title}
+                      </h3>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          deleteConversation(conversation.id);
+                        }}
+                        className="text-gray-500 hover:text-red-400 p-1"
+                      >
+                        <FiTrash2 size={14} />
+                      </button>
+                    </div>
+                    <p className="text-xs text-gray-400 mt-1">
+                      {new Date(conversation.createdAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </motion.div>
+        </div>
+      )}
+
+      {/* Main Chat Area */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}
-        className="w-full max-w-2xl mx-auto px-4 py-6"
+        transition={{ duration: 0.3 }}
+        className="w-full max-w-3xl mx-auto"
       >
-        <div className="bg-gradient-to-br from-zinc-900/80 to-zinc-800/90 backdrop-blur-xl rounded-xl border border-zinc-700 shadow-lg shadow-zinc-900/50 overflow-hidden">
-          {/* Header compacto */}
-          <div className="px-5 py-4 border-b border-zinc-800 flex items-center justify-between">
-            <div>
-              <h1 className="text-xl font-bold bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 text-transparent">
-                {apiResponse ? 'Análise ESG' : 'ATENA'}
+        <div className="bg-gray-900/80 backdrop-blur-md rounded-xl border border-gray-800 shadow-xl overflow-hidden flex flex-col h-[80vh] max-h-[800px]">
+          {/* Header */}
+          <div className="p-4 border-b border-gray-800 flex justify-between items-center bg-gray-900/50">
+            <button
+              onClick={() => setShowHistory(true)}
+              className="p-2 rounded-lg hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+            >
+              <FiMessageSquare size={20} />
+            </button>
+            <div className="text-center">
+              <h1 className="text-lg font-semibold text-white">
+                {currentConversation?.title || 'Nova Conversa'}
               </h1>
-              <p className="text-xs text-zinc-400 mt-1">
-                {apiResponse ? 'Analisando seu relatório' : 'Consultoria inteligente'}
+              <p className="text-xs text-gray-400">
+                {messages.length > 0 ? `${messages.length} mensagens` : 'Comece uma nova conversa'}
               </p>
             </div>
-            <div className="w-8 h-8 rounded-full bg-zinc-800 flex items-center justify-center">
-              <FiMessageSquare className="text-blue-400" />
-            </div>
+            <div className="w-8"></div> {/* Spacer for balance */}
           </div>
   
-          {/* Área de mensagens ajustada */}
-          <div className="p-4 h-[60vh] max-h-[500px] overflow-y-auto custom-scrollbar">
+          {/* Messages Area */}
+          <div className="flex-1 overflow-y-auto p-4 custom-scrollbar">
             {messages.length === 0 ? (
               <div className="h-full flex flex-col items-center justify-center text-center px-4">
-                <div className="p-3 bg-zinc-800/50 rounded-full mb-3">
+                <div className="p-3 bg-gray-800/50 rounded-full mb-4">
                   <Image 
                     src="/atena.png" 
                     alt="Atena" 
-                    width={60} 
-                    height={60} 
+                    width={72} 
+                    height={72} 
                     className="object-cover rounded-full"
                   />
                 </div>
-                <h2 className="text-lg font-medium text-white mb-1">
-                  {apiResponse ? 'Relatório carregado!' : 'Como posso ajudar?'}
+                <h2 className="text-xl font-medium text-white mb-2">
+                  Como posso ajudar?
                 </h2>
-                <p className="text-sm text-zinc-400 max-w-xs">
-                  {apiResponse 
-                    ? 'Faça perguntas sobre seu documento' 
-                    : 'Envie arquivos ou digite sua dúvida'}
+                <p className="text-sm text-gray-400 max-w-md">
+                  Envie arquivos ou digite sua dúvida para começar
                 </p>
               </div>
             ) : (
@@ -252,63 +343,65 @@ export default function ChatPage() {
                     className={`flex ${message.role === "user" ? "justify-end" : "justify-start"}`}
                   >
                     <div
-                      className={`max-w-[85%] rounded-lg p-3 ${
+                      className={`max-w-[85%] rounded-xl p-3 ${
                         message.role === "user"
                           ? "bg-blue-600/20 border border-blue-500/30"
-                          : "bg-zinc-800/40 border border-zinc-700"
+                          : "bg-gray-800/60 border border-gray-700"
                       }`}
                     >
-                      <div className="flex items-center mb-1">
+                      <div className="flex items-center mb-1.5 gap-2">
                         <div
-                          className={`w-5 h-5 rounded-full flex items-center justify-center mr-2 ${
+                          className={`w-6 h-6 rounded-full flex items-center justify-center flex-shrink-0 ${
                             message.role === "user" ? "bg-blue-500" : "bg-indigo-500"
                           }`}
                         >
                           {message.role === "user" ? (
-                            <FiUser className="h-2.5 w-2.5 text-white" />
+                            <FiUser className="h-3 w-3 text-white" />
                           ) : (
-                            <FiCpu className="h-2.5 w-2.5 text-white" />
+                            <FiCpu className="h-3 w-3 text-white" />
                           )}
                         </div>
-                        <span className="text-xs font-medium text-zinc-300">
+                        <span className="text-xs font-medium text-gray-300">
                           {message.role === "user" ? "Você" : "ATENA"}
                         </span>
                       </div>
   
                       {message.file && (
-                        <div className="mb-2 p-2 bg-zinc-900/40 rounded border border-zinc-700">
-                          <div className="flex items-center">
-                            <div className="flex-shrink-0 mr-2">
-                              {message.file.type.startsWith("image/") ? (
-                                <div className="w-8 h-8 rounded bg-zinc-700 flex items-center justify-center overflow-hidden">
+                        <div className="mb-2 p-2 bg-gray-900/40 rounded-lg border border-gray-700">
+                          <div className="flex items-center gap-2">
+                            <div className="flex-shrink-0">
+                              {message.file.type?.startsWith("image/") ? (
+                                <div className="w-10 h-10 rounded bg-gray-700 flex items-center justify-center overflow-hidden">
                                   <Image
                                     src={message.file.preview}
                                     alt={`Preview ${message.file.name}`}
-                                    width={32}
-                                    height={32}
+                                    width={40}
+                                    height={40}
                                     className="object-cover"
                                     unoptimized
                                   />
                                 </div>
                               ) : (
-                                <div className="w-8 h-8 rounded bg-zinc-700 flex items-center justify-center">
-                                  {getFileIcon(message.file.type)}
+                                <div className="w-10 h-10 rounded bg-gray-700 flex items-center justify-center">
+                                  {getFileIcon(message.file.type || '')}
                                 </div>
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <p className="text-xs font-medium text-white truncate">
+                              <p className="text-sm font-medium text-white truncate">
                                 {message.file.name}
                               </p>
-                              <p className="text-[10px] text-zinc-400">
-                                {formatFileSize(message.file.size)}
-                              </p>
+                              {message.file.type && (
+                                <p className="text-xs text-gray-400">
+                                  {message.file.type.split('/')[1]?.toUpperCase() || message.file.type}
+                                </p>
+                              )}
                             </div>
                           </div>
                         </div>
                       )}
   
-                      <p className="text-sm text-white whitespace-pre-wrap">{message.content}</p>
+                      <p className="text-sm text-gray-100 whitespace-pre-wrap">{message.content}</p>
                     </div>
                   </motion.div>
                 ))}
@@ -318,15 +411,20 @@ export default function ChatPage() {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="max-w-[85%] rounded-lg p-3 bg-zinc-800/40 border border-zinc-700">
-                      <div className="flex space-x-1.5">
-                        {[...Array(3)].map((_, i) => (
-                          <div 
-                            key={i}
-                            className="w-1.5 h-1.5 rounded-full bg-zinc-400 animate-pulse"
-                            style={{ animationDelay: `${i * 100}ms` }}
-                          />
-                        ))}
+                    <div className="max-w-[85%] rounded-xl p-3 bg-gray-800/60 border border-gray-700">
+                      <div className="flex items-center gap-2">
+                        <div className="w-6 h-6 rounded-full bg-indigo-500 flex items-center justify-center flex-shrink-0">
+                          <FiCpu className="h-3 w-3 text-white" />
+                        </div>
+                        <div className="flex space-x-1.5">
+                          {[...Array(3)].map((_, i) => (
+                            <div 
+                              key={i}
+                              className="w-2 h-2 rounded-full bg-gray-400 animate-pulse"
+                              style={{ animationDelay: `${i * 100}ms` }}
+                            />
+                          ))}
+                        </div>
                       </div>
                     </div>
                   </motion.div>
@@ -336,28 +434,28 @@ export default function ChatPage() {
             )}
           </div>
   
-          {/* Área de input compacta */}
-          <div className="px-4 py-3 border-t border-zinc-800 bg-zinc-900/30">
+          {/* Input Area */}
+          <div className="p-4 border-t border-gray-800 bg-gray-900/50">
             {files.length > 0 && (
-              <div className="mb-2">
+              <div className="mb-3">
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-zinc-300">Arquivo anexado</span>
+                  <span className="text-xs text-gray-300">Arquivo anexado</span>
                   <button
                     onClick={removeFile}
-                    className="text-xs text-zinc-400 hover:text-zinc-200"
+                    className="text-xs text-gray-400 hover:text-gray-200 transition-colors"
                   >
                     Remover
                   </button>
                 </div>
-                <div className="p-2 bg-zinc-800/40 rounded border border-zinc-700">
-                  <div className="flex items-center">
-                    <div className="w-6 h-6 rounded bg-zinc-700 flex items-center justify-center mr-2">
+                <div className="p-2 bg-gray-800/40 rounded-lg border border-gray-700">
+                  <div className="flex items-center gap-2">
+                    <div className="w-8 h-8 rounded bg-gray-700 flex items-center justify-center flex-shrink-0">
                       {files[0].type.startsWith("image/") ? (
                         <Image
                           src={files[0].preview}
                           alt={`Preview ${files[0].name}`}
-                          width={24}
-                          height={24}
+                          width={32}
+                          height={32}
                           className="object-cover rounded"
                           unoptimized
                         />
@@ -366,8 +464,11 @@ export default function ChatPage() {
                       )}
                     </div>
                     <div className="flex-1 min-w-0">
-                      <p className="text-xs font-medium text-white truncate">
+                      <p className="text-sm font-medium text-white truncate">
                         {files[0].name}
+                      </p>
+                      <p className="text-xs text-gray-400">
+                        {formatFileSize(files[0].size)}
                       </p>
                     </div>
                   </div>
@@ -378,14 +479,14 @@ export default function ChatPage() {
             <div className="flex items-center gap-2">
               <div
                 {...getRootProps()}
-                className={`p-1.5 rounded-md ${
+                className={`p-2 rounded-lg flex-shrink-0 ${
                   isDragActive 
                     ? 'bg-blue-900/30 border border-blue-500/50' 
-                    : 'bg-zinc-800 hover:bg-zinc-700'
+                    : 'bg-gray-800 hover:bg-gray-700 border border-gray-700'
                 } cursor-pointer transition-colors`}
               >
                 <input {...getInputProps()} />
-                <FiUpload className="h-4 w-4 text-zinc-400" />
+                <FiUpload className="h-5 w-5 text-gray-400" />
               </div>
               
               <div className="flex-1 relative">
@@ -395,9 +496,9 @@ export default function ChatPage() {
                   onChange={(e) => setInputMessage(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && handleSendMessage()}
                   placeholder={files.length > 0 
-                    ? "Digite sua pergunta..." 
+                    ? "Digite sua pergunta sobre o arquivo..." 
                     : "Digite sua mensagem..."}
-                  className="w-full bg-zinc-800 border border-zinc-700 rounded-md py-2 px-3 text-sm text-white placeholder-zinc-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full bg-gray-800 border border-gray-700 rounded-lg py-2.5 px-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-transparent transition-all"
                   disabled={isProcessing}
                 />
               </div>
@@ -405,18 +506,18 @@ export default function ChatPage() {
               <button
                 onClick={handleSendMessage}
                 disabled={(!inputMessage.trim() && files.length === 0) || isProcessing}
-                className={`p-2 rounded-md ${
+                className={`p-2 rounded-lg flex-shrink-0 ${
                   (!inputMessage.trim() && files.length === 0) || isProcessing
-                    ? "bg-blue-600/30 cursor-not-allowed"
-                    : "bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500"
-                }`}
+                    ? "bg-blue-600/30 cursor-not-allowed text-gray-500"
+                    : "bg-blue-600 hover:bg-blue-700 text-white"
+                } transition-colors`}
               >
-                <FiSend className="h-4 w-4 text-white" />
+                <FiSend className="h-5 w-5" />
               </button>
             </div>
             
-            <p className="mt-1 text-[10px] text-zinc-500 text-center">
-              Formatos: JPG, PNG, PDF, TXT, CSV, JSON (Até 50MB)
+            <p className="mt-2 text-xs text-gray-500 text-center">
+              Formatos suportados: JPG, PNG, PDF, TXT, CSV, JSON (Até 50MB)
             </p>
           </div>
         </div>
