@@ -181,7 +181,7 @@ export default function InvestorDetails({
   }
 
 return (
-  <main className="min-h-screen w-full text-white relative overflow-hidden">
+    <main className="min-h-screen w-full flex items-center justify-center bg-black p-4">
     {/* Efeito de background sutil */}
     <div className="absolute inset-0 opacity-5 pointer-events-none">
       <div className="absolute top-1/4 left-1/4 w-64 h-64 rounded-full bg-emerald-500 blur-[100px]"></div>
