@@ -10,47 +10,7 @@ export default function InvestorsPage() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [selectedSector, setSelectedSector] = useState<string | null>(null);
   const [showSectorsDropdown, setShowSectorsDropdown] = useState(false);
-  const [selectedOds, setSelectedOds] = useState<number | null>(null);
   const router = useRouter();
-
-  // Example ODS list (replace with your actual ODS numbers)
-  const odsList = [6, 7, 9, 12, 13, 15];
-
-  // Example services data (replace with your actual data)
-  const services = [
-    {
-      id: "empresa-1",
-      company: "Empresa Verde",
-      logo: "/empresa-verde.png",
-      title: "Gestão de Resíduos",
-      description: "Soluções inovadoras para reciclagem e gestão de resíduos sólidos.",
-      ods: [12, 13],
-    },
-    {
-      id: "empresa-2",
-      company: "Água Pura",
-      logo: "/agua-pura.png",
-      title: "Tratamento de Água",
-      description: "Tecnologia de purificação e distribuição de água potável.",
-      ods: [6, 15],
-    },
-    {
-      id: "empresa-3",
-      company: "Energia Limpa",
-      logo: "/energia-limpa.png",
-      title: "Energia Renovável",
-      description: "Projetos de energia solar e eólica para empresas e residências.",
-      ods: [7, 13],
-    },
-  ];
-
-  const filteredServices = selectedOds
-    ? services.filter(service => service.ods.includes(selectedOds))
-    : services;
-
-  const navigateToService = (id: string) => {
-    router.push(`/Services/${id}`);
-  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -120,13 +80,13 @@ return (
     {/* Background effects - optimized */}
     <div className="fixed inset-0 overflow-hidden pointer-events-none z-0">
       {[{
-        className: "top-1/3 left-1/4 w-[300px] h-[300px] bg-blue-500/10 blur-[150px]",
+        className: "top-1/3 left-1/4 w-[300px] h-[300px] bg-emerald-500/10 blur-[150px]",
         duration: '8s'
       }, {
-        className: "bottom-1/4 right-1/3 w-[400px] h-[400px] bg-indigo-500/10 blur-[180px]",
+        className: "bottom-1/4 right-1/3 w-[400px] h-[400px] bg-cyan-500/10 blur-[180px]",
         duration: '12s'
       }, {
-        className: "top-1/2 right-1/4 w-[250px] h-[250px] bg-cyan-500/10 blur-[120px]",
+        className: "top-1/2 right-1/4 w-[250px] h-[250px] bg-blue-500/10 blur-[120px]",
         duration: '10s'
       }].map((style, idx) => (
         <div
@@ -148,7 +108,7 @@ return (
         animate={{ opacity: 1 }}
         transition={{ duration: 0.6 }}
       >
-        <div className="absolute -top-20 -left-20 w-64 h-64 bg-blue-500/5 rounded-full blur-3xl animate-[spin_15s_linear_infinite]"></div>
+        <div className="absolute -top-20 -left-20 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl animate-[spin_15s_linear_infinite]"></div>
 
         <motion.h1
           initial={{ opacity: 0, y: -30 }}
@@ -157,9 +117,9 @@ return (
           className="text-4xl md:text-6xl font-bold text-white mb-6 relative"
         >
           <span className="relative inline-block">
-            Empresas de <span className="bg-gradient-to-r from-blue-400 to-cyan-400 bg-clip-text text-transparent relative z-10">
-              Serviços Sustentáveis
-              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-blue-400 to-cyan-400 opacity-80 animate-[pulse_3s_ease-in-out_infinite]"></span>
+            Painel para <span className="bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent relative z-10">
+              Investidores
+              <span className="absolute bottom-0 left-0 w-full h-0.5 bg-gradient-to-r from-emerald-400 to-cyan-400 opacity-80 animate-[pulse_3s_ease-in-out_infinite]"></span>
             </span>
           </span>
         </motion.h1>
@@ -170,11 +130,15 @@ return (
           transition={{ delay: 0.4, duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
           className="text-lg md:text-xl text-zinc-400 max-w-3xl mx-auto leading-relaxed relative"
         >
-          Conheça as empresas especializadas em soluções alinhadas com os{' '}
+          Encontre uma empresa com matching perfeito entre indicadores{' '}
           <span className="relative inline-block">
-            <span className="text-blue-300 font-medium relative z-10">ODS</span>
+            <span className="text-emerald-300 font-medium relative z-10">ESG</span>
+            <span className="absolute bottom-0 left-0 w-full h-px bg-emerald-400/50 animate-[scaleX_4s_ease-in-out_infinite] origin-left"></span>
+          </span>{' '}e indicadores{' '}
+          <span className="relative inline-block">
+            <span className="text-blue-300 font-medium relative z-10">Financeiros</span>
             <span className="absolute bottom-0 left-0 w-full h-px bg-blue-400/50 animate-[scaleX_4s_ease-in-out_infinite] origin-left"></span>
-          </span>{' '}da ONU.
+          </span>.
         </motion.p>
       </motion.div>
 
@@ -194,39 +158,39 @@ return (
               <motion.span
                 animate={{ rotate: [0, 5, -5, 0] }}
                 transition={{ repeat: Infinity, repeatType: "mirror", duration: 2, ease: "easeInOut" }}
-                className="text-blue-400"
+                className="text-emerald-400"
               >
                 <FiFilter />
               </motion.span>
-              {isScrolled ? 'Filtros:' : 'Filtrar por ODS:'}
+              {isScrolled ? 'Filtros:' : 'Filtrar por Setor:'}
             </motion.h3>
 
             <div className="w-full relative">
               <div className="w-full overflow-x-auto scrollbar-hide pb-2">
                 <div className="flex flex-nowrap gap-3 py-1 px-1">
                   <motion.button
-                    onClick={() => setSelectedOds(null)}
+                    onClick={() => setSelectedSector(null)}
                     whileTap={{ scale: 0.95 }}
                     whileHover={{ y: -2 }}
-                    className={`flex-shrink-0 px-5 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${!selectedOds ? 'bg-gradient-to-br from-blue-500 to-cyan-600 text-white shadow-xl shadow-blue-500/40' : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'}`}
+                    className={`flex-shrink-0 px-5 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${!selectedSector ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/40' : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'}`}
                     style={{ willChange: 'transform' }}
                   >
                     Todos
                   </motion.button>
 
-                  {odsList.map((ods, index) => (
+                  {sectorsList.map((sector, index) => (
                     <motion.button
-                      key={ods}
-                      onClick={() => setSelectedOds(ods)}
+                      key={sector}
+                      onClick={() => setSelectedSector(sector)}
                       initial={{ opacity: 0, x: 15 }}
                       animate={{ opacity: 1, x: 0 }}
                       transition={{ delay: 0.6 + index * 0.05 }}
                       whileHover={{ y: -2 }}
                       whileTap={{ scale: 0.95 }}
-                      className={`flex-shrink-0 px-5 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${selectedOds === ods ? 'bg-gradient-to-br from-blue-500 to-cyan-600 text-white shadow-xl shadow-blue-500/40' : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'}`}
+                      className={`flex-shrink-0 px-5 py-2 rounded-xl font-medium transition-all whitespace-nowrap ${selectedSector === sector ? 'bg-gradient-to-br from-emerald-500 to-emerald-600 text-white shadow-xl shadow-emerald-500/40' : 'bg-zinc-800/80 text-zinc-300 hover:bg-zinc-700 hover:text-white border border-zinc-700/50'}`}
                       style={{ willChange: 'transform' }}
                     >
-                      ODS {ods}
+                      {sector}
                     </motion.button>
                   ))}
                 </div>
@@ -237,89 +201,62 @@ return (
       </motion.div>
 
       <div className="space-y-8">
-        {filteredServices.map((service, index) => (
+        {filteredInvestors.map((investor, index) => (
           <motion.div
-            key={service.id}
+            key={investor.id}
             initial={{ opacity: 0, y: 40, scale: 0.98 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ delay: 0.7 + index * 0.08, type: "spring", stiffness: 120, damping: 10 }}
             whileHover={{ y: -5 }}
             className="group bg-zinc-900/80 border border-zinc-800/50 rounded-3xl overflow-hidden transition-all duration-300 cursor-pointer"
-            onClick={() => navigateToService(service.id)}
+            onClick={() => navigateToInvestor(investor.id)}
             style={{ willChange: 'transform, opacity' }}
           >
             <div className="flex flex-col md:flex-row h-full">
               <div className="md:w-1/3 h-56 md:h-auto relative overflow-hidden">
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/50 to-transparent md:bg-gradient-to-r md:from-black/80 md:via-black/50 md:to-transparent z-10"></div>
                 <Image
-                  src={service.logo}
-                  alt={service.company}
+                  src={investor.logo}
+                  alt={investor.name}
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, 33vw"
                   priority={index < 3}
+                  loading={index < 3 ? "eager" : "lazy"}
                 />
                 <span className="absolute bottom-4 left-4 z-20 text-white font-bold text-xl md:text-2xl drop-shadow-lg">
-                  {service.company}
+                  {investor.name}
                 </span>
               </div>
 
               <div className="md:w-2/3 p-6 md:p-8 flex flex-col justify-between">
                 <div>
                   <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-4">
-                    <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-blue-300 transition-colors duration-300">
-                      {service.title}
+                    <h3 className="text-xl md:text-2xl font-bold text-white group-hover:text-emerald-300 transition-colors duration-300">
+                      {investor.title}
                     </h3>
                     <div className="flex flex-wrap gap-2">
-                      {service.ods.map((ods, i) => (
+                      {investor.sectors.map((sector, i) => (
                         <motion.span
-                          key={ods}
+                          key={sector}
                           initial={{ opacity: 0, scale: 0.8 }}
                           animate={{ opacity: 1, scale: 1 }}
                           transition={{ delay: 0.8 + index * 0.08 + i * 0.05 }}
-                          className="px-3 py-1 bg-blue-900/30 text-xs rounded-full text-blue-300 border border-blue-800/50"
+                          className="px-3 py-1 bg-emerald-900/30 text-xs rounded-full text-emerald-300 border border-emerald-800/50"
                         >
-                          ODS {ods}
+                          {sector}
                         </motion.span>
                       ))}
                     </div>
                   </div>
 
-                  <p className="text-zinc-400 mb-4">{service.description}</p>
-                  
-                  <div className="flex items-center text-blue-400 group">
-                    <span className="text-sm font-medium group-hover:underline">
-                      Ver detalhes da empresa
-                    </span>
-                    <FiArrowRight className="ml-2 transition-transform group-hover:translate-x-1" />
-                  </div>
+                  <p className="text-zinc-400 truncate">{investor.description}</p>
                 </div>
               </div>
             </div>
           </motion.div>
         ))}
       </div>
-
-      {/* Mensagem quando não há resultados */}
-      {filteredServices.length === 0 && (
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className="text-center py-20"
-        >
-          <p className="text-zinc-400 text-lg mb-4">
-            Nenhuma empresa encontrada com o filtro selecionado.
-          </p>
-          <motion.button
-            onClick={() => setSelectedOds(null)}
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className="px-6 py-2 bg-gradient-to-br from-blue-500 to-cyan-600 text-white rounded-xl font-medium shadow-lg shadow-blue-500/30"
-          >
-            Limpar filtros
-          </motion.button>
-        </motion.div>
-      )}
     </div>
   </main>
 );
