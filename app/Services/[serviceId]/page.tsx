@@ -208,7 +208,7 @@ export default function ServiceDetails({ params }: { params: Promise<{ serviceId
     };
 
     return (
-        <main className="min-h-screen w-full bg-black text-white z-1">
+  <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">
             <div className="container mx-auto px-4 py-12 max-w-6xl">
             {/* Botão Voltar */}
             <motion.button

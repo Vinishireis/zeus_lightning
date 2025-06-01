@@ -260,31 +260,17 @@ export default function DashboardPage() {
     );
   }
 
-  return (
-    <div className="min-h-screen w-full flex items-center justify-center  z-1">
-      <div className="container mx-auto px-4 py-8">
+return (
+  <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">
+    <div className="w-full max-w-[1920px] flex items-center justify-center z-1 py-8">
+      <div className="w-full mx-auto px-4 pt-12 sm:px-6 lg:px-8">
         {/* Header no estilo Zeus Lightning */}
         <motion.header 
           initial={{ opacity: 0, y: -20 }}
           animate={{ opacity: 1, y: 0 }}
-          className="text-center mb-12"
+          className="text-center mb-8 sm:mb-12"
         >
-          <motion.span 
-            className="inline-block py-1.5 px-4 bg-gradient-to-r from-blue-900/40 to-emerald-900/40 backdrop-blur-md rounded-full text-white text-sm md:text-base border border-white/10 tracking-wide mb-4"
-          >
-            PAINEL DE CONTROLE
-          </motion.span>
-          
-          <div className="space-y-2 mb-6">
-            <h1 className="text-5xl md:text-7xl tracking-tighter bg-clip-text bg-gradient-to-r from-blue-400 via-emerald-400 to-cyan-400 text-transparent font-bold leading-tight">
-              Zeus
-            </h1>
-            <h2 className="text-5xl md:text-7xl tracking-tighter bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-emerald-500 text-transparent font-bold leading-tight">
-              Lightning
-            </h2>
-          </div>
-          
-          <p className="text-gray-300/90 text-lg md:text-xl text-pretty leading-relaxed max-w-3xl mx-auto">
+          <p className="text-gray-300/90 text-base sm:text-lg md:text-xl text-pretty leading-relaxed max-w-3xl mx-auto">
             <span className="bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent font-semibold">
               Bem-vindo, {user.name}
             </span>{" "}
@@ -295,11 +281,11 @@ export default function DashboardPage() {
           </p>
         </motion.header>
 
-        {/* Abas de Navegação */}
+        {/* Abas de Navegação - Ajustado para mobile */}
         <motion.nav
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          className="flex flex-wrap justify-center gap-2 mb-8"
+          className="flex flex-wrap justify-center gap-2 mb-6 sm:mb-8 overflow-x-auto py-2"
         >
           {[
             { id: "overview", icon: <FiBarChart2 />, label: "Visão Geral" },
@@ -312,120 +298,120 @@ export default function DashboardPage() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id)}
-              className={`flex items-center px-6 py-3 rounded-full transition-all ${
+              className={`flex items-center px-4 sm:px-6 py-2 sm:py-3 rounded-full transition-all text-sm sm:text-base ${
                 activeTab === tab.id
                   ? "bg-gradient-to-r from-blue-600 to-cyan-600 text-white shadow-lg shadow-blue-500/20"
                   : "bg-white/5 text-gray-300 hover:bg-white/10 border border-white/10"
               }`}
             >
-              <span className="mr-2">{tab.icon}</span>
+              <span className="mr-1 sm:mr-2">{tab.icon}</span>
               {tab.label}
             </button>
           ))}
         </motion.nav>
 
         {/* Conteúdo Principal */}
-        <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/50 backdrop-blur-xl rounded-2xl border border-white/10 p-6">
+        <div className="bg-gradient-to-br from-zinc-900/50 to-zinc-800/50 backdrop-blur-xl rounded-2xl border border-white/10 p-4 sm:p-6">
           {activeTab === "overview" && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="space-y-8"
+              className="space-y-6 sm:space-y-8"
             >
-              {/* Cartões Estatísticos */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+              {/* Cartões Estatísticos - Ajuste para mobile */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
                 <motion.div 
                   whileHover={{ scale: 1.03 }}
-                  className="bg-gradient-to-br from-blue-900/40 to-blue-800/40 border border-blue-500/20 rounded-xl p-6"
+                  className="bg-gradient-to-br from-blue-900/40 to-blue-800/40 border border-blue-500/20 rounded-xl p-4 sm:p-6"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold text-blue-300">Plano Atual</h3>
-                      <p className="text-2xl font-bold mt-2 text-white">{user.plan}</p>
+                      <h3 className="text-sm sm:text-lg font-semibold text-blue-300">Plano Atual</h3>
+                      <p className="text-xl sm:text-2xl font-bold mt-1 sm:mt-2 text-white">{user.plan}</p>
                     </div>
-                    <div className="p-3 bg-blue-600/20 rounded-full">
-                      <FiUser className="text-blue-400 text-xl" />
+                    <div className="p-2 sm:p-3 bg-blue-600/20 rounded-full">
+                      <FiUser className="text-blue-400 text-lg sm:text-xl" />
                     </div>
                   </div>
                 </motion.div>
 
                 <motion.div 
                   whileHover={{ scale: 1.03 }}
-                  className="bg-gradient-to-br from-cyan-900/40 to-cyan-800/40 border border-cyan-500/20 rounded-xl p-6"
+                  className="bg-gradient-to-br from-cyan-900/40 to-cyan-800/40 border border-cyan-500/20 rounded-xl p-4 sm:p-6"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold text-cyan-300 ">Relatórios</h3>
-                      <p className="text-2xl font-bold mt-2 text-white">{reports.length}</p>
+                      <h3 className="text-sm sm:text-lg font-semibold text-cyan-300">Relatórios</h3>
+                      <p className="text-xl sm:text-2xl font-bold mt-1 sm:mt-2 text-white">{reports.length}</p>
                     </div>
-                    <div className="p-3 bg-cyan-600/20 rounded-full">
-                      <FiFileText className="text-cyan-400 text-xl" />
+                    <div className="p-2 sm:p-3 bg-cyan-600/20 rounded-full">
+                      <FiFileText className="text-cyan-400 text-lg sm:text-xl" />
                     </div>
                   </div>
                 </motion.div>
 
                 <motion.div 
                   whileHover={{ scale: 1.03 }}
-                  className="bg-gradient-to-br from-emerald-900/40 to-emerald-800/40 border border-emerald-500/20 rounded-xl p-6"
+                  className="bg-gradient-to-br from-emerald-900/40 to-emerald-800/40 border border-emerald-500/20 rounded-xl p-4 sm:p-6"
                 >
                   <div className="flex items-center justify-between">
                     <div>
-                      <h3 className="text-lg font-semibold text-emerald-300">Chats</h3>
-                      <p className="text-2xl font-bold mt-2 text-white">{chats.length}</p>
+                      <h3 className="text-sm sm:text-lg font-semibold text-emerald-300">Chats</h3>
+                      <p className="text-xl sm:text-2xl font-bold mt-1 sm:mt-2 text-white">{chats.length}</p>
                     </div>
-                    <div className="p-3 bg-emerald-600/20 rounded-full">
-                      <FiMessageSquare className="text-emerald-400 text-xl" />
+                    <div className="p-2 sm:p-3 bg-emerald-600/20 rounded-full">
+                      <FiMessageSquare className="text-emerald-400 text-lg sm:text-xl" />
                     </div>
                   </div>
                 </motion.div>
               </div>
 
-              {/* Seções de Relatórios e Atividades */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              {/* Seções de Relatórios e Atividades - Ajuste para mobile */}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
                 <motion.div 
                   whileHover={{ scale: 1.01 }}
-                  className="bg-white/5 rounded-xl p-6 border border-white/10"
+                  className="bg-white/5 rounded-xl p-4 sm:p-6 border border-white/10"
                 >
-                  <h3 className="text-xl font-semibold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                     Relatórios Recentes
                   </h3>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {reports.slice(0, 3).map((report) => (
-                      <div key={report.id} className="flex justify-between items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                      <div key={report.id} className="flex justify-between items-center p-3 sm:p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
                         <div>
-                          <h4 className="font-medium">{report.title}</h4>
-                          <p className="text-sm text-gray-400 mt-1">
+                          <h4 className="text-sm sm:text-base font-medium">{report.title}</h4>
+                          <p className="text-xs sm:text-sm text-gray-400 mt-1">
                             <FiClock className="inline mr-1" />
                             {new Date(report.created_at).toLocaleDateString('pt-BR')}
                           </p>
                         </div>
-                        <button className="p-2 bg-cyan-600/30 hover:bg-cyan-500/40 rounded-full transition-colors">
-                          <FiDownload className="text-cyan-400" />
+                        <button className="p-1 sm:p-2 bg-cyan-600/30 hover:bg-cyan-500/40 rounded-full transition-colors">
+                          <FiDownload className="text-cyan-400 text-sm sm:text-base" />
                         </button>
                       </div>
                     ))}
                     {reports.length === 0 && (
-                      <p className="text-gray-400 text-center py-4">Nenhum relatório encontrado</p>
+                      <p className="text-gray-400 text-center py-3 sm:py-4">Nenhum relatório encontrado</p>
                     )}
                   </div>
                 </motion.div>
 
                 <motion.div 
                   whileHover={{ scale: 1.01 }}
-                  className="bg-white/5 rounded-xl p-6 border border-white/10"
+                  className="bg-white/5 rounded-xl p-4 sm:p-6 border border-white/10"
                 >
-                  <h3 className="text-xl font-semibold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                  <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
                     Atividades Recentes
                   </h3>
-                  <div className="space-y-4">
+                  <div className="space-y-3 sm:space-y-4">
                     {activityHistory.slice(0, 3).map((activity) => (
-                      <div key={activity.id} className="flex items-start p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                        <div className="p-2 mr-3 bg-white/10 rounded-lg">
+                      <div key={activity.id} className="flex items-start p-3 sm:p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                        <div className="p-1 sm:p-2 mr-2 sm:mr-3 bg-white/10 rounded-lg">
                           {activity.icon}
                         </div>
                         <div className="flex-1">
-                          <h4 className="font-medium">{activity.title}</h4>
-                          <p className="text-sm text-gray-400">{activity.description}</p>
+                          <h4 className="text-sm sm:text-base font-medium">{activity.title}</h4>
+                          <p className="text-xs sm:text-sm text-gray-400">{activity.description}</p>
                           <p className="text-xs text-gray-500 mt-1">
                             <FiClock className="inline mr-1" />
                             {new Date(activity.timestamp).toLocaleString('pt-BR')}
@@ -434,7 +420,7 @@ export default function DashboardPage() {
                       </div>
                     ))}
                     {activityHistory.length === 0 && (
-                      <p className="text-gray-400 text-center py-4">Nenhuma atividade recente</p>
+                      <p className="text-gray-400 text-center py-3 sm:py-4">Nenhuma atividade recente</p>
                     )}
                   </div>
                 </motion.div>
@@ -446,42 +432,42 @@ export default function DashboardPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                   Meus Relatórios
                 </h2>
-                <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 rounded-full transition-colors shadow-lg shadow-blue-500/20">
+                <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 rounded-full transition-colors shadow-lg shadow-blue-500/20 text-sm sm:text-base">
                   Novo Relatório
                 </button>
               </div>
 
               <div className="overflow-x-auto">
-                <table className="w-full">
+                <table className="w-full min-w-[600px]">
                   <thead>
                     <tr className="text-left border-b border-white/10">
-                      <th className="pb-4 text-blue-300">Título</th>
-                      <th className="pb-4 text-blue-300">Data</th>
-                      <th className="pb-4 text-blue-300">Downloads</th>
-                      <th className="pb-4 text-blue-300">Tamanho</th>
-                      <th className="pb-4 text-blue-300">Ações</th>
+                      <th className="pb-3 sm:pb-4 text-blue-300 text-sm sm:text-base">Título</th>
+                      <th className="pb-3 sm:pb-4 text-blue-300 text-sm sm:text-base">Data</th>
+                      <th className="pb-3 sm:pb-4 text-blue-300 text-sm sm:text-base">Downloads</th>
+                      <th className="pb-3 sm:pb-4 text-blue-300 text-sm sm:text-base">Tamanho</th>
+                      <th className="pb-3 sm:pb-4 text-blue-300 text-sm sm:text-base">Ações</th>
                     </tr>
                   </thead>
                   <tbody>
                     {reports.map((report) => (
                       <tr key={report.id} className="border-b border-white/10 hover:bg-white/5 transition-colors">
-                        <td className="py-4 font-medium">{report.title}</td>
-                        <td className="py-4 text-gray-400">{new Date(report.created_at).toLocaleDateString('pt-BR')}</td>
-                        <td className="py-4 text-gray-400">{report.download_count}</td>
-                        <td className="py-4 text-gray-400">{report.file_size}</td>
-                        <td className="py-4">
-                          <div className="flex space-x-2">
-                            <button className="p-2 bg-cyan-600/30 hover:bg-cyan-500/40 rounded-full transition-colors">
-                              <FiDownload className="text-cyan-400" />
+                        <td className="py-3 sm:py-4 font-medium text-sm sm:text-base">{report.title}</td>
+                        <td className="py-3 sm:py-4 text-gray-400 text-sm sm:text-base">{new Date(report.created_at).toLocaleDateString('pt-BR')}</td>
+                        <td className="py-3 sm:py-4 text-gray-400 text-sm sm:text-base">{report.download_count}</td>
+                        <td className="py-3 sm:py-4 text-gray-400 text-sm sm:text-base">{report.file_size}</td>
+                        <td className="py-3 sm:py-4">
+                          <div className="flex space-x-1 sm:space-x-2">
+                            <button className="p-1 sm:p-2 bg-cyan-600/30 hover:bg-cyan-500/40 rounded-full transition-colors">
+                              <FiDownload className="text-cyan-400 text-sm sm:text-base" />
                             </button>
-                            <button className="p-2 bg-emerald-600/30 hover:bg-emerald-500/40 rounded-full transition-colors">
-                              <FiMessageSquare className="text-emerald-400" />
+                            <button className="p-1 sm:p-2 bg-emerald-600/30 hover:bg-emerald-500/40 rounded-full transition-colors">
+                              <FiMessageSquare className="text-emerald-400 text-sm sm:text-base" />
                             </button>
                           </div>
                         </td>
@@ -489,7 +475,7 @@ export default function DashboardPage() {
                     ))}
                     {reports.length === 0 && (
                       <tr>
-                        <td colSpan={5} className="py-8 text-center text-gray-400">
+                        <td colSpan={5} className="py-6 sm:py-8 text-center text-gray-400 text-sm sm:text-base">
                           Nenhum relatório encontrado
                         </td>
                       </tr>
@@ -500,37 +486,38 @@ export default function DashboardPage() {
             </motion.div>
           )}
 
+          {/* Outras abas com ajustes similares... */}
           {activeTab === "uploads" && (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                   Últimos Envios
                 </h2>
-                <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 rounded-full transition-colors shadow-lg shadow-blue-500/20">
+                <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 rounded-full transition-colors shadow-lg shadow-blue-500/20 text-sm sm:text-base">
                   Novo Upload
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {uploads.map((upload) => (
-                  <div key={upload.id} className="flex justify-between items-center p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                    <div className="flex items-center space-x-4">
-                      <div className="p-3 bg-cyan-600/20 rounded-lg">
-                        <FiFileText className="text-cyan-400" />
+                  <div key={upload.id} className="flex flex-col sm:flex-row justify-between items-start sm:items-center p-3 sm:p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors gap-2 sm:gap-0">
+                    <div className="flex items-center space-x-3 sm:space-x-4">
+                      <div className="p-2 sm:p-3 bg-cyan-600/20 rounded-lg">
+                        <FiFileText className="text-cyan-400 text-sm sm:text-base" />
                       </div>
                       <div>
-                        <h3 className="font-medium">{upload.file_name}</h3>
-                        <p className="text-sm text-gray-400 mt-1">
+                        <h3 className="font-medium text-sm sm:text-base">{upload.file_name}</h3>
+                        <p className="text-xs sm:text-sm text-gray-400 mt-1">
                           <FiClock className="inline mr-1" />
                           {new Date(upload.created_at).toLocaleString('pt-BR')}
                         </p>
                       </div>
                     </div>
-                    <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    <span className={`px-2 sm:px-3 py-1 rounded-full text-xs font-medium ${
                       upload.status === "completed" 
                         ? "bg-emerald-900/30 text-emerald-400" 
                         : upload.status === "processing" 
@@ -542,7 +529,7 @@ export default function DashboardPage() {
                   </div>
                 ))}
                 {uploads.length === 0 && (
-                  <p className="text-gray-400 text-center py-8">Nenhum upload encontrado</p>
+                  <p className="text-gray-400 text-center py-6 sm:py-8 text-sm sm:text-base">Nenhum upload encontrado</p>
                 )}
               </div>
             </motion.div>
@@ -552,41 +539,41 @@ export default function DashboardPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
                   Chats Recentes
                 </h2>
-                <button className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 rounded-full transition-colors shadow-lg shadow-emerald-500/20">
+                <button className="px-4 py-2 bg-gradient-to-r from-emerald-600 to-cyan-600 hover:from-emerald-500 hover:to-cyan-500 rounded-full transition-colors shadow-lg shadow-emerald-500/20 text-sm sm:text-base">
                   Novo Chat
                 </button>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {chats.map((chat) => (
-                  <div key={chat.id} className="p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
-                    <div className="flex justify-between">
+                  <div key={chat.id} className="p-3 sm:p-4 bg-white/5 rounded-lg hover:bg-white/10 transition-colors">
+                    <div className="flex flex-col sm:flex-row justify-between gap-2 sm:gap-0">
                       <div>
-                        <p className="font-medium">{chat.preview}</p>
+                        <p className="font-medium text-sm sm:text-base">{chat.preview}</p>
                         {chat.file_used && (
-                          <p className="text-sm text-gray-400 mt-1">
+                          <p className="text-xs sm:text-sm text-gray-400 mt-1">
                             <FiFileText className="inline mr-1" />
                             Arquivo: {chat.file_used}
                           </p>
                         )}
                       </div>
-                      <p className="text-sm text-gray-400">
+                      <p className="text-xs sm:text-sm text-gray-400">
                         {new Date(chat.created_at).toLocaleString('pt-BR')}
                       </p>
                     </div>
-                    <button className="mt-3 text-sm text-cyan-400 hover:text-cyan-300">
+                    <button className="mt-2 sm:mt-3 text-xs sm:text-sm text-cyan-400 hover:text-cyan-300">
                       Continuar conversa
                     </button>
                   </div>
                 ))}
                 {chats.length === 0 && (
-                  <p className="text-gray-400 text-center py-8">Nenhum chat encontrado</p>
+                  <p className="text-gray-400 text-center py-6 sm:py-8 text-sm sm:text-base">Nenhum chat encontrado</p>
                 )}
               </div>
             </motion.div>
@@ -596,40 +583,40 @@ export default function DashboardPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
             >
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                   Histórico Completo
                 </h2>
                 <div className="flex items-center space-x-2">
-                  <span className="text-sm text-gray-400">Total: {activityHistory.length}</span>
+                  <span className="text-xs sm:text-sm text-gray-400">Total: {activityHistory.length}</span>
                 </div>
               </div>
 
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {activityHistory.length > 0 ? (
                   <div className="bg-white/5 rounded-xl border border-white/10 overflow-hidden">
                     {activityHistory.map((activity) => (
                       <div 
                         key={activity.id} 
-                        className="p-5 border-b border-white/10 last:border-b-0 hover:bg-white/10 transition-colors"
+                        className="p-4 sm:p-5 border-b border-white/10 last:border-b-0 hover:bg-white/10 transition-colors"
                       >
                         <div className="flex items-start">
-                          <div className="p-2 mr-4 bg-white/10 rounded-lg">
+                          <div className="p-1 sm:p-2 mr-3 sm:mr-4 bg-white/10 rounded-lg">
                             {activity.icon}
                           </div>
                           <div className="flex-1">
-                            <div className="flex justify-between items-start">
-                              <h3 className="font-medium text-lg mb-1">{activity.title}</h3>
+                            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-0">
+                              <h3 className="font-medium text-sm sm:text-lg mb-1">{activity.title}</h3>
                               <span className="text-xs text-gray-500">
                                 {new Date(activity.timestamp).toLocaleString('pt-BR')}
                               </span>
                             </div>
-                            <p className="text-gray-300 mb-2">{activity.description}</p>
+                            <p className="text-gray-300 text-xs sm:text-sm mb-2">{activity.description}</p>
                             
                             {activity.type === "report" && (
-                              <div className="flex space-x-2 mt-2">
+                              <div className="flex flex-wrap gap-1 sm:gap-2 mt-2">
                                 <span className="text-xs px-2 py-1 bg-blue-900/30 text-blue-400 rounded-full">
                                   {activity.metadata.size}
                                 </span>
@@ -663,12 +650,12 @@ export default function DashboardPage() {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
-                    <div className="mx-auto w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mb-4">
-                      <FiActivity className="text-2xl text-gray-400" />
+                  <div className="text-center py-8 sm:py-12">
+                    <div className="mx-auto w-12 sm:w-16 h-12 sm:h-16 bg-white/10 rounded-full flex items-center justify-center mb-3 sm:mb-4">
+                      <FiActivity className="text-xl sm:text-2xl text-gray-400" />
                     </div>
-                    <h3 className="text-xl font-medium text-gray-300 mb-2">Nenhuma atividade registrada</h3>
-                    <p className="text-gray-500">Seus relatórios, chats e uploads aparecerão aqui</p>
+                    <h3 className="text-lg sm:text-xl font-medium text-gray-300 mb-2">Nenhuma atividade registrada</h3>
+                    <p className="text-gray-500 text-sm sm:text-base">Seus relatórios, chats e uploads aparecerão aqui</p>
                   </div>
                 )}
               </div>
@@ -679,50 +666,50 @@ export default function DashboardPage() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="space-y-6"
+              className="space-y-4 sm:space-y-6"
             >
-              <h2 className="text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 mb-6">
+              <h2 className="text-xl sm:text-2xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400 mb-4 sm:mb-6">
                 Configurações
               </h2>
 
-              <div className="space-y-6">
-                <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-                  <h3 className="text-lg font-semibold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
+              <div className="space-y-4 sm:space-y-6">
+                <div className="bg-white/5 rounded-xl p-4 sm:p-6 border border-white/10">
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-cyan-400">
                     Informações da Conta
                   </h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                      <label className="block text-sm text-gray-400 mb-1">Nome</label>
+                      <label className="block text-xs sm:text-sm text-gray-400 mb-1">Nome</label>
                       <input 
                         type="text" 
                         defaultValue={user.name}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white text-sm sm:text-base"
                       />
                     </div>
                     <div>
-                      <label className="block text-sm text-gray-400 mb-1">Email</label>
+                      <label className="block text-xs sm:text-sm text-gray-400 mb-1">Email</label>
                       <input 
                         type="email" 
                         defaultValue={user.email}
-                        className="w-full bg-white/5 border border-white/10 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white"
+                        className="w-full bg-white/5 border border-white/10 rounded-lg px-3 sm:px-4 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500 text-white text-sm sm:text-base"
                         disabled
                       />
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-white/5 rounded-xl p-6 border border-white/10">
-                  <h3 className="text-lg font-semibold mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
+                <div className="bg-white/5 rounded-xl p-4 sm:p-6 border border-white/10">
+                  <h3 className="text-base sm:text-lg font-semibold mb-3 sm:mb-4 text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">
                     Plano de Assinatura
                   </h3>
-                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center">
+                  <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-3 sm:gap-0">
                     <div>
-                      <p className="text-xl font-bold">{user.plan}</p>
-                      <p className="text-sm text-gray-400 mt-1">
+                      <p className="text-lg sm:text-xl font-bold">{user.plan}</p>
+                      <p className="text-xs sm:text-sm text-gray-400 mt-1">
                         {user.storage_used} GB de {user.plan === 'Premium' ? '50' : '10'} GB utilizados
                       </p>
                     </div>
-                    <button className="mt-4 md:mt-0 px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 rounded-full transition-colors shadow-lg shadow-blue-500/20">
+                    <button className="px-4 py-2 bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-500 hover:to-cyan-500 rounded-full transition-colors shadow-lg shadow-blue-500/20 text-sm sm:text-base">
                       Atualizar Plano
                     </button>
                   </div>
@@ -733,5 +720,6 @@ export default function DashboardPage() {
         </div>
       </div>
     </div>
-  );
+  </main>
+);
 }

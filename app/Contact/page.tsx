@@ -87,7 +87,7 @@ export default function ContactPage() {
   ];
 
   return (
-    <main className="min-h-screen w-full flex items-center justify-center bg-black">
+    <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">
       <div className="z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
