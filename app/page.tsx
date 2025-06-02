@@ -1,12 +1,12 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
 import { useRouter, useSearchParams } from "next/navigation";
 import dynamic from "next/dynamic";
 
-// Carregar componentes pesados de forma dinâmica
+// Importa dinamicamente framer-motion
 const MotionDiv = dynamic(
   () => import("framer-motion").then((mod) => mod.motion.div),
   {
@@ -23,16 +23,17 @@ export default function Home() {
   const router = useRouter();
   const searchParams = useSearchParams();
 
+  // Verifica sessão atual
   useEffect(() => {
     setIsClient(true);
-    
-    // Verificar se há um redirecionamento após login
-    const redirectUrl = searchParams?.get('redirect');
+
+    const redirectUrl = searchParams?.get("callbackUrl");
     if (redirectUrl && user) {
       router.push(redirectUrl);
     }
   }, [user, searchParams, router]);
 
+  // Verifica sessão atual e ouve mudanças
   useEffect(() => {
     let mounted = true;
 
@@ -45,12 +46,11 @@ export default function Home() {
         if (!mounted) return;
 
         if (error) throw error;
-
         if (session) {
           setUser(session.user);
         }
       } catch (error) {
-        console.error("Session check error:", error);
+        console.error("Erro ao checar sessão:", error);
       } finally {
         if (mounted) {
           setLoading(false);
@@ -60,35 +60,37 @@ export default function Home() {
 
     checkSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-      if (!mounted) return;
-      setUser(session?.user || null);
-      if (!loading && event === "SIGNED_OUT") {
-        setLoading(false);
+    const { data: listener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (!mounted) return;
+        setUser(session?.user || null);
+        if (!loading && !session) {
+          setLoading(false);
+        }
       }
-    });
+    );
 
     return () => {
       mounted = false;
-      subscription?.unsubscribe();
+      listener?.subscription?.unsubscribe?.();
     };
   }, [loading]);
 
+  // Redireciona com verificação
   const handleProtectedNavigation = async (path: string) => {
     setIsNavigating(true);
     try {
-      // Verifica se o usuário está autenticado
-      const { data: { session } } = await supabase.auth.getSession();
-      
+      const {
+        data: { session },
+      } = await supabase.auth.getSession();
+
       if (!session) {
-        // Redireciona para login com callback URL
         router.push(`/Login?callbackUrl=${encodeURIComponent(path)}`);
       } else {
-        // Navega diretamente para a rota
         router.push(path);
       }
     } catch (error) {
-      console.error("Navigation error:", error);
+      console.error("Erro na navegação:", error);
     } finally {
       setIsNavigating(false);
     }
@@ -104,7 +106,6 @@ export default function Home() {
     );
   }
 
-  // Dados reutilizáveis para features
   const features = [
     { text: "Ecossistema", subtext: "ESG", color: "text-cyan-400" },
     {
@@ -128,9 +129,7 @@ export default function Home() {
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">
-      {/* Content Container */}
       <div className="text-center w-full max-w-2xl mx-auto space-y-6 sm:space-y-8 lg:space-y-10 py-8 sm:py-12 lg:py-16">
-        {/* Headings with Universal Mobile Support */}
         <MotionDiv
           className="space-y-1 xs:space-y-1.5 sm:space-y-2 md:space-y-3"
           initial={{ opacity: 0, y: 8 }}
@@ -145,7 +144,6 @@ export default function Home() {
           </h2>
         </MotionDiv>
 
-        {/* Optimized Description */}
         <MotionDiv
           className="text-gray-300/90 text-base sm:text-lg md:text-xl leading-relaxed mx-auto px-2"
           initial={{ opacity: 0 }}
@@ -166,7 +164,6 @@ export default function Home() {
           .
         </MotionDiv>
 
-        {/* Responsive Buttons */}
         <MotionDiv
           className="flex flex-col xs:flex-row gap-3 sm:gap-4 justify-center pt-4 sm:pt-6"
           initial={{ opacity: 0, y: 20 }}
@@ -213,7 +210,6 @@ export default function Home() {
           </Button>
         </MotionDiv>
 
-        {/* Features Grid - Mobile Optimized */}
         <MotionDiv
           className="grid grid-cols-2 gap-2 sm:gap-4 pt-4 sm:pt-8 max-w-xs sm:max-w-md mx-auto"
           initial={{ opacity: 0 }}
@@ -223,15 +219,9 @@ export default function Home() {
           {features.map((item, index) => (
             <div
               key={index}
-              className={`${item.span || ""} 
-                bg-white/5 p-2 sm:p-4 rounded-md sm:rounded-lg 
-                border border-white/10 hover:border-white/20 
-                transition-all flex flex-col items-center justify-center 
-                min-h-[60px] sm:min-h-[80px] cursor-default`}
+              className={`${item.span || ""} bg-white/5 p-2 sm:p-4 rounded-md sm:rounded-lg border border-white/10 hover:border-white/20 transition-all flex flex-col items-center justify-center min-h-[60px] sm:min-h-[80px] cursor-default`}
             >
-              <span
-                className={`${item.color} font-medium text-xs sm:text-base`}
-              >
+              <span className={`${item.color} font-medium text-xs sm:text-base`}>
                 {item.text}
               </span>
               <span className="text-gray-300 text-[0.65rem] sm:text-sm mt-0.5">
