@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { motion } from "framer-motion";
 import dynamic from "next/dynamic";
 
@@ -23,10 +23,17 @@ export default function Home() {
   const [isClient, setIsClient] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    
+    // Verificar se há um redirecionamento após login
+    const redirectUrl = searchParams?.get('redirect');
+    if (redirectUrl && user) {
+      router.push(redirectUrl);
+    }
+  }, [user, searchParams, router]);
 
   useEffect(() => {
     let mounted = true;
@@ -74,9 +81,14 @@ export default function Home() {
   const handleProtectedNavigation = async (path: string) => {
     setIsNavigating(true);
     try {
-      if (!user) {
-        router.push(`/Login?redirect=${encodeURIComponent(path)}`);
+      // Verifica se o usuário está autenticado
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (!session) {
+        // Redireciona para login com callback URL
+        router.push(`/Login?callbackUrl=${encodeURIComponent(path)}`);
       } else {
+        // Navega diretamente para a rota
         router.push(path);
       }
     } catch (error) {
@@ -167,8 +179,8 @@ export default function Home() {
         >
           <Button
             size="lg"
-            className="rounded-full px-6 sm:px-8 py-5 text-sm sm:text-base bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30"
-            onClick={() => handleProtectedNavigation("/Chat")}
+            className="z-1 rounded-full px-6 sm:px-8 py-5 text-sm sm:text-base bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 transition-all shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30"
+            onClick={() => handleProtectedNavigation("/Forms")}
             disabled={isNavigating}
           >
             {isNavigating ? (

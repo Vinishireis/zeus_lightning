@@ -76,7 +76,8 @@ export default function PricingPage() {
     {
       name: "ÔMEGA",
       subtitle: "Para Investidores",
-      price: "90,00",
+      price: "R$90,00",
+      period: "/mês",
       description: "Dados financeiros e ESG das principais empresas",
       features: [
         "Portfólio completo de indicadores",
