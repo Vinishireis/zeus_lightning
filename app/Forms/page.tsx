@@ -134,10 +134,11 @@ export default function ESGFormPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [apiResponse, setApiResponse] = useState("");
   const [uploadedFiles, setUploadedFiles] = useState<File[]>([]);
-  const { setApiResponse: setStoreResponse } = useStore();
+  const { setApiResponse: setStoreResponse, setEsgData } = useStore();
   const [isHelpModalOpen, setIsHelpModalOpen] = useState(false);
   const [activeQuestionIndex, setActiveQuestionIndex] = useState<number | null>(null);
 
+  // Atualiza resposta de uma pergunta
   const handleAnswerChange = (questionIndex: number, value: string) => {
     setAnswers((prev) => ({
       ...prev,
@@ -145,8 +146,9 @@ export default function ESGFormPage() {
     }));
   };
 
+  // Upload via react-dropzone
   const onDrop = useCallback((acceptedFiles: File[]) => {
-    setUploadedFiles(acceptedFiles);
+    setUploadedFiles((prev) => [...prev, ...acceptedFiles]);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -154,12 +156,9 @@ export default function ESGFormPage() {
     accept: {
       "application/pdf": [".pdf"],
       "application/msword": [".doc"],
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-        [".docx"],
+      "application/vnd.openxmlformats-officedocument.wordprocessingml.document": [".docx"],
       "application/vnd.ms-excel": [".xls"],
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [
-        ".xlsx",
-      ],
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet": [".xlsx"],
       "image/*": [".png", ".jpg", ".jpeg", ".gif"],
       "text/plain": [".txt"],
     },
@@ -167,73 +166,83 @@ export default function ESGFormPage() {
     multiple: true,
   });
 
+  // Remove arquivo da lista
   const removeFile = (index: number) => {
     setUploadedFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
+  // Gera o relatório baseado nas respostas
   const generateReport = (): string => {
-    let reportContent = reportGuidelines;
+    let reportContent = reportGuidelines + "\n";
 
     esgSections.forEach((section, sectionIndex) => {
       reportContent += `\n${sectionIndex + 1}. ${section.title}\n`;
 
       section.questions.forEach((question, questionIndex) => {
         const answerKey = `${sectionIndex}-${questionIndex}`;
-        reportContent += `  ${sectionIndex + 1}.${
-          questionIndex + 1
-        } ${question}\n`;
-        reportContent += `    Resposta: ${
-          answers[answerKey] || "Não respondido"
-        }\n\n`;
+        reportContent += `  ${sectionIndex + 1}.${questionIndex + 1} ${question}\n`;
+        reportContent += `    Resposta: ${answers[answerKey] || "Não respondido"}\n\n`;
       });
     });
+
     return reportContent;
   };
 
+  // Valida respostas para seção atual ou para submissão
+  const validateAnswers = (sectionToValidate?: number): boolean => {
+    const sectionIndex = sectionToValidate !== undefined ? sectionToValidate : currentSection;
+
+    const questions = esgSections[sectionIndex].questions;
+
+    for (let i = 0; i < questions.length; i++) {
+      const key = `${sectionIndex}-${i}`;
+      if (!answers[key]?.trim()) {
+        alert(`Por favor, responda a pergunta ${sectionIndex + 1}.${i + 1} na seção "${esgSections[sectionIndex].title}"`);
+        setCurrentSection(sectionIndex);
+        return false;
+      }
+    }
+
+    return true;
+  };
+
+  // Submete o formulário
   const handleSubmit = async () => {
     if (isSubmitting) return;
 
-    for (
-      let sectionIndex = 0;
-      sectionIndex < esgSections.length;
-      sectionIndex++
-    ) {
-      for (
-        let questionIndex = 0;
-        questionIndex < esgSections[sectionIndex].questions.length;
-        questionIndex++
-      ) {
-        const answerKey = `${sectionIndex}-${questionIndex}`;
-        if (!answers[answerKey]?.trim()) {
-          alert(
-            `Por favor, responda a pergunta ${sectionIndex + 1}.${
-              questionIndex + 1
-            } na seção "${esgSections[sectionIndex].title}"`
-          );
-          setCurrentSection(sectionIndex);
-          return;
-        }
-      }
+    // Valida todas as seções
+    for (let i = 0; i < esgSections.length; i++) {
+      if (!validateAnswers(i)) return;
     }
 
     setIsSubmitting(true);
 
     try {
       const report = generateReport();
+
       const response = await axios.post("/api/chat", {
         fullReport: report,
-        answers: answers,
+        answers,
         sections: esgSections,
       });
 
       if (response.data?.relatorioCompleto) {
-        // Armazene todos os dados no store
-        useStore.getState().setEsgData({
+        // Limpa estado após sucesso
+        setAnswers({});
+        setUploadedFiles([]);
+        setApiResponse("");
+        setCurrentSection(0);
+        setActiveQuestionIndex(null);
+
+        // Armazena dados no Zustand
+        setEsgData({
           generatedReport: response.data.relatorioCompleto,
-          answers: answers,
+          answers,
           sections: esgSections,
         });
-        useStore.getState().setApiResponse(response.data.relatorioCompleto);
+
+        setStoreResponse(response.data.relatorioCompleto);
+
         router.push("/Chat");
       }
     } catch (error) {
@@ -250,41 +259,34 @@ export default function ESGFormPage() {
     }
   };
 
+  // Avança para próxima seção se respostas válidas
   const nextSection = () => {
-    const currentQuestions = esgSections[currentSection].questions;
-    for (let i = 0; i < currentQuestions.length; i++) {
-      const answerKey = `${currentSection}-${i}`;
-      if (!answers[answerKey]?.trim()) {
-        alert(
-          `Por favor, responda a pergunta ${currentSection + 1}.${
-            i + 1
-          } antes de prosseguir`
-        );
-        return;
-      }
-    }
-
+    if (!validateAnswers(currentSection)) return;
     if (currentSection < esgSections.length - 1) {
-      setCurrentSection((prev) => prev + 1);
+      setCurrentSection(currentSection + 1);
     }
   };
 
+  // Volta para seção anterior
   const prevSection = () => {
     if (currentSection > 0) {
-      setCurrentSection((prev) => prev - 1);
+      setCurrentSection(currentSection - 1);
     }
   };
 
   const isLastSection = currentSection === esgSections.length - 1;
 
+  // Função para processar pergunta sobre ESG (exemplo simples)
   const processESGQuestion = (question: string): string => {
     const { esgData } = useStore.getState();
+
     if (!esgData) return "Não encontrei os dados do relatório ESG.";
 
-    // Verifica se o usuário pediu uma seção específica
     const sectionMatch = question.match(/seção (\d+)/i);
+
     if (sectionMatch) {
-      const sectionIndex = parseInt(sectionMatch[1]) - 1;
+      const sectionIndex = parseInt(sectionMatch[1], 10) - 1;
+
       if (sectionIndex >= 0 && sectionIndex < esgData.sections.length) {
         const section = esgData.sections[sectionIndex];
         let response = `Seção ${sectionIndex + 1}: ${section.title}\n\n`;
@@ -292,9 +294,7 @@ export default function ESGFormPage() {
         section.questions.forEach((q: string, i: number) => {
           const answerKey = `${sectionIndex}-${i}`;
           response += `Pergunta ${i + 1}: ${q}\n`;
-          response += `Resposta: ${
-            esgData.answers[answerKey] || "Não respondido"
-          }\n\n`;
+          response += `Resposta: ${esgData.answers[answerKey] || "Não respondido"}\n\n`;
         });
 
         return response;
@@ -302,9 +302,9 @@ export default function ESGFormPage() {
       return `Seção ${sectionIndex + 1} não encontrada no relatório.`;
     }
 
-    // Outras lógicas de processamento podem ser adicionadas aqui
     return `Analisando sua pergunta sobre o relatório ESG: "${question}"`;
   };
+
 
   
 
