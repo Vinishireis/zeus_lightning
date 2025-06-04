@@ -146,6 +146,7 @@ export default function ESGFormPage() {
     }));
   };
 
+
   // Upload via react-dropzone
   const onDrop = useCallback((acceptedFiles: File[]) => {
     setUploadedFiles((prev) => [...prev, ...acceptedFiles]);
@@ -206,58 +207,68 @@ export default function ESGFormPage() {
     return true;
   };
 
-  // Submete o formulário
-  const handleSubmit = async () => {
-    if (isSubmitting) return;
+const handleSubmit = async () => {
+  if (isSubmitting) return;
 
-    // Valida todas as seções
-    for (let i = 0; i < esgSections.length; i++) {
-      if (!validateAnswers(i)) return;
-    }
+  // Valida todas as seções
+  for (let i = 0; i < esgSections.length; i++) {
+    if (!validateAnswers(i)) return;
+  }
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
 
-    try {
-      const report = generateReport();
+  try {
+    const report = generateReport();
 
-      const response = await axios.post("/api/chat", {
+    const response = await axios.post(
+      "/api/chat",
+      {
         fullReport: report,
+        answers,
+        sections: esgSections,
+      },
+      {
+        timeout: 10000, // Timeout em 10 segundos
+      }
+    );
+
+    if (response.data?.relatorioCompleto) {
+      // Limpa estado após sucesso
+      setAnswers({});
+      setUploadedFiles([]);
+      setApiResponse("");
+      setCurrentSection(0);
+      setActiveQuestionIndex(null);
+
+      // Armazena dados no Zustand
+      setEsgData({
+        generatedReport: response.data.relatorioCompleto,
         answers,
         sections: esgSections,
       });
 
-      if (response.data?.relatorioCompleto) {
-        // Limpa estado após sucesso
-        setAnswers({});
-        setUploadedFiles([]);
-        setApiResponse("");
-        setCurrentSection(0);
-        setActiveQuestionIndex(null);
+      setStoreResponse(response.data.relatorioCompleto);
 
-        // Armazena dados no Zustand
-        setEsgData({
-          generatedReport: response.data.relatorioCompleto,
-          answers,
-          sections: esgSections,
-        });
+      router.push("/Chat");
+    }
+  } catch (error) {
+    console.error("Erro ao gerar relatório:", error);
 
-        setStoreResponse(response.data.relatorioCompleto);
+    let errorMessage = "Ocorreu um erro ao gerar o relatório.";
 
-        router.push("/Chat");
-      }
-    } catch (error) {
-      console.error("Erro ao gerar relatório:", error);
-
-      let errorMessage = "Ocorreu um erro ao gerar o relatório.";
-      if (axios.isAxiosError(error)) {
+    if (axios.isAxiosError(error)) {
+      if (error.code === "ECONNABORTED") {
+        errorMessage = "Tempo de resposta esgotado (timeout). Tente novamente.";
+      } else {
         errorMessage = error.response?.data?.message || errorMessage;
       }
-
-      alert(errorMessage);
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+
+    alert(errorMessage);
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   // Avança para próxima seção se respostas válidas
   const nextSection = () => {
@@ -304,9 +315,6 @@ export default function ESGFormPage() {
 
     return `Analisando sua pergunta sobre o relatório ESG: "${question}"`;
   };
-
-
-  
 
 return (
   <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">
