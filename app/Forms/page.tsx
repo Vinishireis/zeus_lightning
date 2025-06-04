@@ -228,7 +228,7 @@ const handleSubmit = async () => {
         sections: esgSections,
       },
       {
-        timeout: 10000, // Timeout em 10 segundos
+        timeout: 60000, // Timeout em 30 segundos
       }
     );
 
