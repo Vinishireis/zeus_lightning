@@ -27,6 +27,8 @@ export default function ChatPage() {
   const [inputMessage, setInputMessage] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
   const [showHistory, setShowHistory] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [processingStage, setProcessingStage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
   
   const {
@@ -46,7 +48,8 @@ export default function ChatPage() {
 
   const messages = currentConversation?.messages || [];
 
-  const createNewConversation = () => {
+  // Cria nova conversa
+  const createNewConversation = useCallback(() => {
     const newConversation = {
       id: Date.now().toString(),
       title: `Conversa ${conversations.length + 1}`,
@@ -57,8 +60,9 @@ export default function ChatPage() {
     addConversation(newConversation);
     setCurrentConversation(newConversation.id);
     setShowHistory(false);
-  };
+  }, [conversations.length, addConversation, setCurrentConversation]);
 
+  // Efeito para adicionar relatório ESG à conversa
   useEffect(() => {
     if (apiResponse && esgData && currentConversation && 
         !currentConversation.messages.some(msg => msg.id.startsWith('report-'))) {
@@ -79,6 +83,7 @@ export default function ChatPage() {
     }
   }, [apiResponse, esgData, currentConversation, clearApiResponse, updateConversation]);
 
+  // Configuração do dropzone
   const onDrop = useCallback((acceptedFiles: File[]) => {
     if (acceptedFiles.length === 0) return;
 
@@ -108,6 +113,7 @@ export default function ChatPage() {
     noKeyboard: true
   });
 
+  // Remove arquivo
   const removeFile = useCallback(() => {
     setFiles(prevFiles => {
       if (prevFiles.length > 0) {
@@ -117,29 +123,86 @@ export default function ChatPage() {
     });
   }, []);
 
+  // Extrai texto do arquivo em chunks
   const extractTextFromFile = async (file: FileWithPreview): Promise<string> => {
     try {
+      setProcessingStage('Lendo arquivo...');
+      
       if (file.type.startsWith("image/")) {
         return `[Arquivo de imagem: ${file.name}]`;
       } else if (file.type === "application/pdf") {
-        return `[Conteúdo PDF: ${file.name}]`;
+        return await processPdfInChunks(file);
       } else if (file.type.startsWith("text/")) {
-        return await file.text();
+        return await processTextFileInChunks(file);
       } else {
         return `[Arquivo: ${file.name}, Tipo: ${file.type}]`;
       }
     } catch (error) {
       console.error("Erro ao extrair texto:", error);
       return `[Erro ao processar arquivo: ${file.name}]`;
+    } finally {
+      setProcessingStage('');
     }
   };
 
+  // Processa PDF em chunks
+  const processPdfInChunks = async (file: File): Promise<string> => {
+    // Implementação simulada - na prática use uma lib como pdf-parse
+    const chunkSize = 1024 * 1024; // 1MB
+    const totalChunks = Math.ceil(file.size / chunkSize);
+    let content = '';
+    
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(start + chunkSize, file.size);
+      const chunk = file.slice(start, end);
+      
+      setUploadProgress(Math.round(((i + 1) / totalChunks) * 100));
+      setProcessingStage(`Processando PDF (parte ${i+1}/${totalChunks})...`);
+      
+      // Simula processamento do chunk
+      await new Promise(resolve => setTimeout(resolve, 500));
+      content += `[PDF Chunk ${i+1}]\n`;
+    }
+    
+    return content;
+  };
+
+  // Processa arquivos de texto em chunks
+  const processTextFileInChunks = async (file: File): Promise<string> => {
+    const chunkSize = 1024 * 1024; // 1MB
+    const totalChunks = Math.ceil(file.size / chunkSize);
+    let content = '';
+    
+    for (let i = 0; i < totalChunks; i++) {
+      const start = i * chunkSize;
+      const end = Math.min(start + chunkSize, file.size);
+      const chunk = file.slice(start, end);
+      
+      setUploadProgress(Math.round(((i + 1) / totalChunks) * 100));
+      setProcessingStage(`Lendo arquivo (parte ${i+1}/${totalChunks})...`);
+      
+      const text = await chunk.text();
+      content += text;
+    }
+    
+    return content;
+  };
+
+  // Envia mensagem
   const handleSendMessage = async () => {
     if ((!inputMessage.trim() && files.length === 0) || isProcessing || !currentConversation) return;
 
     let fileContent = "";
     if (files.length > 0) {
-      fileContent = await extractTextFromFile(files[0]);
+      try {
+        setIsProcessing(true);
+        setUploadProgress(0);
+        fileContent = await extractTextFromFile(files[0]);
+      } catch (error) {
+        console.error("Erro ao processar arquivo:", error);
+        fileContent = `[Erro ao processar arquivo: ${files[0].name}]`;
+      }
     }
 
     const userMessage: Message = {
@@ -155,9 +218,11 @@ export default function ChatPage() {
     
     setInputMessage("");
     setFiles([]);
-    setIsProcessing(true);
 
     try {
+      setProcessingStage('Processando resposta...');
+      
+      // Simula processamento da IA
       await new Promise(resolve => setTimeout(resolve, 1000));
       
       const responseContent = files.length > 0
@@ -181,18 +246,22 @@ export default function ChatPage() {
       updateConversation(currentConversation.id, [...updatedMessages, errorResponse]);
     } finally {
       setIsProcessing(false);
+      setUploadProgress(0);
+      setProcessingStage('');
       setTimeout(() => {
         messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       }, 100);
     }
   };
 
+  // Ícone do arquivo
   const getFileIcon = (type: string) => {
     if (type.startsWith("image/")) return <FiImage className="text-blue-400" />;
     if (type === "application/pdf") return <FiFile className="text-red-400" />;
     return <FiFile className="text-zinc-400" />;
   };
 
+  // Formata tamanho do arquivo
   const formatFileSize = (bytes: number) => {
     if (bytes === 0) return "0 Bytes";
     const k = 1024;
@@ -201,6 +270,7 @@ export default function ChatPage() {
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
   };
 
+  // Efeitos para scroll e limpeza
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
@@ -215,7 +285,7 @@ export default function ChatPage() {
     if (conversations.length === 0) {
       createNewConversation();
     }
-  }, []);
+  }, [conversations.length, createNewConversation]);
 
   return (
     <main className="min-h-screen w-full flex items-center justify-center bg-gradient-to-b from-gray-900 to-black px-4 sm:px-6 lg:px-8 min-w-[320px]">

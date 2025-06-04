@@ -207,68 +207,58 @@ export default function ESGFormPage() {
     return true;
   };
 
-const handleSubmit = async () => {
-  if (isSubmitting) return;
+  // Submete o formulário
+  const handleSubmit = async () => {
+    if (isSubmitting) return;
 
-  // Valida todas as seções
-  for (let i = 0; i < esgSections.length; i++) {
-    if (!validateAnswers(i)) return;
-  }
+    // Valida todas as seções
+    for (let i = 0; i < esgSections.length; i++) {
+      if (!validateAnswers(i)) return;
+    }
 
-  setIsSubmitting(true);
+    setIsSubmitting(true);
 
-  try {
-    const report = generateReport();
+    try {
+      const report = generateReport();
 
-    const response = await axios.post(
-      "/api/chat",
-      {
+      const response = await axios.post("/api/chat", {
         fullReport: report,
-        answers,
-        sections: esgSections,
-      },
-      {
-        timeout: 60000, // Timeout em 30 segundos
-      }
-    );
-
-    if (response.data?.relatorioCompleto) {
-      // Limpa estado após sucesso
-      setAnswers({});
-      setUploadedFiles([]);
-      setApiResponse("");
-      setCurrentSection(0);
-      setActiveQuestionIndex(null);
-
-      // Armazena dados no Zustand
-      setEsgData({
-        generatedReport: response.data.relatorioCompleto,
         answers,
         sections: esgSections,
       });
 
-      setStoreResponse(response.data.relatorioCompleto);
+      if (response.data?.relatorioCompleto) {
+        // Limpa estado após sucesso
+        setAnswers({});
+        setUploadedFiles([]);
+        setApiResponse("");
+        setCurrentSection(0);
+        setActiveQuestionIndex(null);
 
-      router.push("/Chat");
-    }
-  } catch (error) {
-    console.error("Erro ao gerar relatório:", error);
+        // Armazena dados no Zustand
+        setEsgData({
+          generatedReport: response.data.relatorioCompleto,
+          answers,
+          sections: esgSections,
+        });
 
-    let errorMessage = "Ocorreu um erro ao gerar o relatório.";
+        setStoreResponse(response.data.relatorioCompleto);
 
-    if (axios.isAxiosError(error)) {
-      if (error.code === "ECONNABORTED") {
-        errorMessage = "Tempo de resposta esgotado (timeout). Tente novamente.";
-      } else {
+        router.push("/Chat");
+      }
+    } catch (error) {
+      console.error("Erro ao gerar relatório:", error);
+
+      let errorMessage = "Ocorreu um erro ao gerar o relatório.";
+      if (axios.isAxiosError(error)) {
         errorMessage = error.response?.data?.message || errorMessage;
       }
-    }
 
-    alert(errorMessage);
-  } finally {
-    setIsSubmitting(false);
-  }
-};
+      alert(errorMessage);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
 
   // Avança para próxima seção se respostas válidas
   const nextSection = () => {
